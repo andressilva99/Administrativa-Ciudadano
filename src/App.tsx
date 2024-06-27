@@ -1,12 +1,10 @@
-import { RouterProvider } from 'react-router-dom';
-
-import router from './routes';
+import Routes from './routes';
 import ThemeCustomization from './themes';
 
 function App() {
   return (
     <ThemeCustomization>
-      <RouterProvider router={router} />
+      <Routes />
     </ThemeCustomization>
   );
 }
