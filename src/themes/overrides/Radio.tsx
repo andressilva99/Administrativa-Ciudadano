@@ -6,7 +6,7 @@ import { Box, CheckboxProps } from '@mui/material';
 import getColors from '../../utils/getColors';
 
 // types
-import { ExtendedStyleProps } from 'types/extended';
+import { ExtendedStyleProps } from '../../types/extended';
 
 // ==============================|| RADIO - COLORS ||============================== //
 

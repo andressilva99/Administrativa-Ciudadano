@@ -2,7 +2,7 @@
 import { alpha, Theme } from '@mui/material/styles';
 
 // types
-import { CustomShadowProps } from 'types/theme';
+import { CustomShadowProps } from '../types/theme';
 
 // ==============================|| DEFAULT THEME - CUSTOM SHADOWS  ||============================== //
 

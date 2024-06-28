@@ -2,7 +2,7 @@
 import { Theme, TypographyVariantsOptions } from '@mui/material/styles';
 
 // types
-import { FontFamily, ThemeMode } from 'types/config';
+import { FontFamily, ThemeMode } from '../types/config';
 
 // ==============================|| DEFAULT THEME - TYPOGRAPHY  ||============================== //
 

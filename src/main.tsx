@@ -1,40 +1,33 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 // scroll bar
-import 'simplebar-react/dist/simplebar.min.css';
+import 'simplebar/dist/simplebar.css'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// google-fonts
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/700.css';
-
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
-
-import '@fontsource/poppins/400.css';
-import '@fontsource/poppins/500.css';
-import '@fontsource/poppins/600.css';
-import '@fontsource/poppins/700.css';
-
-import '@fontsource/public-sans/400.css';
-import '@fontsource/public-sans/500.css';
-import '@fontsource/public-sans/600.css';
-import '@fontsource/public-sans/700.css';
+// apex-chart
+import './assets/third-party/apex-chart.css';
+import './assets/third-party/react-table.css';
 
 import App from './App';
 import { ConfigProvider } from './contexts/ConfigContext';
-import { BrowserRouter } from 'react-router-dom';
+import { store, persister } from './store';
+import reportWebVitals from './reportWebVitals';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ConfigProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </ConfigProvider>
+  <ReduxProvider store={store}>
+    <PersistGate loading={null} persistor={persister}>
+      <ConfigProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ConfigProvider>
+    </PersistGate>
+  </ReduxProvider>
 );
+
+reportWebVitals();

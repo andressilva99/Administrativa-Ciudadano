@@ -9,7 +9,7 @@ import getColors from '../../utils/getColors';
 import { CheckSquareFilled, MinusSquareFilled } from '@ant-design/icons';
 
 // types
-import { ExtendedStyleProps } from 'types/extended';
+import { ExtendedStyleProps } from '../../types/extended';
 
 // ==============================|| RADIO - COLORS ||============================== //
 

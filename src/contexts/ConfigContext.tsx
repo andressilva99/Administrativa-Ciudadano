@@ -5,7 +5,7 @@ import config from '../config';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 // types
-import { CustomizationProps, FontFamily, I18n, PresetColor, ThemeDirection, ThemeMode } from 'types/config';
+import { CustomizationProps, FontFamily, I18n, PresetColor, ThemeDirection, ThemeMode } from '../types/config';
 
 // initial state
 const initialState: CustomizationProps = {

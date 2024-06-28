@@ -1,10 +1,24 @@
 import { lazy } from 'react';
+import { RouteObject } from 'react-router';
+import MainLayout from '../layout/MainLayout';
+import Loadable from '../components/Loadable';
 
-const Home = lazy(() => import('../pages/Home'));
+const Home = Loadable(lazy(() => import('../pages/Home')));
 
-const MainRoutes = {
+const MainRoutes: RouteObject = {
   path: '/',
-  element: <Home />
+  children: [
+    {
+      path: '/',
+      element: <MainLayout />,
+      children: [
+        {
+          path: 'home',
+          element: <Home />
+        }
+      ]
+    }
+  ]
 };
 
 export default MainRoutes;

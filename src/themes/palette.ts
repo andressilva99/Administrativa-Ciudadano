@@ -8,8 +8,8 @@ import { presetDarkPalettes, presetPalettes, PalettesProps } from '@ant-design/c
 import ThemeOption from './theme';
 
 // types
-import { PaletteThemeProps } from 'types/theme';
-import { PresetColor, ThemeMode } from 'types/config';
+import { PaletteThemeProps } from '../types/theme';
+import { PresetColor, ThemeMode } from '../types/config';
 
 // ==============================|| DEFAULT THEME - PALETTE  ||============================== //
 
