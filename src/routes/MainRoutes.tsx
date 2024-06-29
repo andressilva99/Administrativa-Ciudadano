@@ -1,10 +1,13 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router';
 
-import MainLayout from '../layout/MainLayout';
 import Loadable from '../components/Loadable';
+import MainLayout from '../layout/MainLayout';
 
 const Home = Loadable(lazy(() => import('../pages/Home')));
+const User = Loadable(lazy(() => import('../pages/user/UserList')));
+const Role = Loadable(lazy(() => import('../pages/role/RoleList')));
+const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
 
 const MainRoutes: RouteObject = {
   path: '/',
@@ -16,6 +19,18 @@ const MainRoutes: RouteObject = {
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: 'user',
+          element: <User />,
+        },
+        {
+          path: 'role',
+          element: <Role />,
+        },
+        {
+          path: 'module',
+          element: <Module />,
         },
       ],
     },

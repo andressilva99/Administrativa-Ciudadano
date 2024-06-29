@@ -50,7 +50,7 @@ const menuItems: { items: NavItemType[] } = {
       type: 'group',
       children: [
         {
-          id: 'user',
+          id: 'role',
           type: 'item',
           title: <FormattedMessage id="Roles" />,
           icon: icons.DatabaseOutlined,
@@ -63,7 +63,7 @@ const menuItems: { items: NavItemType[] } = {
       type: 'group',
       children: [
         {
-          id: 'user',
+          id: 'module',
           type: 'item',
           title: <FormattedMessage id="Módulos" />,
           icon: icons.GoldOutlined,
