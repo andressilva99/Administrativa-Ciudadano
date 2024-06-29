@@ -13,6 +13,7 @@ import IconButton from '../../../../../components/@extended/IconButton';
 //  assets
 import avatar1 from '../../../../../assets/images/users/avatar-1.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { maxWidth } from '@mui/system';
 
 //  types
 interface TabPanelProps {
@@ -43,7 +44,9 @@ function a11yProps(index: number) {
 const Profile = () => {
   const theme = useTheme();
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    console.log('Cierre de sesión');
+  };
 
   const anchorRef = useRef<any>(null);
   const [open, setOpen] = useState(false);
@@ -90,6 +93,69 @@ const Profile = () => {
           <Typography variant="subtitle1">Lucas Barbero</Typography>
         </Stack>
       </ButtonBase>
+      <Popper
+        placement="bottom-end"
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+        popperOptions={{
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 9]
+              }
+            }
+          ]
+        }}
+      >
+        {({ TransitionProps }) => (
+          <Transitions type="fade" in={open} {...TransitionProps}>
+            {open && (
+              <Paper
+                sx={{
+                  boxShadow: theme.customShadows.z1,
+                  width: 290,
+                  minWidth: 240,
+                  maxWidth: 290,
+                  [theme.breakpoints.down('md')]: {
+                    maxWidth: 250
+                  }
+                }}
+              >
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MainCard elevation={0} border={false} content={false}>
+                    <CardContent sx={{ px: 2.5, pt: 3 }}>
+                      <Grid container justifyContent="space-between" alignItems="center">
+                        <Grid item>
+                          <Stack direction="row" spacing={1.25} alignItems="center">
+                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Stack>
+                              <Typography variant="h6">Lucas Barbero</Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                UI/UX Designer
+                              </Typography>
+                            </Stack>
+                          </Stack>
+                        </Grid>
+                        <Grid item>
+                          <Tooltip title="Logout">
+                            <IconButton size="large" sx={{ color: 'text.primary' }} onClick={handleLogout}>
+                              <LogoutOutlined />
+                            </IconButton>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </MainCard>
+                </ClickAwayListener>
+              </Paper>
+            )}
+          </Transitions>
+        )}
+      </Popper>
     </Box>
   );
 };

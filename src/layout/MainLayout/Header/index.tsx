@@ -12,6 +12,8 @@ import IconButton from '../../../components/@extended/IconButton';
 //  assets
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 
+// ==============================|| MAIN LAYOUT - HEADER ||============================== //
+
 interface Props {
   open: boolean;
   handleDrawerToggle?: () => void;
@@ -44,7 +46,6 @@ const Header = ({ open, handleDrawerToggle }: Props) => {
     </Toolbar>
   );
 
-  //  app-bar params
   // app-bar params
   const appBar: AppBarProps = {
     position: 'fixed',
