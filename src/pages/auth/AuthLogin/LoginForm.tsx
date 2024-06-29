@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import IconButton from '../../../components/@extended/IconButton';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import AnimateButton from '../../../components/@extended/AnimateButton';
+import { AuthService } from '../../../core/application/AuthService';
 
 const LoginForm = () => {
   const [capsWarning, setCapsWarning] = useState(false);
@@ -33,13 +34,19 @@ const LoginForm = () => {
 
   return (
     <Formik
-      initialValues={{ email: '', password: '', submit: null }}
+      initialValues={{ username: '', password: '', submit: null }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Formato incorrecto').max(255).required('El correo es obligatorio'),
+        username: Yup.string().required('El nombre de usuario es obligatorio'),
         password: Yup.string().max(255).required('La contraseña es obligatoria')
       })}
       onSubmit={async (values) => {
-        console.log(values);
+        const authService = new AuthService();
+        try {
+          const response = await authService.signin(values.username, values.password);
+          console.log(response);
+        } catch (err) {
+          console.error(err);
+        }
       }}
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
@@ -47,21 +54,21 @@ const LoginForm = () => {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <InputLabel>Correo electrónico</InputLabel>
+                <InputLabel>Nombre de usuario</InputLabel>
                 <OutlinedInput
-                  id="email-login"
-                  type="email"
-                  value={values.email}
-                  name="email"
+                  id="username-login"
+                  type="text"
+                  value={values.username}
+                  name="username"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  placeholder="ejemplo@gmail.com"
+                  placeholder="Tu nombre de usuario"
                   fullWidth
-                  error={Boolean(touched.email && errors.email)}
+                  error={Boolean(touched.username && errors.username)}
                 />
-                {touched.email && errors.email && (
+                {touched.username && errors.username && (
                   <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
+                    {errors.username}
                   </FormHelperText>
                 )}
               </Stack>
