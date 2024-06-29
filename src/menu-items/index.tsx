@@ -25,10 +25,11 @@ const menuItems: { items: NavItemType[] } = {
       children: [
         {
           id: 'home',
-          title: <FormattedMessage id="Inicio" />,
+          title: 'Inicio',
           type: 'item',
           url: '/',
           icon: icons.HomeOutlined,
+          breadcrumbs: false,
         },
       ],
     },
@@ -39,7 +40,7 @@ const menuItems: { items: NavItemType[] } = {
         {
           id: 'user',
           type: 'item',
-          title: <FormattedMessage id="Usuarios" />,
+          title: 'Usuarios',
           icon: icons.UserOutlined,
           url: '/user',
         },
@@ -52,7 +53,7 @@ const menuItems: { items: NavItemType[] } = {
         {
           id: 'role',
           type: 'item',
-          title: <FormattedMessage id="Roles" />,
+          title: 'Roles',
           icon: icons.DatabaseOutlined,
           url: '/role',
         },
@@ -65,7 +66,7 @@ const menuItems: { items: NavItemType[] } = {
         {
           id: 'module',
           type: 'item',
-          title: <FormattedMessage id="Módulos" />,
+          title: 'Módulos',
           icon: icons.GoldOutlined,
           url: '/module',
         },

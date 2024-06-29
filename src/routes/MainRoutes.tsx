@@ -4,7 +4,7 @@ import { Navigate, RouteObject } from 'react-router';
 import Loadable from '../components/Loadable';
 import MainLayout from '../layout/MainLayout';
 
-const Home = Loadable(lazy(() => import('../pages/Home')));
+const Home = Loadable(lazy(() => import('../pages/home')));
 const User = Loadable(lazy(() => import('../pages/user/UserList')));
 const Role = Loadable(lazy(() => import('../pages/role/RoleList')));
 const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
