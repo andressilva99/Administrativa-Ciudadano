@@ -12,6 +12,7 @@ import Header from './Header';
 import Footer from './Footer';
 import navigation from '../../menu-items';
 import useConfig from '../../hooks/useConfig';
+import Breadcrumbs from '../../components/@extended/Breadcrumbs';
 
 // types
 import { RootStateProps } from '../../types/root';
@@ -67,6 +68,7 @@ const MainLayout = () => {
               flexDirection: 'column',
             }}
           >
+            <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
             <Outlet />
             <Footer />
           </Container>
@@ -80,6 +82,7 @@ const MainLayout = () => {
               flexDirection: 'column',
             }}
           >
+            <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
             <Outlet />
             <Footer />
           </Box>

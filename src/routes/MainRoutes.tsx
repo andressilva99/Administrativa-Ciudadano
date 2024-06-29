@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { RouteObject } from 'react-router';
+import { Navigate, RouteObject } from 'react-router';
 
 import Loadable from '../components/Loadable';
 import MainLayout from '../layout/MainLayout';
@@ -18,6 +18,10 @@ const MainRoutes: RouteObject = {
       children: [
         {
           path: '/',
+          element: <Navigate to="/home" />,
+        },
+        {
+          path: '/home',
           element: <Home />,
         },
         {
