@@ -17,7 +17,7 @@ import {
   Popper,
   Tooltip,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 
 //  project import
@@ -26,13 +26,19 @@ import IconButton from '../../../../../components/@extended/IconButton';
 import Transitions from '../../../../../components/@extended/Transitions';
 
 //  assets
-import { BellOutlined, CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  CheckCircleOutlined,
+  GiftOutlined,
+  MessageOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 
 // sx styles
 const avatarSX = {
   width: 36,
   height: 36,
-  fontSize: '1rem'
+  fontSize: '1rem',
 };
 
 const actionSX = {
@@ -42,7 +48,7 @@ const actionSX = {
   right: 'auto',
   alignSelf: 'flex-start',
 
-  transform: 'none'
+  transform: 'none',
 };
 
 const Notification = () => {
@@ -94,10 +100,10 @@ const Notification = () => {
             {
               name: 'offset',
               options: {
-                offset: [matchesXs ? -5 : 0, 9]
-              }
-            }
-          ]
+                offset: [matchesXs ? -5 : 0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
@@ -109,8 +115,8 @@ const Notification = () => {
                 minWidth: 285,
                 maxWidth: 420,
                 [theme.breakpoints.down('md')]: {
-                  maxWidth: 285
-                }
+                  maxWidth: 285,
+                },
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>
@@ -139,8 +145,8 @@ const Notification = () => {
                         py: 0.5,
                         '&.Mui-selected': { bgcolor: 'grey.50', color: 'text.primary' },
                         '& .MuiAvatar-root': avatarSX,
-                        '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
-                      }
+                        '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' },
+                      },
                     }}
                   >
                     <ListItemButton selected={read > 0}>
@@ -148,7 +154,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'success.main',
-                            bgcolor: 'success.lighter'
+                            bgcolor: 'success.lighter',
                           }}
                         >
                           <GiftOutlined />
@@ -178,7 +184,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'primary.main',
-                            bgcolor: 'primary.lighter'
+                            bgcolor: 'primary.lighter',
                           }}
                         >
                           <MessageOutlined />
@@ -207,7 +213,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'error.main',
-                            bgcolor: 'error.lighter'
+                            bgcolor: 'error.lighter',
                           }}
                         >
                           <SettingOutlined />
@@ -236,7 +242,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'primary.main',
-                            bgcolor: 'primary.lighter'
+                            bgcolor: 'primary.lighter',
                           }}
                         >
                           C

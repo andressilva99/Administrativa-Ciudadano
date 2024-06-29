@@ -11,7 +11,7 @@ import {
   MenuUnfoldOutlined,
   QuestionOutlined,
   SmileOutlined,
-  StopOutlined
+  StopOutlined,
 } from '@ant-design/icons';
 
 // type
@@ -27,7 +27,7 @@ const icons = {
   MenuUnfoldOutlined,
   QuestionOutlined,
   StopOutlined,
-  SmileOutlined
+  SmileOutlined,
 };
 
 // ==============================|| MENU ITEMS - SUPPORT ||============================== //
@@ -42,7 +42,7 @@ const other: NavItemType = {
       title: <FormattedMessage id="sample-page" />,
       type: 'item',
       url: '/sample-page',
-      icon: icons.ChromeOutlined
+      icon: icons.ChromeOutlined,
     },
     {
       id: 'menu-level',
@@ -58,7 +58,7 @@ const other: NavItemType = {
             </>
           ),
           type: 'item',
-          url: '#'
+          url: '#',
         },
         {
           id: 'menu-level-1.2',
@@ -77,7 +77,7 @@ const other: NavItemType = {
                 </>
               ),
               type: 'item',
-              url: '#'
+              url: '#',
             },
             {
               id: 'menu-level-2.2',
@@ -96,7 +96,7 @@ const other: NavItemType = {
                     </>
                   ),
                   type: 'item',
-                  url: '#'
+                  url: '#',
                 },
                 {
                   id: 'menu-level-3.2',
@@ -106,13 +106,13 @@ const other: NavItemType = {
                     </>
                   ),
                   type: 'item',
-                  url: '#'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  url: '#',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'menu-level-subtitle',
@@ -130,7 +130,7 @@ const other: NavItemType = {
           ),
           caption: <FormattedMessage id="menu-level-subtitle-item" />,
           type: 'item',
-          url: '#'
+          url: '#',
         },
         {
           id: 'sub-menu-level-1.2',
@@ -151,11 +151,11 @@ const other: NavItemType = {
               ),
               caption: <FormattedMessage id="menu-level-subtitle-sub-item" />,
               type: 'item',
-              url: '#'
-            }
-          ]
-        }
-      ]
+              url: '#',
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'disabled-menu',
@@ -163,14 +163,14 @@ const other: NavItemType = {
       type: 'item',
       url: '#',
       icon: icons.StopOutlined,
-      disabled: true
+      disabled: true,
     },
     {
       id: 'oval-chip-menu',
       title: <FormattedMessage id="oval-chip-menu" />,
       type: 'item',
       url: '#',
-      icon: icons.BorderOutlined
+      icon: icons.BorderOutlined,
     },
     {
       id: 'documentation',
@@ -183,8 +183,8 @@ const other: NavItemType = {
       chip: {
         label: 'gitbook',
         color: 'secondary',
-        size: 'small'
-      }
+        size: 'small',
+      },
     },
     {
       id: 'roadmap',
@@ -193,9 +193,9 @@ const other: NavItemType = {
       url: 'https://codedthemes.gitbook.io/mantis/roadmap',
       icon: icons.DeploymentUnitOutlined,
       external: true,
-      target: true
-    }
-  ]
+      target: true,
+    },
+  ],
 };
 
 export default other;

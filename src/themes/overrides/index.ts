@@ -95,6 +95,6 @@ export default function ComponentsOverrides(theme: Theme) {
     Tabs(),
     ToggleButton(theme),
     TreeItem(),
-    Typography()
+    Typography(),
   );
 }

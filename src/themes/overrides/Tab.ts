@@ -13,15 +13,15 @@ export default function Tab(theme: Theme) {
           borderRadius: 4,
           '&:hover': {
             backgroundColor: theme.palette.primary.lighter + 60,
-            color: theme.palette.primary.main
+            color: theme.palette.primary.main,
           },
           '&:focus-visible': {
             borderRadius: 4,
             outline: `2px solid ${theme.palette.secondary.dark}`,
-            outlineOffset: -3
-          }
-        }
-      }
-    }
+            outlineOffset: -3,
+          },
+        },
+      },
+    },
   };
 }

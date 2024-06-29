@@ -11,7 +11,7 @@ import { NavItemType } from '../types/menu';
 const icons = {
   DashboardOutlined,
   GoldOutlined,
-  HomeOutlined
+  HomeOutlined,
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -31,15 +31,15 @@ const dashboard: NavItemType = {
           title: <FormattedMessage id="default" />,
           type: 'item',
           url: '/dashboard/default',
-          breadcrumbs: false
+          breadcrumbs: false,
         },
         {
           id: 'analytics',
           title: <FormattedMessage id="analytics" />,
           type: 'item',
-          url: '/dashboard/analytics'
-        }
-      ]
+          url: '/dashboard/analytics',
+        },
+      ],
     },
 
     {
@@ -53,10 +53,10 @@ const dashboard: NavItemType = {
         label: 'new',
         color: 'primary',
         size: 'small',
-        variant: 'combined'
-      }
-    }
-  ]
+        variant: 'combined',
+      },
+    },
+  ],
 };
 
 export default dashboard;

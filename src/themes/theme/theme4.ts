@@ -25,18 +25,40 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
     A200: grey[12],
     A400: grey[13],
     A700: grey[14],
-    A800: grey[16]
+    A800: grey[16],
   };
   const contrastText = '#fff';
 
-  let primaryColors = ['#f0f6ff', '#edf4ff', '#bed3f7', '#8faeeb', '#6488de', '#3c64d0', '#2947ab', '#192f85', '#0d1b5e', '#070e38'];
+  let primaryColors = [
+    '#f0f6ff',
+    '#edf4ff',
+    '#bed3f7',
+    '#8faeeb',
+    '#6488de',
+    '#3c64d0',
+    '#2947ab',
+    '#192f85',
+    '#0d1b5e',
+    '#070e38',
+  ];
   let errorColors = ['#FDE8E7', '#F25E52', '#F04134', '#EE3B2F', '#E92A21'];
   let warningColors = ['#FFF7E0', '#FFC926', '#FFBF00', '#FFB900', '#FFA900'];
   let infoColors = ['#E0F4F5', '#26B0BA', '#00A2AE', '#009AA7', '#008694'];
   let successColors = ['#E0F5EA', '#26B56E', '#00A854', '#00A04D', '#008D3A'];
 
   if (mode === 'dark') {
-    primaryColors = ['#1d212d', '#212841', '#273353', '#2c3e6e', '#324c92', '#385ab5', '#5d7dcb', '#89a7e1', '#b9cef0', '#e9f0fb'];
+    primaryColors = [
+      '#1d212d',
+      '#212841',
+      '#273353',
+      '#2c3e6e',
+      '#324c92',
+      '#385ab5',
+      '#5d7dcb',
+      '#89a7e1',
+      '#b9cef0',
+      '#e9f0fb',
+    ];
     errorColors = ['#321d1d', '#7d2e28', '#d13c31', '#e66859', '#f8baaf'];
     warningColors = ['#342c1a', '#836611', '#dda705', '#e9bf28', '#f8e577'];
     infoColors = ['#1a2628', '#11595f', '#058e98', '#1ea6aa', '#64cfcb'];
@@ -55,7 +77,7 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       700: primaryColors[7],
       darker: primaryColors[8],
       900: primaryColors[9],
-      contrastText
+      contrastText,
     },
     secondary: {
       lighter: greyColors[100],
@@ -71,7 +93,7 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       A100: greyColors[0],
       A200: greyColors.A400,
       A300: greyColors.A700,
-      contrastText: greyColors[0]
+      contrastText: greyColors[0],
     },
     error: {
       lighter: errorColors[0],
@@ -79,7 +101,7 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       main: errorColors[2],
       dark: errorColors[3],
       darker: errorColors[4],
-      contrastText
+      contrastText,
     },
     warning: {
       lighter: warningColors[0],
@@ -87,7 +109,7 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       main: warningColors[2],
       dark: warningColors[3],
       darker: warningColors[4],
-      contrastText: greyColors[100]
+      contrastText: greyColors[100],
     },
     info: {
       lighter: infoColors[0],
@@ -95,7 +117,7 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       main: infoColors[2],
       dark: infoColors[3],
       darker: infoColors[4],
-      contrastText
+      contrastText,
     },
     success: {
       lighter: successColors[0],
@@ -103,9 +125,9 @@ const Theme4 = (colors: PalettesProps, mode: ThemeMode): PaletteThemeProps => {
       main: successColors[2],
       dark: successColors[3],
       darker: successColors[4],
-      contrastText
+      contrastText,
     },
-    grey: greyColors
+    grey: greyColors,
   };
 };
 

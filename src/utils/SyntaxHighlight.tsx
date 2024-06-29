@@ -11,7 +11,12 @@ export default function SyntaxHighlight({ children, ...others }: { children: str
   const theme = useTheme();
 
   return (
-    <SyntaxHighlighter language="javascript" showLineNumbers style={theme.palette.mode === 'dark' ? a11yLight : a11yDark} {...others}>
+    <SyntaxHighlighter
+      language="javascript"
+      showLineNumbers
+      style={theme.palette.mode === 'dark' ? a11yLight : a11yDark}
+      {...others}
+    >
       {children}
     </SyntaxHighlighter>
   );

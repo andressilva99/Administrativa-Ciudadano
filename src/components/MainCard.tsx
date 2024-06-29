@@ -2,7 +2,16 @@ import { forwardRef, CSSProperties, ReactNode, Ref } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Card, CardContent, CardHeader, Divider, Typography, CardProps, CardHeaderProps, CardContentProps } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Typography,
+  CardProps,
+  CardHeaderProps,
+  CardContentProps,
+} from '@mui/material';
 
 // project import
 import Highlighter from './third-party/Highlighter';
@@ -13,7 +22,7 @@ import { KeyedObject } from '../types/root';
 // header style
 const headerSX = {
   p: 2.5,
-  '& .MuiCardHeader-action': { m: '0px auto', alignSelf: 'center' }
+  '& .MuiCardHeader-action': { m: '0px auto', alignSelf: 'center' },
 };
 
 // ==============================|| CUSTOM - MAIN CARD ||============================== //
@@ -59,7 +68,7 @@ const MainCard = forwardRef(
       modal = false,
       ...others
     }: MainCardProps,
-    ref: Ref<HTMLDivElement>
+    ref: Ref<HTMLDivElement>,
   ) => {
     const theme = useTheme();
     boxShadow = theme.palette.mode === 'dark' ? boxShadow || true : boxShadow;
@@ -73,18 +82,22 @@ const MainCard = forwardRef(
           position: 'relative',
           border: border ? '1px solid' : 'none',
           borderRadius: 1,
-          borderColor: theme.palette.mode === 'dark' ? theme.palette.divider : theme.palette.grey.A800,
-          boxShadow: boxShadow && (!border || theme.palette.mode === 'dark') ? shadow || theme.customShadows.z1 : 'inherit',
+          borderColor:
+            theme.palette.mode === 'dark' ? theme.palette.divider : theme.palette.grey.A800,
+          boxShadow:
+            boxShadow && (!border || theme.palette.mode === 'dark')
+              ? shadow || theme.customShadows.z1
+              : 'inherit',
           ':hover': {
-            boxShadow: boxShadow ? shadow || theme.customShadows.z1 : 'inherit'
+            boxShadow: boxShadow ? shadow || theme.customShadows.z1 : 'inherit',
           },
           ...(codeHighlight && {
             '& pre': {
               m: 0,
               p: '12px !important',
               fontFamily: theme.typography.fontFamily,
-              fontSize: '0.75rem'
-            }
+              fontSize: '0.75rem',
+            },
           }),
           ...(modal && {
             position: 'absolute' as const,
@@ -95,10 +108,10 @@ const MainCard = forwardRef(
             '& .MuiCardContent-root': {
               overflowY: 'auto',
               minHeight: 'auto',
-              maxHeight: `calc(100vh - 200px)`
-            }
+              maxHeight: `calc(100vh - 200px)`,
+            },
           }),
-          ...sx
+          ...sx,
         }}
       >
         {/* card header and action */}
@@ -111,7 +124,13 @@ const MainCard = forwardRef(
             subheader={subheader}
           />
         )}
-        {darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant="h4">{title}</Typography>} action={secondary} />}
+        {darkTitle && title && (
+          <CardHeader
+            sx={headerSX}
+            title={<Typography variant="h4">{title}</Typography>}
+            action={secondary}
+          />
+        )}
 
         {/* content & header divider */}
         {title && divider && <Divider />}
@@ -129,7 +148,7 @@ const MainCard = forwardRef(
         )}
       </Card>
     );
-  }
+  },
 );
 
 export default MainCard;

@@ -16,7 +16,11 @@ import { ThemeMode, PresetColor } from '../../types/config';
 
 // ==============================|| PRESET THEME - THEME SELECTOR ||============================== //
 
-const Theme = (colors: PalettesProps, presetColor: PresetColor, mode: ThemeMode): PaletteThemeProps => {
+const Theme = (
+  colors: PalettesProps,
+  presetColor: PresetColor,
+  mode: ThemeMode,
+): PaletteThemeProps => {
   switch (presetColor) {
     case 'theme1':
       return Theme1(colors, mode);

@@ -16,41 +16,44 @@ interface Props {
 }
 
 const Transitions = forwardRef(
-  ({ children, position = 'top-left', sx, type = 'grow', direction = 'up', ...others }: Props, ref: Ref<ExoticComponent>) => {
+  (
+    { children, position = 'top-left', sx, type = 'grow', direction = 'up', ...others }: Props,
+    ref: Ref<ExoticComponent>,
+  ) => {
     let positionSX = {
-      transformOrigin: '0 0 0'
+      transformOrigin: '0 0 0',
     };
 
     switch (position) {
       case 'top-right':
         positionSX = {
-          transformOrigin: 'top right'
+          transformOrigin: 'top right',
         };
         break;
       case 'top':
         positionSX = {
-          transformOrigin: 'top'
+          transformOrigin: 'top',
         };
         break;
       case 'bottom-left':
         positionSX = {
-          transformOrigin: 'bottom left'
+          transformOrigin: 'bottom left',
         };
         break;
       case 'bottom-right':
         positionSX = {
-          transformOrigin: 'bottom right'
+          transformOrigin: 'bottom right',
         };
         break;
       case 'bottom':
         positionSX = {
-          transformOrigin: 'bottom'
+          transformOrigin: 'bottom',
         };
         break;
       case 'top-left':
       default:
         positionSX = {
-          transformOrigin: '0 0 0'
+          transformOrigin: '0 0 0',
         };
         break;
     }
@@ -73,7 +76,7 @@ const Transitions = forwardRef(
             timeout={{
               appear: 0,
               enter: 300,
-              exit: 150
+              exit: 150,
             }}
           >
             <Box sx={positionSX}>{children}</Box>
@@ -85,7 +88,7 @@ const Transitions = forwardRef(
             timeout={{
               appear: 0,
               enter: 300,
-              exit: 150
+              exit: 150,
             }}
             direction={direction}
           >
@@ -99,7 +102,7 @@ const Transitions = forwardRef(
         )}
       </Box>
     );
-  }
+  },
 );
 
 export default Transitions;

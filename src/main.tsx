@@ -5,7 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 // scroll bar
-import 'simplebar/dist/simplebar.css'
+import 'simplebar/dist/simplebar.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </ConfigProvider>
     </PersistGate>
-  </ReduxProvider>
+  </ReduxProvider>,
 );
 
 reportWebVitals();

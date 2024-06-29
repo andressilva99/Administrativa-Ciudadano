@@ -15,11 +15,11 @@ const MainRoutes: RouteObject = {
       children: [
         {
           path: '/',
-          element: <Home />
-        }
-      ]
-    }
-  ]
+          element: <Home />,
+        },
+      ],
+    },
+  ],
 };
 
 export default MainRoutes;

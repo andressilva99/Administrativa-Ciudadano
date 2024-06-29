@@ -21,13 +21,13 @@ function getColorStyle({ color, theme }: ExtendedStyleProps) {
     '&:hover': {
       backgroundColor: lighter,
       '& .icon': {
-        borderColor: main
-      }
+        borderColor: main,
+      },
     },
     '&.Mui-focusVisible': {
       outline: `2px solid ${dark}`,
-      outlineOffset: -4
-    }
+      outlineOffset: -4,
+    },
   };
 }
 
@@ -63,9 +63,9 @@ function checkboxStyle(size?: CheckboxProps['size']) {
       '& .filled': {
         fontSize: `${sizes.fontSize}rem`,
         top: -sizes.position,
-        left: -sizes.position
-      }
-    }
+        left: -sizes.position,
+      },
+    },
   };
 }
 
@@ -78,7 +78,18 @@ export default function Checkbox(theme: Theme) {
     MuiCheckbox: {
       defaultProps: {
         className: 'size-small',
-        icon: <Box className="icon" sx={{ width: 16, height: 16, border: '1px solid', borderColor: 'inherit', borderRadius: 0.25 }} />,
+        icon: (
+          <Box
+            className="icon"
+            sx={{
+              width: 16,
+              height: 16,
+              border: '1px solid',
+              borderColor: 'inherit',
+              borderRadius: 0.25,
+            }}
+          />
+        ),
         checkedIcon: (
           <Box
             className="icon"
@@ -88,7 +99,7 @@ export default function Checkbox(theme: Theme) {
               border: '1px solid',
               borderColor: 'inherit',
               borderRadius: 0.25,
-              position: 'relative'
+              position: 'relative',
             }}
           >
             <CheckSquareFilled className="filled" style={{ position: 'absolute' }} />
@@ -103,34 +114,34 @@ export default function Checkbox(theme: Theme) {
               border: '1px solid',
               borderColor: 'inherit',
               borderRadius: 0.25,
-              position: 'relative'
+              position: 'relative',
             }}
           >
             <MinusSquareFilled className="filled" style={{ position: 'absolute' }} />
           </Box>
-        )
+        ),
       },
       styleOverrides: {
         root: {
           borderRadius: 0,
           color: palette.secondary[300],
           '&.size-small': {
-            ...checkboxStyle('small')
+            ...checkboxStyle('small'),
           },
           '&.size-medium': {
-            ...checkboxStyle('medium')
+            ...checkboxStyle('medium'),
           },
           '&.size-large': {
-            ...checkboxStyle('large')
-          }
+            ...checkboxStyle('large'),
+          },
         },
         colorPrimary: getColorStyle({ color: 'primary', theme }),
         colorSecondary: getColorStyle({ color: 'secondary', theme }),
         colorSuccess: getColorStyle({ color: 'success', theme }),
         colorWarning: getColorStyle({ color: 'warning', theme }),
         colorInfo: getColorStyle({ color: 'info', theme }),
-        colorError: getColorStyle({ color: 'error', theme })
-      }
-    }
+        colorError: getColorStyle({ color: 'error', theme }),
+      },
+    },
   };
 }

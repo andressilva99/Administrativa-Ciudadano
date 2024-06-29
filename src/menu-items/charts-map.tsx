@@ -9,7 +9,7 @@ import { NavItemType } from '../types/menu';
 
 // icons
 const icons = {
-  PieChartOutlined
+  PieChartOutlined,
 };
 
 // ==============================|| MENU ITEMS - FORMS & TABLES ||============================== //
@@ -29,17 +29,17 @@ const chartsMap: NavItemType = {
           id: 'apexchart',
           title: <FormattedMessage id="apexchart" />,
           type: 'item',
-          url: '/charts/apexchart'
+          url: '/charts/apexchart',
         },
         {
           id: 'org-chart',
           title: <FormattedMessage id="org-chart" />,
           type: 'item',
-          url: '/charts/org-chart'
-        }
-      ]
-    }
-  ]
+          url: '/charts/org-chart',
+        },
+      ],
+    },
+  ],
 };
 
 export default chartsMap;

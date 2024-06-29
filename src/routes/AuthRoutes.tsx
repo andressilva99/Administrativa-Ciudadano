@@ -14,11 +14,11 @@ const AuthRoutes: RouteObject = {
       children: [
         {
           path: 'login',
-          element: <Login />
-        }
-      ]
-    }
-  ]
+          element: <Login />,
+        },
+      ],
+    },
+  ],
 };
 
 export default AuthRoutes;

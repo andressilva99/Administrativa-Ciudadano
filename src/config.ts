@@ -14,22 +14,22 @@ export const FIREBASE_API = {
   storageBucket: '',
   messagingSenderId: '',
   appId: '',
-  measurementId: ''
+  measurementId: '',
 };
 
 export const AWS_API = {
   poolId: '',
-  appClientId: ''
+  appClientId: '',
 };
 
 export const JWT_API = {
   secret: 'SECRET-KEY',
-  timeout: '1 days'
+  timeout: '1 days',
 };
 
 export const AUTH0_API = {
   client_id: '',
-  domain: ''
+  domain: '',
 };
 
 // ==============================|| THEME CONFIG  ||============================== //
@@ -42,7 +42,7 @@ const config: DefaultConfigProps = {
   container: true,
   mode: 'light',
   presetColor: 'default',
-  themeDirection: 'ltr'
+  themeDirection: 'ltr',
 };
 
 export default config;

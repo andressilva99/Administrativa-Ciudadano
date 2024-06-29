@@ -44,7 +44,10 @@ const NavGroup = ({ item }: Props) => {
         item.title &&
         drawerOpen && (
           <Box sx={{ pl: 3, mb: 1.5 }}>
-            <Typography variant="subtitle2" color={theme.palette.mode === 'dark' ? 'textSecondary' : 'text.secondary'}>
+            <Typography
+              variant="subtitle2"
+              color={theme.palette.mode === 'dark' ? 'textSecondary' : 'text.secondary'}
+            >
               {item.title}
             </Typography>
             {item.caption && (

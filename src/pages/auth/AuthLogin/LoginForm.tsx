@@ -2,7 +2,16 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 //  material ui
-import { Button, FormHelperText, Grid, InputAdornment, InputLabel, Link, OutlinedInput, Stack } from '@mui/material';
+import {
+  Button,
+  FormHelperText,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  Link,
+  OutlinedInput,
+  Stack,
+} from '@mui/material';
 
 // third party
 import { Formik } from 'formik';
@@ -37,7 +46,7 @@ const LoginForm = () => {
       initialValues={{ username: '', password: '', submit: null }}
       validationSchema={Yup.object().shape({
         username: Yup.string().required('El nombre de usuario es obligatorio'),
-        password: Yup.string().max(255).required('La contraseña es obligatoria')
+        password: Yup.string().max(255).required('La contraseña es obligatoria'),
       })}
       onSubmit={async (values) => {
         const authService = new AuthService();
@@ -114,7 +123,12 @@ const LoginForm = () => {
             </Grid>
             <Grid item xs={12} sx={{ mt: -1 }}>
               <Stack>
-                <Link variant="h6" component={RouterLink} color="text.primary" to="/forgot-password">
+                <Link
+                  variant="h6"
+                  component={RouterLink}
+                  color="text.primary"
+                  to="/forgot-password"
+                >
                   ¿Olvidaste tu contraseña?
                 </Link>
               </Stack>
@@ -126,7 +140,15 @@ const LoginForm = () => {
             )}
             <Grid item xs={12}>
               <AnimateButton>
-                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                <Button
+                  disableElevation
+                  disabled={isSubmitting}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
                   Login
                 </Button>
               </AnimateButton>

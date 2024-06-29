@@ -2,7 +2,20 @@ import { useRef, useState, ReactNode, SyntheticEvent } from 'react';
 
 //  material-ui
 import { useTheme } from '@mui/material/styles';
-import { Box, ButtonBase, CardContent, ClickAwayListener, Grid, Paper, Popper, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  ButtonBase,
+  CardContent,
+  ClickAwayListener,
+  Grid,
+  Paper,
+  Popper,
+  Stack,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 
 //  project import
 import Avatar from '../../../../../components/@extended/Avatar';
@@ -28,7 +41,13 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} id={`profile-tabpanel-${index}`} aria-labelledby={`profile-tab-${index}`} {...other}>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`profile-tabpanel-${index}`}
+      aria-labelledby={`profile-tab-${index}`}
+      {...other}
+    >
       {value === index && children}
     </div>
   );
@@ -37,7 +56,7 @@ function TabPanel(props: TabPanelProps) {
 function a11yProps(index: number) {
   return {
     id: `profile-tab-${index}`,
-    'aria-controls': `profile-tabpanel-${index}`
+    'aria-controls': `profile-tabpanel-${index}`,
   };
 }
 
@@ -76,11 +95,13 @@ const Profile = () => {
           p: 0.25,
           bgcolor: open ? iconBackColorOpen : 'transparent',
           borderRadius: 1,
-          '&:hover': { bgcolor: theme.palette.mode === 'dark' ? 'secondary.light' : 'secondary.lighter' },
+          '&:hover': {
+            bgcolor: theme.palette.mode === 'dark' ? 'secondary.light' : 'secondary.lighter',
+          },
           '&:focus-visible': {
             outline: `2px solid ${theme.palette.secondary.dark}`,
-            outlineOffset: 2
-          }
+            outlineOffset: 2,
+          },
         }}
         aria-label="open profile"
         ref={anchorRef}
@@ -105,10 +126,10 @@ const Profile = () => {
             {
               name: 'offset',
               options: {
-                offset: [0, 9]
-              }
-            }
-          ]
+                offset: [0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
@@ -121,8 +142,8 @@ const Profile = () => {
                   minWidth: 240,
                   maxWidth: 290,
                   [theme.breakpoints.down('md')]: {
-                    maxWidth: 250
-                  }
+                    maxWidth: 250,
+                  },
                 }}
               >
                 <ClickAwayListener onClickAway={handleClose}>
@@ -131,7 +152,11 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Avatar
+                              alt="profile user"
+                              src={avatar1}
+                              sx={{ width: 32, height: 32 }}
+                            />
                             <Stack>
                               <Typography variant="h6">Lucas Barbero</Typography>
                               <Typography variant="body2" color="textSecondary">
@@ -142,7 +167,11 @@ const Profile = () => {
                         </Grid>
                         <Grid item>
                           <Tooltip title="Logout">
-                            <IconButton size="large" sx={{ color: 'text.primary' }} onClick={handleLogout}>
+                            <IconButton
+                              size="large"
+                              sx={{ color: 'text.primary' }}
+                              onClick={handleLogout}
+                            >
                               <LogoutOutlined />
                             </IconButton>
                           </Tooltip>

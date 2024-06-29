@@ -59,14 +59,27 @@ const MainLayout = () => {
         {container && (
           <Container
             maxWidth="lg"
-            sx={{ px: { xs: 0, sm: 2 }, position: 'relative', minHeight: 'calc(100vh - 110px)', display: 'flex', flexDirection: 'column' }}
+            sx={{
+              px: { xs: 0, sm: 2 },
+              position: 'relative',
+              minHeight: 'calc(100vh - 110px)',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
           >
             <Outlet />
             <Footer />
           </Container>
         )}
         {!container && (
-          <Box sx={{ position: 'relative', minHeight: 'calc(100vh - 110px)', display: 'flex', flexDirection: 'column' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              minHeight: 'calc(100vh - 110px)',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <Outlet />
             <Footer />
           </Box>

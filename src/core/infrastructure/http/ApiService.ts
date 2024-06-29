@@ -8,13 +8,17 @@ export class ApiService {
     this._instance = axios.create({
       baseURL: this._baseUrl,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      withCredentials: false
+      withCredentials: false,
     });
   }
 
-  async post<T, R = any>(url: string, data: R, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  async post<T, R = any>(
+    url: string,
+    data: R,
+    config?: AxiosRequestConfig,
+  ): Promise<AxiosResponse<T>> {
     return await this._instance.post<T>(url, data, config);
   }
 }

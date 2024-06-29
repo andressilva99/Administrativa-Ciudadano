@@ -7,7 +7,7 @@ const initialState: MenuProps = {
   openItem: ['dashboard'],
   openComponent: 'buttons',
   drawerOpen: false,
-  componentDrawerOpen: true
+  componentDrawerOpen: true,
 };
 
 // ==============================|| SLICE - MENU ||============================== //
@@ -30,8 +30,8 @@ const menu = createSlice({
 
     openComponentDrawer(state, action) {
       state.componentDrawerOpen = action.payload.componentDrawerOpen;
-    }
-  }
+    },
+  },
 });
 
 export default menu.reducer;

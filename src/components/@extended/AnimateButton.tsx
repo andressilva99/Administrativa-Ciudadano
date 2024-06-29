@@ -23,7 +23,7 @@ export default function AnimateButton({
   type = 'scale',
   direction = 'right',
   offset = 10,
-  scale = { hover: 1.05, tap: 0.954 }
+  scale = { hover: 1.05, tap: 0.954 },
 }: Props) {
   let offset1;
   let offset2;
@@ -53,7 +53,7 @@ export default function AnimateButton({
             repeat: Infinity,
             repeatType: 'loop',
             duration: 2,
-            repeatDelay: 0
+            repeatDelay: 0,
           }}
         >
           {children}
@@ -62,13 +62,21 @@ export default function AnimateButton({
     case 'slide':
       if (direction === 'up' || direction === 'down') {
         return (
-          <motion.div animate={{ y: y !== undefined ? y : '' }} onHoverEnd={() => cycleY()} onHoverStart={() => cycleY()}>
+          <motion.div
+            animate={{ y: y !== undefined ? y : '' }}
+            onHoverEnd={() => cycleY()}
+            onHoverStart={() => cycleY()}
+          >
             {children}
           </motion.div>
         );
       }
       return (
-        <motion.div animate={{ x: x !== undefined ? x : '' }} onHoverEnd={() => cycleX()} onHoverStart={() => cycleX()}>
+        <motion.div
+          animate={{ x: x !== undefined ? x : '' }}
+          onHoverEnd={() => cycleX()}
+          onHoverStart={() => cycleX()}
+        >
           {children}
         </motion.div>
       );
@@ -78,7 +86,7 @@ export default function AnimateButton({
       if (typeof scale === 'number') {
         scale = {
           hover: scale,
-          tap: scale
+          tap: scale,
         };
       }
       return (

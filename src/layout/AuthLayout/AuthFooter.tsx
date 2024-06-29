@@ -17,12 +17,22 @@ const AuthFooter = () => {
       >
         <Typography variant="subtitle2" color="secondary" component="span">
           This site is protected by{' '}
-          <Typography component={Link} variant="subtitle2" href="#mantis-privacy" target="_blank" underline="hover">
+          <Typography
+            component={Link}
+            variant="subtitle2"
+            href="#mantis-privacy"
+            target="_blank"
+            underline="hover"
+          >
             Privacy Policy
           </Typography>
         </Typography>
 
-        <Stack direction={matchDownSM ? 'column' : 'row'} spacing={matchDownSM ? 1 : 3} textAlign={matchDownSM ? 'center' : 'inherit'}>
+        <Stack
+          direction={matchDownSM ? 'column' : 'row'}
+          spacing={matchDownSM ? 1 : 3}
+          textAlign={matchDownSM ? 'center' : 'inherit'}
+        >
           <Typography
             variant="subtitle2"
             color="secondary"

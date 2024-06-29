@@ -65,17 +65,17 @@ const MobileSection = () => {
         transition
         disablePortal
         style={{
-          width: '100%'
+          width: '100%',
         }}
         popperOptions={{
           modifiers: [
             {
               name: 'offset',
               options: {
-                offset: [0, 9]
-              }
-            }
-          ]
+                offset: [0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (

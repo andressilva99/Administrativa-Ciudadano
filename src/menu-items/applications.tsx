@@ -2,13 +2,25 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { CalendarOutlined, CustomerServiceOutlined, MessageOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  CustomerServiceOutlined,
+  MessageOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 // type
 import { NavItemType } from '../types/menu';
 
 // icons
-const icons = { CalendarOutlined, CustomerServiceOutlined, MessageOutlined, ShoppingCartOutlined, UserOutlined };
+const icons = {
+  CalendarOutlined,
+  CustomerServiceOutlined,
+  MessageOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+};
 
 // ==============================|| MENU ITEMS - APPLICATIONS ||============================== //
 
@@ -23,14 +35,14 @@ const applications: NavItemType = {
       type: 'item',
       url: '/apps/chat',
       icon: icons.MessageOutlined,
-      breadcrumbs: false
+      breadcrumbs: false,
     },
     {
       id: 'calendar',
       title: <FormattedMessage id="calendar" />,
       type: 'item',
       url: '/apps/calendar',
-      icon: icons.CalendarOutlined
+      icon: icons.CalendarOutlined,
     },
     {
       id: 'customer',
@@ -42,9 +54,9 @@ const applications: NavItemType = {
           id: 'customer-list',
           title: <FormattedMessage id="list" />,
           type: 'item',
-          url: '/apps/customer/list'
-        }
-      ]
+          url: '/apps/customer/list',
+        },
+      ],
     },
     {
       id: 'profile',
@@ -56,27 +68,27 @@ const applications: NavItemType = {
           id: 'user-profile',
           title: <FormattedMessage id="user-profile" />,
           type: 'item',
-          url: '/apps/profiles/user/personal'
+          url: '/apps/profiles/user/personal',
         },
         {
           id: 'account-profile',
           title: <FormattedMessage id="account-profile" />,
           type: 'item',
-          url: '/apps/profiles/account/basic'
+          url: '/apps/profiles/account/basic',
         },
         {
           id: 'user-list',
           title: <FormattedMessage id="user-list" />,
           type: 'item',
-          url: '/apps/profiles/user-list'
+          url: '/apps/profiles/user-list',
         },
         {
           id: 'user-card',
           title: <FormattedMessage id="user-card" />,
           type: 'item',
-          url: '/apps/profiles/user-card'
-        }
-      ]
+          url: '/apps/profiles/user-card',
+        },
+      ],
     },
 
     {
@@ -89,37 +101,37 @@ const applications: NavItemType = {
           id: 'products',
           title: <FormattedMessage id="products" />,
           type: 'item',
-          url: '/apps/e-commerce/products'
+          url: '/apps/e-commerce/products',
         },
         {
           id: 'product-details',
           title: <FormattedMessage id="product-details" />,
           type: 'item',
           url: '/apps/e-commerce/product-details/1',
-          breadcrumbs: false
+          breadcrumbs: false,
         },
         {
           id: 'product-list',
           title: <FormattedMessage id="product-list" />,
           type: 'item',
           url: '/apps/e-commerce/product-list',
-          breadcrumbs: false
+          breadcrumbs: false,
         },
         {
           id: 'add-product',
           title: <FormattedMessage id="add-product" />,
           type: 'item',
-          url: '/apps/e-commerce/add-product'
+          url: '/apps/e-commerce/add-product',
         },
         {
           id: 'checkout',
           title: <FormattedMessage id="checkout" />,
           type: 'item',
-          url: '/apps/e-commerce/checkout'
-        }
-      ]
-    }
-  ]
+          url: '/apps/e-commerce/checkout',
+        },
+      ],
+    },
+  ],
 };
 
 export default applications;

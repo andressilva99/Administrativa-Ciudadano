@@ -26,7 +26,6 @@ const Header = ({ open, handleDrawerToggle }: Props) => {
   //  header content
   const headerContent = useMemo(() => <HeaderContent />, []);
 
-  const iconBackColorOpen = theme.palette.mode === 'dark' ? 'grey.200' : 'grey.300';
   const iconBackColor = theme.palette.mode === 'dark' ? 'background.default' : 'grey.100';
 
   //  common header
@@ -38,7 +37,7 @@ const Header = ({ open, handleDrawerToggle }: Props) => {
         edge="start"
         color="secondary"
         variant="light"
-        sx={{ color: 'text.primary', bgcolor: open ? iconBackColorOpen : iconBackColor, ml: { xs: 0, lg: -2 } }}
+        sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: -2 } }}
       >
         {!open ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </IconButton>
@@ -52,9 +51,9 @@ const Header = ({ open, handleDrawerToggle }: Props) => {
     color: 'inherit',
     elevation: 0,
     sx: {
-      borderBottom: `1px solid ${theme.palette.divider}`
+      borderBottom: `1px solid ${theme.palette.divider}`,
       // boxShadow: theme.customShadows.z1
-    }
+    },
   };
 
   return (

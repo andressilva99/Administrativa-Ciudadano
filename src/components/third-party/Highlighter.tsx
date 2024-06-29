@@ -47,7 +47,9 @@ const Highlighter = ({ codeString, codeHighlight }: Props) => {
           </Tooltip>
         </Box>
       </CardActions>
-      <Collapse in={highlight}>{highlight && <SyntaxHighlight>{codeString}</SyntaxHighlight>}</Collapse>
+      <Collapse in={highlight}>
+        {highlight && <SyntaxHighlight>{codeString}</SyntaxHighlight>}
+      </Collapse>
     </>
   );
 };

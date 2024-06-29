@@ -6,11 +6,11 @@ import menu from './menu';
 
 const persistConfig = {
   key: 'root',
-  storage
+  storage,
 };
 
 const reducers = combineReducers({
-  menu
+  menu,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

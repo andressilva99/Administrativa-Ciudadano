@@ -4,7 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import {
+  Avatar,
+  Chip,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 // project import
 import { activeItem } from '../../../../../store/reducers/menu';
@@ -35,13 +42,19 @@ const NavItem = ({ item, level }: Props) => {
     component: ForwardRefExoticComponent<RefAttributes<HTMLAnchorElement>> | string;
     href?: string;
     target?: LinkTarget;
-  } = { component: forwardRef((props, ref) => <Link {...props} to={item.url!} target={itemTarget} />) };
+  } = {
+    component: forwardRef((props, ref) => <Link {...props} to={item.url!} target={itemTarget} />),
+  };
   if (item?.external) {
     listItemProps = { component: 'a', href: item.url, target: itemTarget };
   }
 
   const Icon = item.icon!;
-  const itemIcon = item.icon ? <Icon style={{ fontSize: drawerOpen ? '1rem' : '1.25rem' }} /> : false;
+  const itemIcon = item.icon ? (
+    <Icon style={{ fontSize: drawerOpen ? '1rem' : '1.25rem' }} />
+  ) : (
+    false
+  );
 
   const isSelected = openItem.findIndex((id) => id === item.id) > -1;
 
@@ -62,7 +75,8 @@ const NavItem = ({ item, level }: Props) => {
   }, [pathname]);
 
   const textColor = theme.palette.mode === 'dark' ? 'grey.400' : 'text.primary';
-  const iconSelectedColor = theme.palette.mode === 'dark' && drawerOpen ? 'text.primary' : 'primary.main';
+  const iconSelectedColor =
+    theme.palette.mode === 'dark' && drawerOpen ? 'text.primary' : 'primary.main';
 
   return (
     <ListItemButton
@@ -75,7 +89,7 @@ const NavItem = ({ item, level }: Props) => {
         py: !drawerOpen && level === 1 ? 1.25 : 1,
         ...(drawerOpen && {
           '&:hover': {
-            bgcolor: theme.palette.mode === 'dark' ? 'divider' : 'primary.lighter'
+            bgcolor: theme.palette.mode === 'dark' ? 'divider' : 'primary.lighter',
           },
           '&.Mui-selected': {
             bgcolor: theme.palette.mode === 'dark' ? 'divider' : 'primary.lighter',
@@ -83,21 +97,21 @@ const NavItem = ({ item, level }: Props) => {
             color: iconSelectedColor,
             '&:hover': {
               color: iconSelectedColor,
-              bgcolor: theme.palette.mode === 'dark' ? 'divider' : 'primary.lighter'
-            }
-          }
+              bgcolor: theme.palette.mode === 'dark' ? 'divider' : 'primary.lighter',
+            },
+          },
         }),
         ...(!drawerOpen && {
           '&:hover': {
-            bgcolor: 'transparent'
+            bgcolor: 'transparent',
           },
           '&.Mui-selected': {
             '&:hover': {
-              bgcolor: 'transparent'
+              bgcolor: 'transparent',
             },
-            bgcolor: 'transparent'
-          }
-        })
+            bgcolor: 'transparent',
+          },
+        }),
       }}
     >
       {itemIcon && (
@@ -112,16 +126,16 @@ const NavItem = ({ item, level }: Props) => {
               alignItems: 'center',
               justifyContent: 'center',
               '&:hover': {
-                bgcolor: theme.palette.mode === 'dark' ? 'secondary.light' : 'secondary.lighter'
-              }
+                bgcolor: theme.palette.mode === 'dark' ? 'secondary.light' : 'secondary.lighter',
+              },
             }),
             ...(!drawerOpen &&
               isSelected && {
                 bgcolor: theme.palette.mode === 'dark' ? 'primary.900' : 'primary.lighter',
                 '&:hover': {
-                  bgcolor: theme.palette.mode === 'dark' ? 'primary.darker' : 'primary.lighter'
-                }
-              })
+                  bgcolor: theme.palette.mode === 'dark' ? 'primary.darker' : 'primary.lighter',
+                },
+              }),
           }}
         >
           {itemIcon}
