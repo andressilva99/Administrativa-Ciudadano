@@ -1,23 +1,8 @@
-import { useSelector } from 'react-redux';
-
-// material-ui
-import { useMediaQuery, useTheme } from '@mui/material';
-
 //  project import
-import NavCard from './NavCard';
 import Navigation from './Navigation';
 import SimpleBar from '../../../../components/third-party/SimpleBar';
 
-//  types
-import { RootStateProps } from '../../../../types/root';
-
 const DrawerContent = () => {
-  const theme = useTheme();
-  const matchDownMD = useMediaQuery(theme.breakpoints.down('lg'));
-
-  const menu = useSelector((state: RootStateProps) => state.menu);
-  const { drawerOpen } = menu;
-
   return (
     <SimpleBar
       sx={{
@@ -28,7 +13,6 @@ const DrawerContent = () => {
       }}
     >
       <Navigation />
-      {drawerOpen && !matchDownMD && <NavCard />}
     </SimpleBar>
   );
 };

@@ -2,7 +2,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, DatabaseOutlined, GoldOutlined } from '@ant-design/icons';
 
 // project import
 import { NavItemType } from '../types/menu';
@@ -11,6 +11,8 @@ import { NavItemType } from '../types/menu';
 const icons = {
   HomeOutlined,
   UserOutlined,
+  DatabaseOutlined,
+  GoldOutlined,
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -31,7 +33,7 @@ const menuItems: { items: NavItemType[] } = {
       ],
     },
     {
-      id: 'group-others',
+      id: 'group-user',
       type: 'group',
       children: [
         {
@@ -39,6 +41,33 @@ const menuItems: { items: NavItemType[] } = {
           type: 'item',
           title: <FormattedMessage id="Usuarios" />,
           icon: icons.UserOutlined,
+          url: '/user',
+        },
+      ],
+    },
+    {
+      id: 'group-role',
+      type: 'group',
+      children: [
+        {
+          id: 'user',
+          type: 'item',
+          title: <FormattedMessage id="Roles" />,
+          icon: icons.DatabaseOutlined,
+          url: '/role',
+        },
+      ],
+    },
+    {
+      id: 'group-module',
+      type: 'group',
+      children: [
+        {
+          id: 'user',
+          type: 'item',
+          title: <FormattedMessage id="Módulos" />,
+          icon: icons.GoldOutlined,
+          url: '/module',
         },
       ],
     },
