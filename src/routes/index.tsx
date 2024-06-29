@@ -1,22 +1,8 @@
-import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
 
-import MainLayout from '../layout/MainLayout';
-import Loadable from '../components/Loadable';
-
-const Home = Loadable(lazy(() => import('../pages/Home')));
+import MainRoutes from './MainRoutes';
+import AuthRoutes from './AuthRoutes';
 
 export default function Routes() {
-  return useRoutes([
-    {
-      path: '/',
-      element: <MainLayout />,
-      children: [
-        {
-          path: '',
-          element: <Home />
-        }
-      ]
-    }
-  ]);
+  return useRoutes([MainRoutes, AuthRoutes]);
 }
