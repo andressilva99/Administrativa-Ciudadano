@@ -1,6 +1,7 @@
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
-
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -25,7 +26,10 @@ import {
   Switch,
   TextField,
   Tooltip,
-  Typography
+  Typography,
+  FilledInput,
+  Input,
+  InputAdornment,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
@@ -47,20 +51,15 @@ import { CameraOutlined, DeleteFilled } from '@ant-design/icons';
 // const avatarImage = require('../../../assets/images/users');
 
 // constant
-const getInitialValues = (customer: FormikValues | null) => {
+const getInitialValues = () => {
   const newCustomer = {
-    name: '',
+    firstName: '',
+    lastName: '',
+    dni: '',
     email: '',
-    location: '',
-    orderStatus: ''
+    phoneNumber: '',
+    password: '',
   };
-
-  if (customer) {
-    newCustomer.name = customer.fatherName;
-    newCustomer.location = customer.address;
-    return _.merge({}, newCustomer, customer);
-  }
-
   return newCustomer;
 };
 
@@ -83,6 +82,8 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
   //   avatarImage(`./avatar-${isCreating && !customer?.avatar ? 1 : customer.avatar}.png`).default
   // );
 
+  const [showPassword, setShowPassword] = useState<Boolean>(false);
+
   useEffect(() => {
     if (selectedImage) {
       // setAvatar(URL.createObjectURL(selectedImage));
@@ -90,10 +91,15 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
   }, [selectedImage]);
 
   const CustomerSchema = Yup.object().shape({
-    name: Yup.string().max(255).required('Name is required'),
-    orderStatus: Yup.string().required('Name is required'),
-    email: Yup.string().max(255).required('Email is required').email('Must be a valid email'),
-    location: Yup.string().max(500)
+    firstName: Yup.string().max(255).required('El nombre es requerido'),
+    lastName: Yup.string().max(255).required('El apellido es requerido'),
+    dni: Yup.string().required('El DNI es requerido'),
+    email: Yup.string()
+      .max(255)
+      .required('El email es requerido')
+      .email('El email contiene un formato inválido'),
+    phoneNumber: Yup.string().max(10).required('El número de celular es requerido'),
+    password: Yup.string().max(16).required('La contraseña es requerida')
   });
 
   const deleteHandler = () => {
@@ -104,16 +110,16 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
         message: 'Customer deleted successfully.',
         variant: 'alert',
         alert: {
-          color: 'success'
+          color: 'success',
         },
-        close: false
-      })
+        close: false,
+      }),
     );
     onCancel();
   };
 
   const formik = useFormik({
-    initialValues: getInitialValues(customer!),
+    initialValues: getInitialValues(),
     validationSchema: CustomerSchema,
     onSubmit: (values, { setSubmitting }) => {
       try {
@@ -132,10 +138,10 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
               message: 'Customer update successfully.',
               variant: 'alert',
               alert: {
-                color: 'success'
+                color: 'success',
               },
-              close: false
-            })
+              close: false,
+            }),
           );
         } else {
           // dispatch(createCustomer(newCustomer)); - add
@@ -145,10 +151,10 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
               message: 'Customer add successfully.',
               variant: 'alert',
               alert: {
-                color: 'success'
+                color: 'success',
               },
-              close: false
-            })
+              close: false,
+            }),
           );
         }
 
@@ -157,16 +163,22 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
       } catch (error) {
         console.error(error);
       }
-    }
+    },
   });
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   return (
     <FormikProvider value={formik}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <DialogTitle>{customer ? 'Edit Customer' : 'New Customer'}</DialogTitle>
+          <DialogTitle>{customer ? 'Editar Usuario' : 'Nuevo Usuario'}</DialogTitle>
           <Divider />
           <DialogContent sx={{ p: 2.5 }}>
             <Grid container spacing={3}>
@@ -179,7 +191,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                       borderRadius: '50%',
                       overflow: 'hidden',
                       '&:hover .MuiBox-root': { opacity: 1 },
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                   >
                     {/* <Avatar alt="Avatar 1" src={avatar} sx={{ width: 72, height: 72, border: '1px dashed' }} /> */}
@@ -188,17 +200,22 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                         position: 'absolute',
                         top: 0,
                         left: 0,
-                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .75)' : 'rgba(0,0,0,.65)',
+                        backgroundColor:
+                          theme.palette.mode === 'dark'
+                            ? 'rgba(255, 255, 255, .75)'
+                            : 'rgba(0,0,0,.65)',
                         width: '100%',
                         height: '100%',
                         opacity: 0,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <Stack spacing={0.5} alignItems="center">
-                        <CameraOutlined style={{ color: theme.palette.secondary.lighter, fontSize: '2rem' }} />
+                        <CameraOutlined
+                          style={{ color: theme.palette.secondary.lighter, fontSize: '2rem' }}
+                        />
                         <Typography sx={{ color: 'secondary.lighter' }}>Upload</Typography>
                       </Stack>
                     </Box>
@@ -209,7 +226,9 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                     label="Outlined"
                     variant="outlined"
                     sx={{ display: 'none' }}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files?.[0])}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setSelectedImage(e.target.files?.[0])
+                    }
                   />
                 </Stack>
               </Grid>
@@ -217,14 +236,40 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Stack spacing={1.25}>
-                      <InputLabel htmlFor="customer-name">Name</InputLabel>
+                      <InputLabel htmlFor="customer-firstName">Nombre</InputLabel>
                       <TextField
                         fullWidth
-                        id="customer-name"
-                        placeholder="Enter Customer Name"
-                        {...getFieldProps('name')}
-                        error={Boolean(touched.name && errors.name)}
-                        helperText={touched.name && errors.name}
+                        id="customer-firstName"
+                        placeholder="Ingrese el nombre completo"
+                        {...getFieldProps('firstName')}
+                        error={Boolean(touched.firstName && errors.firstName)}
+                        helperText={touched.firstName && errors.firstName}
+                      />
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Stack spacing={1.25}>
+                      <InputLabel htmlFor="customer-lastName">Apellido</InputLabel>
+                      <TextField
+                        fullWidth
+                        id="customer-lastName"
+                        placeholder="Ingrese el apellido"
+                        {...getFieldProps('lastName')}
+                        error={Boolean(touched.lastName && errors.lastName)}
+                        helperText={touched.lastName && errors.lastName}
+                      />
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Stack spacing={1.25}>
+                      <InputLabel htmlFor="customer-dni">DNI</InputLabel>
+                      <TextField
+                        fullWidth
+                        id="customer-dni"
+                        placeholder="Ingrese el DNI"
+                        {...getFieldProps('dni')}
+                        error={Boolean(touched.dni && errors.dni)}
+                        helperText={touched.dni && errors.dni}
                       />
                     </Stack>
                   </Grid>
@@ -243,70 +288,41 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <Stack spacing={1.25}>
-                      <InputLabel htmlFor="customer-orderStatus">Status</InputLabel>
-                      <FormControl fullWidth>
-                        <Select
-                          id="column-hiding"
-                          displayEmpty
-                          {...getFieldProps('orderStatus')}
-                          onChange={(event: SelectChangeEvent<string>) => setFieldValue('orderStatus', event.target.value as string)}
-                          input={<OutlinedInput id="select-column-hiding" placeholder="Sort by" />}
-                          renderValue={(selected) => {
-                            if (!selected) {
-                              return <Typography variant="subtitle1">Select Status</Typography>;
-                            }
-
-                            return <Typography variant="subtitle2">{selected}</Typography>;
-                          }}
-                        >
-                          {allStatus.map((column: any) => (
-                            <MenuItem key={column} value={column}>
-                              <ListItemText primary={column} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      {touched.orderStatus && errors.orderStatus && (
-                        <FormHelperText error id="standard-weight-helper-text-email-login" sx={{ pl: 1.75 }}>
-                          {errors.orderStatus}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Stack spacing={1.25}>
-                      <InputLabel htmlFor="customer-location">Location</InputLabel>
+                      <InputLabel htmlFor="customer-phoneNumber">Número de celular</InputLabel>
                       <TextField
                         fullWidth
-                        id="customer-location"
-                        multiline
-                        rows={2}
-                        placeholder="Enter Location"
-                        {...getFieldProps('location')}
-                        error={Boolean(touched.location && errors.location)}
-                        helperText={touched.location && errors.location}
+                        id="customer-phoneNumber"
+                        placeholder="Ingrese el número de celular (sin 0 y sin 15)"
+                        {...getFieldProps('phoneNumber')}
+                        error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                        helperText={touched.phoneNumber && errors.phoneNumber}
                       />
                     </Stack>
                   </Grid>
                   <Grid item xs={12}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-                      <Stack spacing={0.5}>
-                        <Typography variant="subtitle1">Make Contact Info Public</Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          Means that anyone viewing your profile will be able to see your contacts details
-                        </Typography>
-                      </Stack>
-                      <FormControlLabel control={<Switch defaultChecked sx={{ mt: 0 }} />} label="" labelPlacement="start" />
-                    </Stack>
-                    <Divider sx={{ my: 2 }} />
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-                      <Stack spacing={0.5}>
-                        <Typography variant="subtitle1">Available to hire</Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          Toggling this will let your teammates know that you are available for acquiring new projects
-                        </Typography>
-                      </Stack>
-                      <FormControlLabel control={<Switch sx={{ mt: 0 }} />} label="" labelPlacement="start" />
+                    <Stack spacing={1.25}>
+                      <InputLabel htmlFor="customer-password">Contraseña</InputLabel>
+                      <OutlinedInput
+                        fullWidth
+                        id="customer-password"
+                        placeholder="Ingrese la contraseña"
+                        type={showPassword ? 'text' : 'password'}
+                        {...getFieldProps('password')}
+                        error={Boolean(touched.password && errors.password)}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              style={{color: 'rgba(102, 102, 102, 1)'}}
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        
+                      />
                     </Stack>
                   </Grid>
                 </Grid>
@@ -328,10 +344,10 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
               <Grid item>
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Button color="error" onClick={onCancel}>
-                    Cancel
+                    Cancelar
                   </Button>
                   <Button type="submit" variant="contained" disabled={isSubmitting}>
-                    {customer ? 'Edit' : 'Add'}
+                    {customer ? 'Editar' : 'Añadir'}
                   </Button>
                 </Stack>
               </Grid>
