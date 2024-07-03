@@ -96,7 +96,7 @@ export const TablePagination = ({ gotoPage, rows, setPageSize, pageSize, pageInd
         <Stack direction="row" spacing={1} alignItems="center">
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="caption" color="secondary">
-              Row per page
+              Cantidad por página
             </Typography>
             <FormControl sx={{ m: 1 }}>
               <Select
@@ -119,7 +119,7 @@ export const TablePagination = ({ gotoPage, rows, setPageSize, pageSize, pageInd
             </FormControl>
           </Stack>
           <Typography variant="caption" color="secondary">
-            Go to
+            Ir a
           </Typography>
           <TextField
             size="small"
@@ -434,12 +434,12 @@ export const SortingSelect = ({ sortBy, setSortBy, allColumns }: any) => {
         renderValue={(selected) => {
           const selectedColumn = allColumns.filter((column: any) => column.id === selected)[0];
           if (!selected) {
-            return <Typography variant="subtitle1">Sort By</Typography>;
+            return <Typography variant="subtitle1">Ordenar por</Typography>;
           }
 
           return (
             <Typography variant="subtitle2">
-              Sort by ({typeof selectedColumn.Header === 'string' ? selectedColumn.Header : selectedColumn?.title})
+              Ordenar por ({typeof selectedColumn.Header === 'string' ? selectedColumn.Header : selectedColumn?.title})
             </Typography>
           );
         }}

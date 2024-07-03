@@ -51,16 +51,28 @@ import { CameraOutlined, DeleteFilled } from '@ant-design/icons';
 // const avatarImage = require('../../../assets/images/users');
 
 // constant
-const getInitialValues = () => {
-  const newCustomer = {
-    firstName: '',
-    lastName: '',
-    dni: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-  };
-  return newCustomer;
+const getInitialValues = (customer: FormikValues | null) => {
+  if (customer) {
+    const newCustomer = {
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      dni: customer.dni,
+      email: customer.email,
+      phoneNumber: customer.phoneNumber,
+      password: customer.Password,
+    };
+    return newCustomer;
+  } else {
+    const newCustomer = {
+      firstName: '',
+      lastName: '',
+      dni: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+    };
+    return newCustomer;
+  }
 };
 
 const allStatus = ['Complicated', 'Single', 'Relationship'];
@@ -99,7 +111,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
       .required('El email es requerido')
       .email('El email contiene un formato inválido'),
     phoneNumber: Yup.string().max(10).required('El número de celular es requerido'),
-    password: Yup.string().max(16).required('La contraseña es requerida')
+    password: Yup.string().max(16).required('La contraseña es requerida'),
   });
 
   const deleteHandler = () => {
@@ -107,7 +119,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
     dispatch(
       openSnackbar({
         open: true,
-        message: 'Customer deleted successfully.',
+        message: 'Usuario eliminado exitosamente.',
         variant: 'alert',
         alert: {
           color: 'success',
@@ -119,7 +131,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
   };
 
   const formik = useFormik({
-    initialValues: getInitialValues(),
+    initialValues: getInitialValues(customer),
     validationSchema: CustomerSchema,
     onSubmit: (values, { setSubmitting }) => {
       try {
@@ -135,7 +147,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
           dispatch(
             openSnackbar({
               open: true,
-              message: 'Customer update successfully.',
+              message: 'Usuario actualizado exitosamente.',
               variant: 'alert',
               alert: {
                 color: 'success',
@@ -148,7 +160,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
           dispatch(
             openSnackbar({
               open: true,
-              message: 'Customer add successfully.',
+              message: 'Usuario añadido exitosamente.',
               variant: 'alert',
               alert: {
                 color: 'success',
@@ -299,32 +311,33 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
                       />
                     </Stack>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Stack spacing={1.25}>
-                      <InputLabel htmlFor="customer-password">Contraseña</InputLabel>
-                      <OutlinedInput
-                        fullWidth
-                        id="customer-password"
-                        placeholder="Ingrese la contraseña"
-                        type={showPassword ? 'text' : 'password'}
-                        {...getFieldProps('password')}
-                        error={Boolean(touched.password && errors.password)}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              onMouseDown={handleMouseDownPassword}
-                              style={{color: 'rgba(102, 102, 102, 1)'}}
-                            >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        
-                      />
-                    </Stack>
-                  </Grid>
+                  {customer ? null : (
+                    <Grid item xs={12}>
+                      <Stack spacing={1.25}>
+                        <InputLabel htmlFor="customer-password">Contraseña</InputLabel>
+                        <OutlinedInput
+                          fullWidth
+                          id="customer-password"
+                          placeholder="Ingrese la contraseña"
+                          type={showPassword ? 'text' : 'password'}
+                          {...getFieldProps('password')}
+                          error={Boolean(touched.password && errors.password)}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                style={{ color: 'rgba(102, 102, 102, 1)' }}
+                              >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </Stack>
+                    </Grid>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -334,7 +347,7 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
                 {!isCreating && (
-                  <Tooltip title="Delete Customer" placement="top">
+                  <Tooltip title="Eliminar usuario" placement="top">
                     <IconButton onClick={deleteHandler} size="large" color="error">
                       <DeleteFilled />
                     </IconButton>

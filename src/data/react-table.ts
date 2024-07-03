@@ -10,6 +10,7 @@ const newPerson = (index: number) => {
     email: tempData.email,
     phoneNumber: tempData.phoneNumber,
     fatherName: tempData.name.full,
+    dni: 11111,
   };
 };
 

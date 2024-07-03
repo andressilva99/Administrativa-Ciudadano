@@ -74,7 +74,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   const filterTypes = useMemo(() => renderFilterTypes, []);
-  const sortBy = { id: 'fatherName', desc: false };
+  const sortBy = { id: 'firstName', desc: false };
 
   const {
     getTableProps,
@@ -123,9 +123,9 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
 
   useEffect(() => {
     if (matchDownSM) {
-      setHiddenColumns(['age', 'contact', 'visits', 'status', 'avatar']);
+      setHiddenColumns(['lastName', 'dni']);
     } else {
-      setHiddenColumns(['avatar']);
+      setHiddenColumns(['lastName', 'dni']);
     }
     // eslint-disable-next-line
   }, [matchDownSM]);
@@ -255,18 +255,24 @@ const CustomerList = () => {
       },
       {
         Header: 'Usuario',
-        accessor: 'fatherName',
+        accessor: 'firstName',
         Cell: ({ row }: any) => {
           const { values } = row;
           return (
             <Stack direction="row" spacing={1.5} alignItems="center">
               {/* <Avatar alt="Avatar 1" size="sm" src={avatarImage(`./avatar-${!values.avatar ? 1 : values.avatar}.png`).default} /> */}
               <Stack spacing={0}>
-                <Typography variant="subtitle1">{values.fatherName}</Typography>
+                <Typography variant="subtitle1">{values.firstName} {values.lastName}</Typography>
               </Stack>
             </Stack>
           );
         },
+      },
+      {
+        accessor: 'lastName',
+      },
+      {
+        accessor: 'dni',
       },
       {
         Header: 'Email',
@@ -306,6 +312,7 @@ const CustomerList = () => {
           ) : (
             <EyeTwoTone twoToneColor={theme.palette.secondary.main} />
           );
+          const { values } = row;
           return (
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
               <Tooltip title="Ver">
@@ -324,7 +331,7 @@ const CustomerList = () => {
                   color="primary"
                   onClick={(e: any) => {
                     e.stopPropagation();
-                    setCustomer(row.values);
+                    setCustomer(values);
                     handleAdd();
                   }}
                 >
