@@ -14,12 +14,22 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 
 // third-party
 import NumberFormat from 'react-number-format';
-import { useFilters, useExpanded, useGlobalFilter, useRowSelect, useSortBy, useTable, usePagination, Column, Row } from 'react-table';
+import {
+  useFilters,
+  useExpanded,
+  useGlobalFilter,
+  useRowSelect,
+  useSortBy,
+  useTable,
+  usePagination,
+  Column,
+  Row,
+} from 'react-table';
 
 // project import
 import CustomerView from '../../sections/apps/customer/CustomerView';
@@ -30,10 +40,22 @@ import MainCard from '../../components/MainCard';
 import ScrollX from '../../components/ScrollX';
 import makeData from '../../data/react-table';
 import { renderFilterTypes, GlobalFilter } from '../../utils/react-table';
-import { HeaderSort, IndeterminateCheckbox, SortingSelect, TablePagination, TableRowSelection } from '../../components/third-party/ReactTable';
+import {
+  HeaderSort,
+  IndeterminateCheckbox,
+  SortingSelect,
+  TablePagination,
+  TableRowSelection,
+} from '../../components/third-party/ReactTable';
 
 // assets
-import { CloseOutlined, PlusOutlined, EyeTwoTone, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  PlusOutlined,
+  EyeTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
+} from '@ant-design/icons';
 
 // const avatarImage = require('assets/images/users');
 
@@ -76,7 +98,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
     // @ts-ignore
     setGlobalFilter,
     // @ts-ignore
-    setSortBy
+    setSortBy,
   } = useTable(
     {
       columns,
@@ -84,21 +106,26 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
       // @ts-ignore
       filterTypes,
       // @ts-ignore
-      initialState: { pageIndex: 0, pageSize: 10, hiddenColumns: ['avatar', 'email'], sortBy: [sortBy] }
+      initialState: {
+        pageIndex: 0,
+        pageSize: 10,
+        hiddenColumns: ['avatar'],
+        sortBy: [sortBy],
+      },
     },
     useGlobalFilter,
     useFilters,
     useSortBy,
     useExpanded,
     usePagination,
-    useRowSelect
+    useRowSelect,
   );
 
   useEffect(() => {
     if (matchDownSM) {
-      setHiddenColumns(['age', 'contact', 'visits', 'email', 'status', 'avatar']);
+      setHiddenColumns(['age', 'contact', 'visits', 'status', 'avatar']);
     } else {
-      setHiddenColumns(['avatar', 'email']);
+      setHiddenColumns(['avatar']);
     }
     // eslint-disable-next-line
   }, [matchDownSM]);
@@ -123,7 +150,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
           <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={1}>
             <SortingSelect sortBy={sortBy.id} setSortBy={setSortBy} allColumns={allColumns} />
             <Button variant="contained" startIcon={<PlusOutlined />} onClick={handleAdd}>
-              Add Customer
+              Añadir Usuario
             </Button>
           </Stack>
         </Stack>
@@ -131,9 +158,17 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
         <Table {...getTableProps()}>
           <TableHead>
             {headerGroups.map((headerGroup) => (
-              <TableRow {...headerGroup.getHeaderGroupProps()} sx={{ '& > th:first-of-type': { width: '58px' } }}>
+              <TableRow
+                {...headerGroup.getHeaderGroupProps()}
+                sx={{ '& > th:first-of-type': { width: '58px' } }}
+              >
                 {headerGroup.headers.map((column: any) => (
-                  <TableCell {...column.getHeaderProps([{ className: column.className }, getHeaderProps(column)])}>
+                  <TableCell
+                    {...column.getHeaderProps([
+                      { className: column.className },
+                      getHeaderProps(column),
+                    ])}
+                  >
                     <HeaderSort column={column} />
                   </TableCell>
                 ))}
@@ -152,10 +187,17 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
                     onClick={() => {
                       row.toggleRowSelected();
                     }}
-                    sx={{ cursor: 'pointer', bgcolor: row.isSelected ? alpha(theme.palette.primary.lighter, 0.35) : 'inherit' }}
+                    sx={{
+                      cursor: 'pointer',
+                      bgcolor: row.isSelected
+                        ? alpha(theme.palette.primary.lighter, 0.35)
+                        : 'inherit',
+                    }}
                   >
                     {row.cells.map((cell: any) => (
-                      <TableCell {...cell.getCellProps([{ className: cell.column.className }])}>{cell.render('Cell')}</TableCell>
+                      <TableCell {...cell.getCellProps([{ className: cell.column.className }])}>
+                        {cell.render('Cell')}
+                      </TableCell>
                     ))}
                   </TableRow>
                   {row.isExpanded && renderRowSubComponent({ row, rowProps, visibleColumns })}
@@ -164,7 +206,13 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
             })}
             <TableRow sx={{ '&:hover': { bgcolor: 'transparent !important' } }}>
               <TableCell sx={{ p: 2, py: 3 }} colSpan={9}>
-                <TablePagination gotoPage={gotoPage} rows={rows} setPageSize={setPageSize} pageSize={pageSize} pageIndex={pageIndex} />
+                <TablePagination
+                  gotoPage={gotoPage}
+                  rows={rows}
+                  setPageSize={setPageSize}
+                  pageSize={pageSize}
+                  pageIndex={pageIndex}
+                />
               </TableCell>
             </TableRow>
           </TableBody>
@@ -198,15 +246,15 @@ const CustomerList = () => {
         ),
         accessor: 'selection',
         Cell: ({ row }: any) => <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />,
-        disableSortBy: true
+        disableSortBy: true,
       },
       {
         Header: '#',
         accessor: 'id',
-       className: 'cell-center font-size'
+        className: 'cell-center font-size',
       },
       {
-        Header: 'Customer Name',
+        Header: 'Usuario',
         accessor: 'fatherName',
         Cell: ({ row }: any) => {
           const { values } = row;
@@ -215,60 +263,42 @@ const CustomerList = () => {
               {/* <Avatar alt="Avatar 1" size="sm" src={avatarImage(`./avatar-${!values.avatar ? 1 : values.avatar}.png`).default} /> */}
               <Stack spacing={0}>
                 <Typography variant="subtitle1">{values.fatherName}</Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {values.email}
-                </Typography>
               </Stack>
             </Stack>
           );
-        }
-      },
-      {
-        Header: 'Avatar',
-        accessor: 'avatar',
-        disableSortBy: true
+        },
       },
       {
         Header: 'Email',
-        accessor: 'email'
+        accessor: 'email',
+        className: 'cell-center font-size',
+        Cell: ({ row }: any) => {
+          const { values } = row;
+          return (
+            <Stack spacing={0}>
+              <Typography variant="subtitle1">{values.email}</Typography>
+            </Stack>
+          );
+        },
       },
       {
-        Header: 'Contact',
-        accessor: 'contact',
+        Header: 'Celular',
+        accessor: 'phoneNumber',
+        className: 'cell-center font-size',
         // eslint-disable-next-line
         // Cell: ({ value }) => <NumberFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={value} />
-        Cell: ({ value }) => null
+        Cell: ({ row }: any) => {
+          const { values } = row;
+          return (
+            <Stack spacing={0}>
+              <Typography variant="subtitle1">{values.phoneNumber}</Typography>
+            </Stack>
+          );
+        },
       },
       {
-        Header: 'Order',
-        accessor: 'age',
-        className: 'cell-right'
-      },
-      {
-        Header: 'Spent',
-        accessor: 'visits',
-        className: 'cell-right',
-        // Cell: ({ value }: any) => <NumberFormat value={value} displayType="text" thousandSeparator prefix="$" />
-        Cell: ({ value }: any) => null
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        Cell: ({ value }: any) => {
-          switch (value) {
-            case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
-            case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
-            case 'Single':
-            default:
-              return <Chip color="primary" label="Single" size="small" variant="light" />;
-          }
-        }
-      },
-      {
-        Header: 'Actions',
-       className: 'cell-center font-size',
+        Header: 'Acciones',
+        className: 'cell-center font-size',
         disableSortBy: true,
         Cell: ({ row }: any) => {
           const collapseIcon = row.isExpanded ? (
@@ -278,7 +308,7 @@ const CustomerList = () => {
           );
           return (
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="View">
+              <Tooltip title="Ver">
                 <IconButton
                   color="secondary"
                   onClick={(e: any) => {
@@ -289,7 +319,7 @@ const CustomerList = () => {
                   {collapseIcon}
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Edit">
+              <Tooltip title="Editar">
                 <IconButton
                   color="primary"
                   onClick={(e: any) => {
@@ -301,7 +331,7 @@ const CustomerList = () => {
                   <EditTwoTone twoToneColor={theme.palette.primary.main} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete">
+              <Tooltip title="Eliminar">
                 <IconButton
                   color="error"
                   onClick={(e: any) => {
@@ -313,14 +343,17 @@ const CustomerList = () => {
               </Tooltip>
             </Stack>
           );
-        }
-      }
+        },
+      },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme]
+    [theme],
   );
 
-  const renderRowSubComponent = useCallback(({ row }: { row: Row }) => <CustomerView data={data[row.id]} />, [data]);
+  const renderRowSubComponent = useCallback(
+    ({ row }: { row: Row }) => <CustomerView data={data[row.id]} />,
+    [data],
+  );
 
   return (
     <MainCard content={false}>
@@ -335,7 +368,13 @@ const CustomerList = () => {
       </ScrollX>
 
       {/* add customer dialog */}
-      <Dialog maxWidth="sm" fullWidth onClose={handleAdd} open={add} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
+      <Dialog
+        maxWidth="sm"
+        fullWidth
+        onClose={handleAdd}
+        open={add}
+        sx={{ '& .MuiDialog-paper': { p: 0 } }}
+      >
         {add && <AddCustomer customer={customer} onCancel={handleAdd} />}
       </Dialog>
     </MainCard>
