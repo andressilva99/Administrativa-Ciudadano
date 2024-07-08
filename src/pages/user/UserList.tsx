@@ -56,6 +56,8 @@ import {
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons';
+import { AuthService } from '../../core/application/AuthService';
+import useData from '../../data/react-table';
 
 // const avatarImage = require('assets/images/users');
 
@@ -127,7 +129,6 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
     } else {
       setHiddenColumns(['lastName', 'dni']);
     }
-    // eslint-disable-next-line
   }, [matchDownSM]);
 
   return (
@@ -227,7 +228,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
 const CustomerList = () => {
   const theme = useTheme();
 
-  const data = useMemo(() => makeData(200), []);
+  const data = useData();
 
   const [customer, setCustomer] = useState(null);
   const [add, setAdd] = useState<boolean>(false);
@@ -236,6 +237,10 @@ const CustomerList = () => {
     setAdd(!add);
     if (customer && !add) setCustomer(null);
   };
+
+  // useEffect(() => {
+  //   findUsers()
+  // }, []);
 
   const columns = useMemo(
     () => [

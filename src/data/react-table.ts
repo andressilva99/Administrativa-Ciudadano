@@ -1,27 +1,38 @@
-import mockData, { range } from '../utils/mock-data';
+import { useEffect, useMemo, useState } from 'react'; 
+import { AuthService } from '../core/application/AuthService';
 
-const newPerson = (index: number) => {
-  const tempData = mockData(index);
-
-  return {
-    id: index,
-    firstName: tempData.name.first,
-    lastName: tempData.name.last,
-    email: tempData.email,
-    phoneNumber: tempData.phoneNumber,
-    fatherName: tempData.name.full,
-    dni: 11111,
-  };
+const fetchData = async () => {
+  const authService = new AuthService();
+  const response = await authService.findUsers();
+  return response.list.map((user: any, index: number) => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    fatherName: `${user.firstName} ${user.lastName}`,
+    dni: user.dni,
+    subRows: [],
+  }));
 };
 
-export default function makeData(...lens: any) {
-  const makeDataLevel: any = (depth: number = 0) => {
-    const len = lens[depth];
-    return range(len).map((d, index) => ({
-      ...newPerson(index + 1),
-      subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined
-    }));
-  };
+export default function useData() {
+  const [data, setData] = useState([]);
 
-  return makeDataLevel();
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedData = await fetchData();
+        setData(fetchedData);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const memoizedData = useMemo(() => data, [data]);
+
+  return memoizedData;
 }

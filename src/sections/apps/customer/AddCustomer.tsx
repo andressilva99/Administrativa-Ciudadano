@@ -47,6 +47,7 @@ import { openSnackbar } from '../../../store/reducers/snackbar';
 
 // assets
 import { CameraOutlined, DeleteFilled } from '@ant-design/icons';
+import { AuthService } from '../../../core/application/AuthService';
 
 // const avatarImage = require('../../../assets/images/users');
 
@@ -133,15 +134,9 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
   const formik = useFormik({
     initialValues: getInitialValues(customer),
     validationSchema: CustomerSchema,
-    onSubmit: (values, { setSubmitting }) => {
+    onSubmit: async (values, { setSubmitting }) => {
+      const authService = new AuthService();
       try {
-        // const newCustomer = {
-        //   name: values.name,
-        //   email: values.email,
-        //   location: values.location,
-        //   orderStatus: values.orderStatus
-        // };
-
         if (customer) {
           // dispatch(updateCustomer(customer.id, newCustomer)); - update
           dispatch(
@@ -156,7 +151,15 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
             }),
           );
         } else {
-          // dispatch(createCustomer(newCustomer)); - add
+          const response = await authService.register(
+            values.firstName,
+            values.lastName,
+            values.dni,
+            values.email,
+            values.phoneNumber,
+            values.password,
+          );
+          console.log(response.data);
           dispatch(
             openSnackbar({
               open: true,
@@ -169,7 +172,6 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
             }),
           );
         }
-
         setSubmitting(false);
         onCancel();
       } catch (error) {

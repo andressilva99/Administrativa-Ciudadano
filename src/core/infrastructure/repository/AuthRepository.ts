@@ -16,4 +16,38 @@ export class AuthRepository {
       throw new Error('Error al intentar acceder');
     }
   }
+
+  async register(
+    firstName: string,
+    lastName: string,
+    dni: string,
+    email: string,
+    phoneNumber: string,
+    password: string,
+  ): Promise<any> {
+    try {
+      const response = await this._api.post('/adm-main/admuser/register', {
+        firstName,
+        lastName,
+        dni,
+        email,
+        phoneNumber,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error al cargar el usuario');
+    }
+  }
+
+  async findUsers(): Promise<any> {
+    try {
+      const response = await this._api.get('/adm-main/admuser/find?firstName=');
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error al obtener usuarios');
+    }
+  }
 }
