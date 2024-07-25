@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Container, Typography, Paper } from '@mui/material';
-import ModulesTable from '../../components/ModulesTable';
-import ModuleById from '../../components/ModuleById';
-import ModuleDetail from '../../components/ModuleDetail';
-import EditModule from '../../components/EditModule';
+import {
+  TextField,
+  Button,
+  Grid,
+  Container,
+  Typography,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableBody,
+  TableContainer,
+  Box
+} from '@mui/material';
+import ModulesTable from '../../components/module/ModulesTable';
+import ModuleById from '../../components/module/ModuleById';
+import ModuleByCode from '../../components/module/ModuleByCode'; // Importar el componente
+import EditModule from '../../components/module/EditModule';
 
 const ModuleList: React.FC = () => {
   const [moduleId, setModuleId] = useState<number | null>(null);
@@ -12,7 +27,9 @@ const ModuleList: React.FC = () => {
   const [showModuleById, setShowModuleById] = useState(false);
   const [showModuleByCode, setShowModuleByCode] = useState(false);
   const [showEditModuleSearch, setShowEditModuleSearch] = useState(false);
-  const [showEditModule, setShowEditModule] = useState(false);
+  const [openModuleDialog, setOpenModuleDialog] = useState(false);
+  const [openModuleByCodeDialog, setOpenModuleByCodeDialog] = useState(false); // Estado para ModuleByCode
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const handleToggleModuleById = () => {
     setShowModuleById((prev) => !prev);
@@ -22,8 +39,14 @@ const ModuleList: React.FC = () => {
   };
 
   const handleSearchModuleById = () => {
+    setOpenModuleDialog(true);
     setModuleId(moduleId || 0);
     setShowModuleById(false);
+  };
+
+  const handleCloseModuleDialog = () => {
+    setOpenModuleDialog(false);
+    setModuleId(null);
   };
 
   const handleToggleModuleByCode = () => {
@@ -34,8 +57,13 @@ const ModuleList: React.FC = () => {
   };
 
   const handleSearchModuleByCode = () => {
-    setModuleCode(moduleCode);
+    setOpenModuleByCodeDialog(true); // Abrir el diálogo para ModuleByCode
     setShowModuleByCode(false);
+  };
+
+  const handleCloseModuleByCodeDialog = () => {
+    setOpenModuleByCodeDialog(false);
+    setModuleCode('');
   };
 
   const handleToggleEditModuleSearch = () => {
@@ -47,22 +75,23 @@ const ModuleList: React.FC = () => {
 
   const handleSearchEditModule = () => {
     if (editModuleId !== null) {
-      setShowEditModule(true);
+      setOpenEditDialog(true);
     }
     setShowEditModuleSearch(false);
   };
 
   const handleCancelEdit = () => {
     setEditModuleId(null);
-    setShowEditModule(false);
+    setOpenEditDialog(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setEditModuleId(null);
   };
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
-        Module Management
-      </Typography>
-
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
@@ -153,24 +182,84 @@ const ModuleList: React.FC = () => {
         </Grid>
       </Paper>
 
-      {showEditModule && (
-        <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-          <EditModule
-            moduleId={editModuleId || 0}
-            onCancel={handleCancelEdit}
-          />
-        </Paper>
-      )}
-
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
         <Typography variant="h6">Módulos</Typography>
         <ModulesTable />
       </Paper>
 
-      <Paper style={{ padding: '16px', marginTop: '16px' }}>
-        {moduleId !== null && <ModuleById id={moduleId} />}
-        {moduleCode && <ModuleDetail code={moduleCode} />}
-      </Paper>
+      <Dialog open={openModuleDialog} onClose={handleCloseModuleDialog} fullWidth maxWidth="md">
+        <DialogTitle>Detalle del Módulo</DialogTitle>
+        <DialogContent>
+          {moduleId !== null && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <ModuleById id={moduleId} />
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModuleDialog} color="secondary">
+            Salir
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setEditModuleId(moduleId);
+              setOpenEditDialog(true);
+              handleCloseModuleDialog();
+            }}
+          >
+            Editar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openModuleByCodeDialog} onClose={handleCloseModuleByCodeDialog} fullWidth maxWidth="md">
+        <DialogTitle>Detalle del Módulo por Código</DialogTitle>
+        <DialogContent>
+          {moduleCode && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <ModuleByCode code={moduleCode} />
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModuleByCodeDialog} color="secondary">
+            Salir
+          </Button>
+          {moduleCode && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setEditModuleId(null); // Resetea el ID de edición para evitar conflictos
+                setOpenEditDialog(true);
+                handleCloseModuleByCodeDialog();
+              }}
+            >              Editar
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
+        <DialogTitle>Editar Módulo</DialogTitle>
+        <DialogContent>
+          {editModuleId !== null && (
+            <EditModule
+              moduleId={editModuleId}
+              onCancel={handleCancelEdit}
+            />
+          )}
+        </DialogContent>        
+      </Dialog>
     </Container>
   );
 };

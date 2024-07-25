@@ -69,8 +69,7 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
 
   return (
     <Card>
-      <CardContent>
-        <Typography variant="h5">Editar Modulo</Typography>
+      <CardContent>        
         <TextField
           label="ID de modulo"
           name="moduleId"

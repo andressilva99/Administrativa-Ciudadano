@@ -1,48 +1,78 @@
 import React, { useState } from 'react';
-import Role from '../../components/Role';
-import RoleDetail from '../../components/RoleDetail';
-import AddRole from '../../components/AddRole';
-import { Typography, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add'; // Importa el ícono de agregar
+import { Button, TextField, Paper, Typography } from '@mui/material';
+import RoleTable from '../../components/Role/RoleDetail';
+import RoleById from '../../components/Role/RoleById';
+import AddRole from '../../components/Role/AddRole';
 
 const RoleList: React.FC = () => {
-  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
-  const [showAddRole, setShowAddRole] = useState<boolean>(false);
+  const [showSearchById, setShowSearchById] = useState(false);
+  const [roleId, setRoleId] = useState<number | null>(null);
+  const [showAddRole, setShowAddRole] = useState(false);
 
-  const handleRoleSelect = (id: number) => {
-    setSelectedRoleId(id);
+  const handleSearchById = () => {
+    setShowSearchById(true);
+    setShowAddRole(false);
+  };
+
+  const handleAddRole = () => {
+    setShowAddRole(true);
+    setShowSearchById(false);
+  };
+
+  const handleCancel = () => {
+    setShowSearchById(false);
+    setShowAddRole(false);
+    setRoleId(null);
   };
 
   const handleRoleAdded = () => {
-    setShowAddRole(false); // Oculta el formulario después de agregar un rol
-    // Aquí podrías agregar lógica para recargar la lista de roles
+    // Aquí puedes agregar cualquier lógica adicional después de agregar un rol, por ejemplo, actualizar la lista de roles
+    setShowAddRole(false);
   };
 
-  const handleCreateNewRoleClick = () => {
-    setShowAddRole(true);
-  };
-
-  const handleCancelAddRole = () => {
-    setShowAddRole(false); // Oculta el formulario si se cancela
+  const handleRoleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRoleId(Number(e.target.value));
   };
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Roles
-      </Typography>
-      <IconButton
-        color="primary"
-        onClick={handleCreateNewRoleClick}
-        style={{ marginBottom: '16px' }}
-      >
-        <AddIcon /> {/* Ícono de agregar */}
-      </IconButton>
-      {showAddRole && <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancelAddRole} />}
-      {selectedRoleId ? (
-        <RoleDetail id={selectedRoleId} />
-      ) : (
-        <Role onRoleSelect={handleRoleSelect} />
+      <Typography variant="h4" gutterBottom>Role Management</Typography>
+      <Button variant="contained" color="primary" onClick={handleSearchById} style={{ marginRight: '8px' }}>
+        Buscar por ID
+      </Button>
+      <Button variant="contained" color="secondary" onClick={handleAddRole}>
+        Agregar Rol
+      </Button>
+
+      {showSearchById && (
+        <Paper style={{ marginTop: '16px', padding: '16px' }}>
+          <TextField
+            label="Role ID"
+            type="number"
+            value={roleId || ''}
+            onChange={handleRoleIdChange}
+            fullWidth
+            margin="normal"
+          />
+          <Button variant="contained" color="primary" onClick={() => setRoleId(roleId)}>
+            Buscar
+          </Button>
+          <Button variant="outlined" color="secondary" onClick={handleCancel} style={{ marginLeft: '8px' }}>
+            Cancelar
+          </Button>
+        </Paper>
+      )}
+
+      {roleId !== null && !showAddRole && (
+        <RoleById id={roleId} />
+      )}
+
+      {showAddRole && (
+        <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancel} />
+      )}
+
+      {!showAddRole && (
+        <RoleTable />
       )}
     </div>
   );

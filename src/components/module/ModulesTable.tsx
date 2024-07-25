@@ -10,7 +10,7 @@ import {
   CircularProgress,
   TablePagination,
 } from '@mui/material';
-import { AuthService } from '../core/application/AuthService';
+import { AuthService } from '../../core/application/AuthService';
 
 interface Module {
   id: number;
@@ -32,10 +32,12 @@ interface ModuleResponse {
   size: number;
 }
 
+
+////abajo esta la solucion solo response
 const fetchModules = async (page: number, size: number) => {
   const authService = new AuthService();
   const response = await authService.findModules(page, size);
-  return response.data;
+  return response;
 };
 
 const ModulesTable: React.FC = () => {
@@ -121,12 +123,3 @@ const ModulesTable: React.FC = () => {
 
 export default ModulesTable;
 
-// Configura Axios
-//const api = axios.create({
-//  baseURL: 'http://lavalle253.ddns.net:8090',
-//});
-
-//api.interceptors.request.use((config) => {
- // config.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJVVE5GUlNGIiwic3ViIjoiQ3R6VXNlciIsImlkIjoxLCJpYXQiOjE3MjA0NDkyNzAsImV4cCI6MTcyMzA0MTI3MCwianRpIjoiNDAyY2RmNzctMDgwOC00NWQ1LTlkOWMtYzg4YmFiYWQxYTg1In0.NglGkRcTSaiFkMtpeIBxp9B35wOcwbYaCSvxceSf0bk'; // Reemplaza 'YOUR_AUTH_TOKEN' con el token real
-  //return config;
-//});

@@ -28,9 +28,15 @@ export class AuthService {
   }
 
   //------------------------------ROLES---------------------------------//
-  async findRoles(id: number, enabled: boolean, deleted: boolean, page: number, size: number): Promise<any> {
-    return await this._repository.findRoles(id, enabled, deleted, page, size);
+  async findRoles(moduleId: number, enabled: boolean, deleted: boolean, page: number, size: number): Promise<any> {
+    return await this._repository.findRoles(moduleId, enabled, deleted, page, size);
   }
+
+  //Buscar rol por id
+  async findRoleById(id: number): Promise<any> {
+    return await this._repository.findRoleById(id);
+  }
+
   //Registrar Rol
   async registerRol(
     idModule: number,
