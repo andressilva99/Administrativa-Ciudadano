@@ -13,11 +13,19 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Box
+  IconButton,
+  Box,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModulesTable from '../../components/module/ModulesTable';
 import ModuleById from '../../components/module/ModuleById';
-import ModuleByCode from '../../components/module/ModuleByCode'; // Importar el componente
+import ModuleByCode from '../../components/module/ModuleByCode';
 import EditModule from '../../components/module/EditModule';
 
 const ModuleList: React.FC = () => {
@@ -28,13 +36,23 @@ const ModuleList: React.FC = () => {
   const [showModuleByCode, setShowModuleByCode] = useState(false);
   const [showEditModuleSearch, setShowEditModuleSearch] = useState(false);
   const [openModuleDialog, setOpenModuleDialog] = useState(false);
-  const [openModuleByCodeDialog, setOpenModuleByCodeDialog] = useState(false); // Estado para ModuleByCode
+  const [openModuleByCodeDialog, setOpenModuleByCodeDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleToggleModuleById = () => {
     setShowModuleById((prev) => !prev);
     if (showModuleById) {
-      setModuleId(null); // Resetea el ID cuando se oculta el campo de búsqueda
+      setModuleId(null);
     }
   };
 
@@ -42,6 +60,7 @@ const ModuleList: React.FC = () => {
     setOpenModuleDialog(true);
     setModuleId(moduleId || 0);
     setShowModuleById(false);
+    handleMenuClose();
   };
 
   const handleCloseModuleDialog = () => {
@@ -52,13 +71,14 @@ const ModuleList: React.FC = () => {
   const handleToggleModuleByCode = () => {
     setShowModuleByCode((prev) => !prev);
     if (showModuleByCode) {
-      setModuleCode(''); // Resetea el código cuando se oculta el campo de búsqueda
+      setModuleCode('');
     }
   };
 
   const handleSearchModuleByCode = () => {
-    setOpenModuleByCodeDialog(true); // Abrir el diálogo para ModuleByCode
+    setOpenModuleByCodeDialog(true);
     setShowModuleByCode(false);
+    handleMenuClose();
   };
 
   const handleCloseModuleByCodeDialog = () => {
@@ -69,7 +89,7 @@ const ModuleList: React.FC = () => {
   const handleToggleEditModuleSearch = () => {
     setShowEditModuleSearch((prev) => !prev);
     if (showEditModuleSearch) {
-      setEditModuleId(null); // Resetea el ID cuando se oculta el campo de búsqueda
+      setEditModuleId(null);
     }
   };
 
@@ -78,6 +98,7 @@ const ModuleList: React.FC = () => {
       setOpenEditDialog(true);
     }
     setShowEditModuleSearch(false);
+    handleMenuClose();
   };
 
   const handleCancelEdit = () => {
@@ -98,86 +119,86 @@ const ModuleList: React.FC = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleToggleModuleById}
+              onClick={handleMenuClick}
               style={{ marginBottom: '8px' }}
             >
-              {showModuleById ? 'Cancelar búsqueda por ID' : 'Ver módulo por ID'}
+              <MoreVertIcon style={{ marginRight: '8px' }} />
+              Acciones
             </Button>
-            {showModuleById && (
-              <>
-                <TextField
-                  label="Ingrese la ID del módulo"
-                  type="number"
-                  fullWidth
-                  onChange={(e) => setModuleId(Number(e.target.value))}
-                />
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleSearchModuleById}
-                  style={{ marginTop: '8px' }}
-                >
-                  Buscar
-                </Button>
-              </>
-            )}
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleToggleModuleByCode}
-              style={{ marginBottom: '8px' }}
+            <Menu
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleMenuClose}
             >
-              {showModuleByCode ? 'Cancelar búsqueda por código' : 'Ver módulo por código'}
-            </Button>
-            {showModuleByCode && (
-              <>
-                <TextField
-                  label="Ingrese el código del módulo"
-                  fullWidth
-                  onChange={(e) => setModuleCode(e.target.value)}
-                />
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleSearchModuleByCode}
-                  style={{ marginTop: '8px' }}
-                >
-                  Buscar
-                </Button>
-              </>
-            )}
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleToggleEditModuleSearch}
-              style={{ marginBottom: '8px' }}
-            >
-              {showEditModuleSearch ? 'Cancelar búsqueda de edición' : 'Editar Módulo'}
-            </Button>
-            {showEditModuleSearch && (
-              <>
-                <TextField
-                  label="Ingrese el ID del módulo para editar"
-                  type="number"
-                  fullWidth
-                  onChange={(e) => setEditModuleId(Number(e.target.value))}
-                />
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleSearchEditModule}
-                  style={{ marginTop: '8px' }}
-                >
-                  Buscar
-                </Button>
-              </>
-            )}
+              <MenuItem onClick={handleToggleModuleById}>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText primary="Buscar por ID" />
+              </MenuItem>
+              {showModuleById && (
+                <Box display="flex" alignItems="center" marginLeft="16px">
+                  <TextField
+                    label="Ingrese la ID del módulo"
+                    type="number"
+                    fullWidth
+                    onChange={(e) => setModuleId(Number(e.target.value))}
+                  />
+                  <IconButton
+                    color="primary"
+                    onClick={handleSearchModuleById}
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+              )}
+              <MenuItem onClick={handleToggleModuleByCode}>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText primary="Buscar por Código" />
+              </MenuItem>
+              {showModuleByCode && (
+                <Box display="flex" alignItems="center" marginLeft="16px">
+                  <TextField
+                    label="Ingrese el código del módulo"
+                    fullWidth
+                    onChange={(e) => setModuleCode(e.target.value)}
+                  />
+                  <IconButton
+                    color="primary"
+                    onClick={handleSearchModuleByCode}
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+              )}
+              <MenuItem onClick={handleToggleEditModuleSearch}>
+                <ListItemIcon>
+                  <EditIcon />
+                </ListItemIcon>
+                <ListItemText primary="Editar Módulo" />
+              </MenuItem>
+              {showEditModuleSearch && (
+                <Box display="flex" alignItems="center" marginLeft="16px">
+                  <TextField
+                    label="Ingrese el ID del módulo para editar"
+                    type="number"
+                    fullWidth
+                    onChange={(e) => setEditModuleId(Number(e.target.value))}
+                  />
+                  <IconButton
+                    color="primary"
+                    onClick={handleSearchEditModule}
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </Menu>
           </Grid>
         </Grid>
       </Paper>
@@ -244,11 +265,13 @@ const ModuleList: React.FC = () => {
                 setOpenEditDialog(true);
                 handleCloseModuleByCodeDialog();
               }}
-            >              Editar
+            >
+              Editar
             </Button>
           )}
         </DialogActions>
       </Dialog>
+
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
         <DialogTitle>Editar Módulo</DialogTitle>
         <DialogContent>
@@ -258,7 +281,7 @@ const ModuleList: React.FC = () => {
               onCancel={handleCancelEdit}
             />
           )}
-        </DialogContent>        
+        </DialogContent>
       </Dialog>
     </Container>
   );
