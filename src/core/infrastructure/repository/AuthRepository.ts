@@ -1,5 +1,11 @@
 import { ApiService } from '../http/ApiService';
 
+interface LoginResponse {
+  token: string;
+  admUser: object;
+  moduleList: any[];
+}
+
 export class AuthRepository {
   private _api: ApiService;
 
@@ -7,9 +13,12 @@ export class AuthRepository {
     this._api = new ApiService();
   }
 
-  async signin(username: string, password: string): Promise<any> {
+  async signin(username: string, password: string): Promise<LoginResponse> {
     try {
-      const response = await this._api.post('/adm-main/session/signin', { username, password });
+      const response = await this._api.post<LoginResponse>('/adm-main/session/signin', {
+        username,
+        password,
+      });
       return response.data;
     } catch (err) {
       console.log(err);
@@ -43,7 +52,8 @@ export class AuthRepository {
 
   async findUsers(): Promise<any> {
     try {
-      const response = await this._api.get('/adm-main/admuser/find?firstName=');
+      const response = await this._api.get('/adm-main/admuser/find');
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);

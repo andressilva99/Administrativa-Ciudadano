@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 //  material ui
 import {
@@ -22,6 +22,8 @@ import AnimateButton from '../../../components/@extended/AnimateButton';
 import { AuthService } from '../../../core/application/AuthService';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
   const [capsWarning, setCapsWarning] = useState(false);
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -50,12 +52,9 @@ const LoginForm = () => {
       })}
       onSubmit={async (values) => {
         const authService = new AuthService();
-        try {
-          const response = await authService.signin(values.username, values.password);
-          console.log(response);
-        } catch (err) {
-          console.error(err);
-        }
+        await authService.signin(values.username, values.password).then(() => {
+          navigate('/');
+        });
       }}
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
