@@ -1,22 +1,36 @@
 import React, { useState } from 'react';
-import { Button, TextField, Paper, Typography } from '@mui/material';
+import { Button, TextField, Typography, Box, Menu, MenuItem, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 import RoleTable from '../../components/Role/RoleDetail';
 import RoleById from '../../components/Role/RoleById';
 import AddRole from '../../components/Role/AddRole';
 
 const RoleList: React.FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showSearchById, setShowSearchById] = useState(false);
   const [roleId, setRoleId] = useState<number | null>(null);
   const [showAddRole, setShowAddRole] = useState(false);
 
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleSearchById = () => {
     setShowSearchById(true);
     setShowAddRole(false);
+    handleMenuClose();
   };
 
   const handleAddRole = () => {
     setShowAddRole(true);
     setShowSearchById(false);
+    handleMenuClose();
   };
 
   const handleCancel = () => {
@@ -26,50 +40,84 @@ const RoleList: React.FC = () => {
   };
 
   const handleRoleAdded = () => {
-    // Aquí puedes agregar cualquier lógica adicional después de agregar un rol, por ejemplo, actualizar la lista de roles
+    // Lógica adicional después de agregar un rol
     setShowAddRole(false);
-  };
-
-  const handleRoleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoleId(Number(e.target.value));
   };
 
   return (
     <div>
       <Typography variant="h4" gutterBottom>Role Management</Typography>
-      <Button variant="contained" color="primary" onClick={handleSearchById} style={{ marginRight: '8px' }}>
-        Buscar por ID
-      </Button>
-      <Button variant="contained" color="secondary" onClick={handleAddRole}>
-        Agregar Rol
-      </Button>
 
-      {showSearchById && (
-        <Paper style={{ marginTop: '16px', padding: '16px' }}>
-          <TextField
-            label="Role ID"
-            type="number"
-            value={roleId || ''}
-            onChange={handleRoleIdChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button variant="contained" color="primary" onClick={() => setRoleId(roleId)}>
-            Buscar
-          </Button>
-          <Button variant="outlined" color="secondary" onClick={handleCancel} style={{ marginLeft: '8px' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleMenuClick}
+        style={{ marginBottom: '8px' }}
+      >
+        <MoreVertIcon style={{ marginRight: '8px' }} />
+        Acciones
+      </Button>
+      
+      <Menu
+        id="action-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleSearchById}>
+          <ListItemIcon>
+            <SearchIcon />
+          </ListItemIcon>
+          <ListItemText primary="Buscar por ID" />
+        </MenuItem>
+        <MenuItem onClick={handleAddRole}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Agregar Rol" />
+        </MenuItem>
+      </Menu>
+
+      <Dialog open={showSearchById} onClose={handleCancel} maxWidth="sm" fullWidth>
+        <DialogTitle>Buscar Rol por ID</DialogTitle>
+        <DialogContent>
+          <Box display="flex" alignItems="center">
+            <TextField
+              label="Ingrese la ID del rol"
+              type="number"
+              fullWidth
+              onChange={(e) => setRoleId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={() => setRoleId(roleId)}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="secondary">
             Cancelar
           </Button>
-        </Paper>
-      )}
+        </DialogActions>
+      </Dialog>
 
       {roleId !== null && !showAddRole && (
         <RoleById id={roleId} />
       )}
 
-      {showAddRole && (
-        <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancel} />
-      )}
+      <Dialog open={showAddRole} onClose={handleCancel} maxWidth="md" fullWidth>
+        <DialogTitle>Agregar Rol</DialogTitle>
+        <DialogContent>
+          <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancel} />
+        </DialogContent>
+        <DialogActions>
+      
+        </DialogActions>
+      </Dialog>
 
       {!showAddRole && (
         <RoleTable />

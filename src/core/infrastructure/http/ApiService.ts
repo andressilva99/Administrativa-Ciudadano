@@ -3,14 +3,14 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 export class ApiService {
   private _baseUrl: string = import.meta.env.VITE_API_BASE_URL;
   private _instance: AxiosInstance;
-  private _tokenAPI: string = import.meta.env.VITE_API_TOKEN
+  private _tokenAPI: string = import.meta.env.VITE_API_TOKEN;
 
   constructor() {
     this._instance = axios.create({
       baseURL: this._baseUrl,
       headers: {
         "Content-Type": "application/json",
-        Authorization: this._tokenAPI
+        Authorization: this._tokenAPI,
       },
       withCredentials: false,
     });
@@ -26,5 +26,20 @@ export class ApiService {
 
   async get<T = any>(url: string): Promise<AxiosResponse<T>> {
     return await this._instance.get<T>(url);
+  }
+
+  async put<T, R = any>(
+    url: string,
+    data: R,
+    config?: AxiosRequestConfig,
+  ): Promise<AxiosResponse<T>> {
+    return await this._instance.put<T>(url, data, config);
+  }
+
+  async delete<T = any>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<AxiosResponse<T>> {
+    return await this._instance.delete<T>(url, config);
   }
 }

@@ -52,6 +52,7 @@ const ModulesTable: React.FC = () => {
       setLoading(true);
       try {
         const data: ModuleResponse = await fetchModules(page, size);
+        console.log('Modules data:', data);
         setModules(data.list);
         setTotal(data.total);
       } catch (error) {

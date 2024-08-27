@@ -268,6 +268,7 @@ const ModuleList: React.FC = () => {
             >
               Editar
             </Button>
+            
           )}
         </DialogActions>
       </Dialog>
