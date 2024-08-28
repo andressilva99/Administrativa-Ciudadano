@@ -204,7 +204,6 @@ const ModuleList: React.FC = () => {
       </Paper>
 
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-        <Typography variant="h6">Módulos</Typography>
         <ModulesTable />
       </Paper>
 

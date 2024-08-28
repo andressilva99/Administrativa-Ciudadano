@@ -14,7 +14,8 @@ import { AuthService } from '../../core/application/AuthService';
 
 interface Role {
   id: number;
-  moduleId: number;
+  moduleCode: string;
+  idModule: number;
   name: string;
   description: string;
   fixed: boolean;
@@ -31,11 +32,11 @@ interface RoleResponse {
   size: number;
 }
 
-const fetchRole = async (moduleId: number, enabled: boolean, deleted: boolean, page: number, size: number ): Promise<RoleResponse> => {
+const fetchRole = async (moduleCode: string, page: number, size: number): Promise<RoleResponse> => {
   const authService = new AuthService();
   try {
-    console.log(`Fetching roles with params: moduleId=${moduleId}, enabled=${enabled}, deleted=${deleted}, page=${page}, size=${size}`);
-    const response = await authService.findRoles(moduleId, enabled, deleted, page, size);
+    console.log(`Fetching roles with params: module_Code=${moduleCode}, page=${page}, size=${size}`);
+    const response = await authService.findRoles(moduleCode, page, size);
     return response;
   } catch (error) {
     console.error('Error fetching roles:', error);
@@ -46,9 +47,7 @@ const fetchRole = async (moduleId: number, enabled: boolean, deleted: boolean, p
 const RoleTable: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [moduleId, setModuleId] = useState<number>(0);
-  const [enabled, setEnabled] = useState<boolean>(true);
-  const [deleted, setDeleted] = useState<boolean>(false);
+  const [moduleCode, setModuleCode] = useState<string>("MAIN");
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
@@ -57,7 +56,7 @@ const RoleTable: React.FC = () => {
     const getRoles = async () => {
       setLoading(true);
       try {
-        const data: RoleResponse = await fetchRole(moduleId, enabled, deleted, page, size);
+        const data: RoleResponse = await fetchRole(moduleCode, page, size);
         setRoles(data.list);
         setTotal(data.total);
       } catch (error) {
@@ -68,7 +67,7 @@ const RoleTable: React.FC = () => {
     };
 
     getRoles();
-  }, [moduleId, enabled, deleted, page, size]);
+  }, [moduleCode, page, size]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -90,22 +89,24 @@ const RoleTable: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Module ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Fixed</TableCell>
-              <TableCell>Enabled</TableCell>
-              <TableCell>Deleted</TableCell>
+              <TableCell>ID DE MODULO</TableCell>
+              <TableCell>NOMBRE</TableCell>
+              <TableCell>DESCRIPCIÓN</TableCell>
+              <TableCell>FIJO</TableCell>
+              <TableCell>HABILITADO</TableCell>
+              <TableCell>DESHABILITADO</TableCell>
               <TableCell>TSI</TableCell>
               <TableCell>TSU</TableCell>
-              <TableCell>Permissions</TableCell>
+              {/*} COMENTO LA PARTE VISUAL DE LOS PERMISOS
+              <TableCell>PERMISOS</TableCell>
+              */}
             </TableRow>
           </TableHead>
           <TableBody>
             {roles.map((role) => (
               <TableRow key={role.id}>
                 <TableCell>{role.id}</TableCell>
-                <TableCell>{role.moduleId}</TableCell>
+                <TableCell>{role.idModule}</TableCell>
                 <TableCell>{role.name}</TableCell>
                 <TableCell>{role.description}</TableCell>
                 <TableCell>{role.fixed ? 'Yes' : 'No'}</TableCell>
@@ -113,7 +114,17 @@ const RoleTable: React.FC = () => {
                 <TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
                 <TableCell>{role.tsi}</TableCell>
                 <TableCell>{role.tsu}</TableCell>
-                <TableCell>{role.permissionsList.join(', ')}</TableCell>
+                {/*
+                <TableCell>
+                   comento la visualizacion de los permisos
+                  <ul>
+                    {role.permissionsList.map((permission, index) => (
+                      <li key={index}>{permission}</li>
+                    ))}
+                  </ul>
+                  
+                </TableCell>
+                */}
               </TableRow>
             ))}
           </TableBody>

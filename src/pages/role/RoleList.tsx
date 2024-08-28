@@ -46,7 +46,6 @@ const RoleList: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>Role Management</Typography>
 
       <Button
         variant="contained"

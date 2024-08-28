@@ -52,20 +52,20 @@ export class AuthRepository {
   }
 
   //--------------------------------------------------ROLES------------------------------------
-  async findRoles(moduleId: number, enabled: boolean, deleted: boolean, page: number, size: number): Promise<any> {
+  async findRoles(moduleCode: string, page: number, size: number): Promise<any> {
     try {
-      const response = await this._api.get(`adm-main/admrole/find?moduleId=${moduleId}&enabled=${enabled}&deleted=${deleted}&page=${page}&size=${size}`);
+      const response = await this._api.get(`/adm-main/role/find?module_code=${moduleCode}&page=${page}&size=${size}`);
       return response.data;
     } catch (error) {
       console.log(error);
       throw new Error('Error al obtener roles');
     }
   }
- 
+
   //Buscar rol por id
   async findRoleById(id: number): Promise<any> {
     try {
-      const response = await this._api.get(`adm-main/admrole/${id}`);
+      const response = await this._api.get(`adm-main/role/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);
