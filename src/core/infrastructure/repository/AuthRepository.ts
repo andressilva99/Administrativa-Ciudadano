@@ -51,6 +51,30 @@ export class AuthRepository {
     }
   }
 
+  //EDITAR MODULO
+
+  async editModule(
+    moduleId: number,
+    enabledNp: boolean,
+    enabledLp: boolean,
+    minNpLevel: number,
+    minLpLevel: number
+  ): Promise<any> {
+    try {
+      const response = await this._api.put('/adm-main/module/edit', {
+        moduleId,
+        enabledNp,
+        enabledLp,
+        minNpLevel,
+        minLpLevel
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error al editar el módulo');
+    }
+  }
+
   //--------------------------------------------------ROLES------------------------------------
   async findRoles(moduleCode: string, page: number, size: number): Promise<any> {
     try {

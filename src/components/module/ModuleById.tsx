@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, CircularProgress,List, ListItem, ListItemText} from '@mui/material';
+import { Typography, CircularProgress,List, ListItem, ListItemText} from '@mui/material';
 import { AuthService } from '../../core/application/AuthService';
 
 interface Module {
@@ -62,10 +62,10 @@ const ModuleById: React.FC<ModuleByIdProps> = ({ id }) => {
   return (
     <List>
       <ListItem>
-        <ListItemText primary="ID:" secondary={module.id} />
+        <ListItemText primary="*ID:" secondary={module.id} />
       </ListItem>
       <ListItem>
-        <ListItemText primary="NOMBRE:" secondary={module.name} />
+        <ListItemText primary="*NOMBRE:" secondary={module.name} />
       </ListItem>
       <ListItem>
         <ListItemText primary="*CÓDIGO:" secondary={module.code} />

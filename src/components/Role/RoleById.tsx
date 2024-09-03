@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, CircularProgress } from '@mui/material';
+import { List, ListItem, ListItemText } from '@mui/material';
 import { AuthService } from '../../core/application/AuthService';
 
 interface Role {
@@ -67,20 +67,36 @@ const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5">{role.name}</Typography>
-        <Typography variant="body1">ID: {role.id}</Typography>
-        <Typography variant="body1">Description: {role.description}</Typography>
-        <Typography variant="body1">Module ID: {role.idModule}</Typography>
-        <Typography variant="body1">Fixed: {role.fixed ? 'Yes' : 'No'}</Typography>
-        <Typography variant="body1">Enabled: {role.enabled ? 'Yes' : 'No'}</Typography>
-        <Typography variant="body1">Deleted: {role.deleted ? 'Yes' : 'No'}</Typography>
-        <Typography variant="body1">TSI: {role.tsi}</Typography>
-        <Typography variant="body1">TSU: {role.tsu}</Typography>
-        <Typography variant="body1">Permissions: {role.permissionsList.join(', ')}</Typography>
-      </CardContent>
-    </Card>
+
+    <List>
+      <ListItem>
+        <ListItemText primary="*ID:" secondary={role.id} />
+      </ListItem>     
+      <ListItem>
+        <ListItemText primary="*DESCRIPCIÓN:" secondary={role.description} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*ID DE MODULO:" secondary={role.idModule} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*FIJO:" secondary={role.fixed ? 'Yes' : 'No'} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*HABILITADO:" secondary={role.enabled ? 'Yes' : 'No'} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*DESHABILITADO:" secondary={role.deleted ? 'Yes' : 'No'} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*TSI:" secondary={role.tsi} />
+      </ListItem>  
+      <ListItem>
+        <ListItemText primary="*TSU:" secondary={role.tsu} />
+      </ListItem>       
+      <ListItem>
+        <ListItemText primary="*PERMISOS:" secondary={role.permissionsList.join(', ')} />
+      </ListItem> 
+    </List>    
   );
 };
 

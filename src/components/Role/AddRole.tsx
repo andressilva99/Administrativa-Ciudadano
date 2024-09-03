@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Paper, Typography, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { TextField, Button, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Grid } from '@mui/material';
 
 interface Role {
   idModule: number;
@@ -140,17 +140,23 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
         </FormGroup>
         {error && <Typography color="error">{error}</Typography>}
         {success && <Typography color="primary">Role added successfully!</Typography>}
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? 'Adding...' : 'Agregar Rol'}
-        </Button>
+        <Grid container spacing={2} justifyContent="flex-end" mb={2}> 
+        <Grid item>
         <Button
-          variant="outlined"
           color="secondary"
           onClick={onCancel}
           style={{ marginLeft: '8px' }}
         >
-          Cancelar
+          Salir
         </Button>
+        </Grid>
+        
+        <Grid item>
+        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          {loading ? 'Adding...' : 'Agregar Rol'}
+        </Button>
+        </Grid>
+        </Grid>
       </form>
     </Paper>
   );

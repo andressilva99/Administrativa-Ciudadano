@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
-  Button, TextField, Typography, Box, Menu, MenuItem,
+  Button, TextField, Box, Menu, MenuItem,
   ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent,
   DialogTitle, IconButton
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import RoleTable from '../../components/Role/RoleDetail';
-import RoleById from '../../components/Role/RoleById';
-import AddRole from '../../components/Role/AddRole';
+import RoleTable from '../../components/role/RoleDetail';
+import RoleById from '../../components/role/RoleById';
+import AddRole from '../../components/role/AddRole';
 
 const RoleList: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -17,6 +17,7 @@ const RoleList: React.FC = () => {
   const [roleId, setRoleId] = useState<number | null>(null);
   const [showAddRole, setShowAddRole] = useState(false);
   const [showRoleDetails, setShowRoleDetails] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,13 +25,13 @@ const RoleList: React.FC = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setShowSearchById(false);
   };
 
   const handleSearchById = () => {
-    setShowSearchById(true);
+    setShowSearchById(prev => !prev);  // Alterna el estado
     setShowAddRole(false);
     setShowRoleDetails(false);
-    handleMenuClose();
   };
 
   const handleAddRole = () => {
@@ -58,6 +59,25 @@ const RoleList: React.FC = () => {
     }
   };
 
+  // Manejo de clic fuera del menú
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        handleMenuClose();
+      }
+    };
+
+    if (anchorEl) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [anchorEl]);
+
   return (
     <div>
       <Button
@@ -76,6 +96,7 @@ const RoleList: React.FC = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        ref={menuRef} // Referencia al menú
       >
         <MenuItem onClick={handleSearchById}>
           <ListItemIcon>
@@ -83,20 +104,10 @@ const RoleList: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Buscar por ID" />
         </MenuItem>
-        <MenuItem onClick={handleAddRole}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Agregar Rol" />
-        </MenuItem>
-      </Menu>
-
-      <Dialog open={showSearchById} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>Buscar Rol por ID</DialogTitle>
-        <DialogContent>
-          <Box display="flex" alignItems="center">
+        {showSearchById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
-              label="Ingrese la ID del rol"
+              label="Ingrese la ID del módulo"
               type="number"
               fullWidth
               onChange={(e) => setRoleId(Number(e.target.value))}
@@ -109,13 +120,14 @@ const RoleList: React.FC = () => {
               <SearchIcon />
             </IconButton>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="secondary">
-            Salir
-          </Button>
-        </DialogActions>
-      </Dialog>
+        )}
+        <MenuItem onClick={handleAddRole}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Agregar Rol" />
+        </MenuItem>
+      </Menu>
 
       <Dialog open={showRoleDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Rol</DialogTitle>
@@ -131,14 +143,13 @@ const RoleList: React.FC = () => {
 
       <Dialog open={showAddRole} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Agregar Rol</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancel} />
         </DialogContent>
       </Dialog>
 
-      {!showAddRole && !showSearchById && !showRoleDetails && (
-        <RoleTable />
-      )}
+      {/* La tabla siempre está visible */}
+      <RoleTable />
     </div>
   );
 };

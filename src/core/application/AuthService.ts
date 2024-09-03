@@ -27,6 +27,17 @@ export class AuthService {
     return await this._repository.findModulesById(id);
   }
 
+  //EDITAR MODULO
+  async editModule(
+    moduleId: number,
+    enabledNp: boolean,
+    enabledLp: boolean,
+    minNpLevel: number,
+    minLpLevel: number
+  ): Promise<any> {
+    return await this._repository.editModule(moduleId, enabledNp, enabledLp, minNpLevel, minLpLevel);
+  }
+  
   //------------------------------ROLES---------------------------------//
   async findRoles(moduleCode: string, page: number, size: number): Promise<any> {
     return await this._repository.findRoles(moduleCode, page, size);

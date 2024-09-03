@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -7,8 +6,11 @@ import {
   Button, 
   CircularProgress, 
   Typography, 
-  Grid 
+  Grid, 
+  Checkbox, 
+  FormControlLabel 
 } from '@mui/material';
+import { AuthService } from '../../core/application/AuthService'; // Ajusta la ruta según tu estructura de carpetas
 
 interface Module {
   moduleId: number;
@@ -19,8 +21,8 @@ interface Module {
 }
 
 interface EditModuleProps {
-  moduleId: number; // Add moduleId as a prop
-  onCancel: () => void; // Add onCancel as a prop
+  moduleId: number;
+  onCancel: () => void;
 }
 
 const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
@@ -33,35 +35,48 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null); // Add error state
+  const [error, setError] = useState<string | null>(null);
+
+  const authService = new AuthService();
+
+  useEffect(() => {
+    const fetchModule = async () => {
+      try {
+        const data = await authService.findModulesById(moduleId);
+        setModule(data);
+      } catch (err) {
+        console.error('Error fetching module', err);
+        setError('Error fetching module');
+      }
+    };
+
+    fetchModule();
+  }, [moduleId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setModule({
-     ...module,
-      [name]: type === 'checkbox'? checked : parseInt(value),
-    });
+    const { name, type, value, checked } = e.target;
+    setModule(prevModule => ({
+      ...prevModule,
+      [name]: type === 'checkbox' ? checked : type === 'number' ? parseInt(value) : value,
+    }));
   };
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
+    setSuccess(false);
     try {
-      await axios.put(
-        `http://localhost:8053/adm-main/module/edit/${moduleId}`, // Use moduleId in the URL
-        module,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer your-token-here' // Replace with your actual token
-          }
-        }
+      await authService.editModule(
+        module.moduleId,
+        module.enabledNp,
+        module.enabledLp,
+        module.minNpLevel,
+        module.minLpLevel
       );
       setSuccess(true);
     } catch (error) {
       console.error('Error updating module', error);
-      setError('Error updating module'); // Set error message
-      setSuccess(false);
+      setError('Error updating module');
     } finally {
       setLoading(false);
     }
@@ -69,39 +84,41 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
 
   return (
     <Card>
-      <CardContent>        
+      <CardContent style={{ paddingBottom: 0 }}>
         <TextField
-          label="ID de modulo"
+          label="ID de módulo"
           name="moduleId"
-          value={module.moduleId}
+          value={module.moduleId ?? ''}
           onChange={handleChange}
           type="number"
           fullWidth
           margin="normal"
-          disabled // Disable the moduleId field
+          disabled
         />
-        <TextField
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="enabledNp"
+              checked={module.enabledNp}
+              onChange={handleChange}
+            />
+          }
           label="NP Habilitado"
-          name="enabledNp"
-          value={module.enabledNp? 'true' : 'false'}
-          onChange={handleChange}
-          type="checkbox"
-          fullWidth
-          margin="normal"
         />
-        <TextField
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="enabledLp"
+              checked={module.enabledLp}
+              onChange={handleChange}
+            />
+          }
           label="LP Habilitado"
-          name="enabledLp"
-          value={module.enabledLp? 'true' : 'false'}
-          onChange={handleChange}
-          type="checkbox"
-          fullWidth
-          margin="normal"
         />
         <TextField
           label="Min Nivel NP"
           name="minNpLevel"
-          value={module.minNpLevel}
+          value={module.minNpLevel ?? ''}
           onChange={handleChange}
           type="number"
           fullWidth
@@ -110,13 +127,22 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
         <TextField
           label="Min Nivel LP"
           name="minLpLevel"
-          value={module.minLpLevel}
+          value={module.minLpLevel ?? ''}
           onChange={handleChange}
           type="number"
           fullWidth
           margin="normal"
         />
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="flex-end" mb={2}>
+          <Grid item>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onCancel}
+            >
+              Salir
+            </Button>
+          </Grid>
           <Grid item>
             <Button
               variant="contained"
@@ -124,26 +150,17 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : 'Actualizar Modulo'}
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={onCancel}
-            >
-              Cancelar
+              {loading ? <CircularProgress size={24} /> : 'Actualizar Módulo'}
             </Button>
           </Grid>
         </Grid>
         {success && (
-          <Typography variant="body1" color="success">
-            Module updated successfully!
+          <Typography variant="body1" color="success.main">
+            Módulo actualizado exitosamente!
           </Typography>
         )}
         {error && (
-          <Typography variant="body1" color="error">
+          <Typography variant="body1" color="error.main">
             {error}
           </Typography>
         )}

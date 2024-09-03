@@ -4,7 +4,6 @@ import {
   Button,
   Grid,
   Container,
-  Typography,
   Paper,
   Dialog,
   DialogTitle,
@@ -23,10 +22,11 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ModulesTable from '../../components/module/ModulesTable';
+import ModulesDetail from '../../components/module/ModulesDetail';
 import ModuleById from '../../components/module/ModuleById';
 import ModuleByCode from '../../components/module/ModuleByCode';
 import EditModule from '../../components/module/EditModule';
+
 
 const ModuleList: React.FC = () => {
   const [moduleId, setModuleId] = useState<number | null>(null);
@@ -47,10 +47,15 @@ const ModuleList: React.FC = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setShowModuleById(false);
+    setShowModuleByCode(false);
+    setShowEditModuleSearch(false);
   };
 
   const handleToggleModuleById = () => {
     setShowModuleById((prev) => !prev);
+    setShowModuleByCode(false);
+    setShowEditModuleSearch(false);
     if (showModuleById) {
       setModuleId(null);
     }
@@ -70,6 +75,8 @@ const ModuleList: React.FC = () => {
 
   const handleToggleModuleByCode = () => {
     setShowModuleByCode((prev) => !prev);
+    setShowModuleById(false);
+    setShowEditModuleSearch(false);
     if (showModuleByCode) {
       setModuleCode('');
     }
@@ -88,6 +95,8 @@ const ModuleList: React.FC = () => {
 
   const handleToggleEditModuleSearch = () => {
     setShowEditModuleSearch((prev) => !prev);
+    setShowModuleById(false);
+    setShowModuleByCode(false);
     if (showEditModuleSearch) {
       setEditModuleId(null);
     }
@@ -112,11 +121,8 @@ const ModuleList: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
+    <div>
+      <Button
               variant="contained"
               color="primary"
               onClick={handleMenuClick}
@@ -125,6 +131,7 @@ const ModuleList: React.FC = () => {
               <MoreVertIcon style={{ marginRight: '8px' }} />
               Acciones
             </Button>
+            
             <Menu
               anchorEl={anchorEl}
               open={openMenu}
@@ -199,17 +206,14 @@ const ModuleList: React.FC = () => {
                 </Box>
               )}
             </Menu>
-          </Grid>
-        </Grid>
-      </Paper>
 
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-        <ModulesTable />
+        <ModulesDetail />
       </Paper>
 
       <Dialog open={openModuleDialog} onClose={handleCloseModuleDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle del Módulo</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {moduleId !== null && (
             <TableContainer component={Paper}>
               <Table>
@@ -240,7 +244,7 @@ const ModuleList: React.FC = () => {
 
       <Dialog open={openModuleByCodeDialog} onClose={handleCloseModuleByCodeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle del Módulo por Código</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {moduleCode && (
             <TableContainer component={Paper}>
               <Table>
@@ -274,7 +278,7 @@ const ModuleList: React.FC = () => {
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
         <DialogTitle>Editar Módulo</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {editModuleId !== null && (
             <EditModule
               moduleId={editModuleId}
@@ -282,8 +286,10 @@ const ModuleList: React.FC = () => {
             />
           )}
         </DialogContent>
+        <DialogActions>
+        </DialogActions>
       </Dialog>
-    </Container>
+    </div>
   );
 };
 
