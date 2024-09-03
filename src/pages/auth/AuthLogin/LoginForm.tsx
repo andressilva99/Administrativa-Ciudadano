@@ -19,14 +19,17 @@ import * as Yup from 'yup';
 import IconButton from '../../../components/@extended/IconButton';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import AnimateButton from '../../../components/@extended/AnimateButton';
-import { AuthService } from '../../../core/application/AuthService';
+import { LoginUser } from '../../../core/use-cases/LoginUsers';
+import { ApiService } from '../../../infrastructure/http/ApiService';
+import { AuthRepository } from '../../../infrastructure/repository/AuthRepository';
+
 
 const LoginForm = () => {
   const navigate = useNavigate();
 
   const [capsWarning, setCapsWarning] = useState(false);
-
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -50,12 +53,22 @@ const LoginForm = () => {
         username: Yup.string().required('El nombre de usuario es obligatorio'),
         password: Yup.string().max(255).required('La contraseña es obligatoria'),
       })}
-      onSubmit={async (values) => {
-        const authService = new AuthService();
-        await authService.signin(values.username, values.password).then(() => {
-          navigate('/');
-        });
-      }}
+      onSubmit={async (values, {setSubmitting, setErrors}) => {
+          const apiService = new ApiService();
+          const authRepository = new AuthRepository(apiService);
+          const loginUser = new LoginUser(authRepository);
+        
+          try {
+            await loginUser.signin({username: values.username, password: values.password});
+            navigate('/');
+          } catch(err) {
+          console.error('Error during sin in', err);
+          setErrors({ submit: 'Error de autentificación, por favor verifica tus credenciales'});
+          } finally {
+          setSubmitting(false);
+          }
+        }
+      }
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit}>

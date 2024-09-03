@@ -47,7 +47,9 @@ import { openSnackbar } from '../../../store/reducers/snackbar';
 
 // assets
 import { CameraOutlined, DeleteFilled } from '@ant-design/icons';
-import { AuthService } from '../../../core/application/AuthService';
+import { ApiService } from '../../../infrastructure/http/ApiService';
+import { RegisterUser } from '../../../core/use-cases/RegisterUser';
+import { AuthRepository } from '../../../infrastructure/repository/AuthRepository';
 
 // const avatarImage = require('../../../assets/images/users');
 
@@ -135,7 +137,10 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
     initialValues: getInitialValues(customer),
     validationSchema: CustomerSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      const authService = new AuthService();
+      const apiService = new ApiService();
+      const authRepository = new AuthRepository(apiService);
+      const registerUser = new RegisterUser(authRepository);
+      
       try {
         if (customer) {
           // dispatch(updateCustomer(customer.id, newCustomer)); - update
@@ -151,14 +156,15 @@ const AddCustomer = ({ customer, onCancel }: Props) => {
             }),
           );
         } else {
-          const response = await authService.register(
-            values.firstName,
-            values.lastName,
-            values.dni,
-            values.email,
-            values.phoneNumber,
-            values.password,
-          );
+          const response = await registerUser.register({
+            id: '',
+            firstName: values.firstName,
+            lastName: values.lastName,
+            dni: values.dni,
+            email: values.email,
+            phoneNumber: values.phoneNumber,
+            password: values.password,
+          });
           console.log(response.data);
           dispatch(
             openSnackbar({

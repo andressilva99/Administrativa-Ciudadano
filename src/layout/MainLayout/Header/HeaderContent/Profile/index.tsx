@@ -27,6 +27,7 @@ import IconButton from '../../../../../components/@extended/IconButton';
 import avatar1 from '../../../../../assets/images/users/avatar-1.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { maxWidth } from '@mui/system';
+import { useNavigate } from 'react-router';
 
 //  types
 interface TabPanelProps {
@@ -62,8 +63,12 @@ function a11yProps(index: number) {
 
 const Profile = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
+    window.localStorage.removeItem('access_token');
+
+    navigate('/auth/login');
     console.log('Cierre de sesión');
   };
 

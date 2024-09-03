@@ -3,6 +3,7 @@ import { Navigate, RouteObject } from 'react-router';
 
 import Loadable from '../components/Loadable';
 import MainLayout from '../layout/MainLayout';
+import ProtectedRoutes from '../components/ProtectedRoutes';
 
 const Home = Loadable(lazy(() => import('../pages/home')));
 const User = Loadable(lazy(() => import('../pages/user/UserList')));
@@ -11,6 +12,7 @@ const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
 
 const MainRoutes: RouteObject = {
   path: '/',
+  element: <ProtectedRoutes />,
   children: [
     {
       path: '/',
@@ -22,19 +24,35 @@ const MainRoutes: RouteObject = {
         },
         {
           path: '/home',
-          element: <Home />,
+          element: (
+            <ProtectedRoutes>
+              <Home />  
+            </ProtectedRoutes>
+          ),
         },
         {
           path: 'user',
-          element: <User />,
+          element: (
+            <ProtectedRoutes>
+              <User />  
+            </ProtectedRoutes>
+          ),
         },
         {
           path: 'role',
-          element: <Role />,
+          element: (
+            <ProtectedRoutes>
+              <Role />  
+            </ProtectedRoutes>
+          ),
         },
         {
           path: 'module',
-          element: <Module />,
+          element: (
+            <ProtectedRoutes>
+              <Module />  
+            </ProtectedRoutes>
+          ),
         },
       ],
     },

@@ -56,22 +56,22 @@ import {
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons';
-import { AuthService } from '../../core/application/AuthService';
 import useData from '../../data/react-table';
+import { IUserData } from '../../core/entities/IUserData';
 
 // const avatarImage = require('assets/images/users');
 
 // ==============================|| REACT TABLE ||============================== //
 
-interface Props {
+interface Props<T> {
   columns: Column[];
-  data: [];
+  data: T[];
   getHeaderProps: (column: any) => void;
   handleAdd: () => void;
-  renderRowSubComponent: any;
+  renderRowSubComponent: (row: any) => JSX.Element;
 }
 
-function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, handleAdd }: Props) {
+function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, handleAdd }: Props<T>) {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -230,7 +230,7 @@ const CustomerList = () => {
 
   const data = useData();
 
-  const [customer, setCustomer] = useState(null);
+  const [customer, setCustomer] = useState<IUserData | null>(null);
   const [add, setAdd] = useState<boolean>(false);
 
   const handleAdd = () => {
@@ -359,11 +359,14 @@ const CustomerList = () => {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme],
+    [theme, data],
   );
 
   const renderRowSubComponent = useCallback(
-    ({ row }: { row: Row }) => <CustomerView data={data[row.id]} />,
+    ({ row }: { row: any }) => 
+      <CustomerView 
+        data = {data.find((user) => user.id === row.original.id) || {}} 
+      />,
     [data],
   );
 
