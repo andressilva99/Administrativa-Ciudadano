@@ -8,9 +8,9 @@ export class AuthService {
     this._repository = new AuthRepository();
   }
 
-  async signin(email: string, password: string): Promise<any> {
+  /*async signin(email: string, password: string): Promise<any> {
     return await this._repository.signin(email, password);
-  }
+  }*/
 
   //-----------------------------MODULOS-----------------------------------//
   async findModules(page: number, size: number): Promise<any> {
