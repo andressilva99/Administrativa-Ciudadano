@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
-import { AuthService } from '../../core/application/AuthService';
+import { ByCodeModule, ModuleDetailProps } from '../../core/entities/module/IModule';
+import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository'; // Asegúrate de importar la clase implementada del repositorio
+import { ApiService } from '../../infrastructure/http/ApiService';
 
-interface Module {
-  id: number;
-  code: string;
-  moduleType: string;
-  name: string;
-  enabledNp: boolean;
-  enabledLp: boolean;
-  minNpLevel: number;
-  minLpLevel: number;
-  configuraciones: {
-    empty: boolean;
-  };
-}
-
-interface ModuleDetailProps {
-  code: string;
-}
+const apiService = new ApiService();
+const moduleRepository = new ModuleRepository(apiService);
 
 const fetchModulesByCode = async (code: string) => {
-  const authService = new AuthService();
   try {
-    const response = await authService.findModulesByCode(code);
+    const response = await moduleRepository.findModulesByCode(code);
     return response;
   } catch (error) {
     throw new Error('Error fetching modules');
@@ -31,7 +17,7 @@ const fetchModulesByCode = async (code: string) => {
 };
 
 const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
-  const [module, setModule] = useState<Module | null>(null);
+  const [module, setModule] = useState<ByCodeModule | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

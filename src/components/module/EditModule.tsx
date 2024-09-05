@@ -10,23 +10,15 @@ import {
   Checkbox, 
   FormControlLabel 
 } from '@mui/material';
-import { AuthService } from '../../core/application/AuthService'; // Ajusta la ruta según tu estructura de carpetas
+import { EditModuleProps, EModule } from '../../core/entities/module/IModule';
+import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository'; 
+import { ApiService } from '../../infrastructure/http/ApiService';
 
-interface Module {
-  moduleId: number;
-  enabledNp: boolean;
-  enabledLp: boolean;
-  minNpLevel: number;
-  minLpLevel: number;
-}
-
-interface EditModuleProps {
-  moduleId: number;
-  onCancel: () => void;
-}
+const apiService = new ApiService();
+const moduleRepository = new ModuleRepository(apiService);
 
 const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
-  const [module, setModule] = useState<Module>({
+  const [module, setModule] = useState<EModule>({
     moduleId,
     enabledNp: false,
     enabledLp: false,
@@ -37,12 +29,10 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const authService = new AuthService();
-
   useEffect(() => {
     const fetchModule = async () => {
       try {
-        const data = await authService.findModulesById(moduleId);
+        const data = await moduleRepository.findModulesById(moduleId);
         setModule(data);
       } catch (err) {
         console.error('Error fetching module', err);
@@ -66,7 +56,7 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
     setError(null);
     setSuccess(false);
     try {
-      await authService.editModule(
+      await moduleRepository.editModule(
         module.moduleId,
         module.enabledNp,
         module.enabledLp,

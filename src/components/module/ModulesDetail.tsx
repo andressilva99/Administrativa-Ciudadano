@@ -14,38 +14,17 @@ import {
   DialogTitle,
   DialogContent,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit'; // Importa el ícono de edición
-import { AuthService } from '../../core/application/AuthService';
-import EditModule from './EditModule'; // Asegúrate de importar el componente de edición
+import EditIcon from '@mui/icons-material/Edit';
+import { IModule } from '../../core/entities/module/IModule';
+import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
+import { ApiService } from '../../infrastructure/http/ApiService';
+import EditModule from './EditModule';
 
-interface Module {
-  id: number;
-  code: string;
-  moduleType: string;
-  name: string;
-  enabledNp: boolean;
-  enabledLp: boolean;
-  minNpLevel: number;
-  minLpLevel: number;
-  configuraciones: {
-    empty: boolean;
-  };
-}
-
-interface ModuleResponse {
-  list: Module[];
-  total: number;
-  size: number;
-}
-
-const fetchModules = async (page: number, size: number): Promise<ModuleResponse> => {
-  const authService = new AuthService();
-  const response = await authService.findModules(page, size);
-  return response;
-};
+const apiService = new ApiService();
+const moduleRepository = new ModuleRepository(apiService);
 
 const ModulesDetail: React.FC = () => {
-  const [modules, setModules] = useState<Module[]>([]);
+  const [modules, setModules] = useState<IModule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
@@ -57,7 +36,7 @@ const ModulesDetail: React.FC = () => {
     const getModules = async () => {
       setLoading(true);
       try {
-        const data: ModuleResponse = await fetchModules(page, size);
+        const data = await moduleRepository.findModules(page, size);
         setModules(data.list);
         setTotal(data.total);
       } catch (error) {
@@ -102,13 +81,12 @@ const ModulesDetail: React.FC = () => {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Código</TableCell>
-                <TableCell>Tipo de módulo</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>NP Habilitado</TableCell>
                 <TableCell>LP Habilitado</TableCell>
                 <TableCell>Min Nivel NP</TableCell>
                 <TableCell>Min Nivel LP</TableCell>
-                <TableCell>Acciones</TableCell> 
+                <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -116,10 +94,9 @@ const ModulesDetail: React.FC = () => {
                 <TableRow key={module.id}>
                   <TableCell>{module.id}</TableCell>
                   <TableCell>{module.code}</TableCell>
-                  <TableCell>{module.moduleType}</TableCell>
                   <TableCell>{module.name}</TableCell>
-                  <TableCell>{module.enabledNp ? 'Sí' : 'No'}</TableCell>
-                  <TableCell>{module.enabledLp ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enableNp ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enableLp ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>
@@ -145,7 +122,7 @@ const ModulesDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Módulo</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editModuleId && (
+          {editModuleId !== null && (
             <EditModule
               moduleId={editModuleId}
               onCancel={handleCloseEditDialog}
