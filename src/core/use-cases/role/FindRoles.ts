@@ -8,7 +8,7 @@ export class FindRoles {
     this._repository = repository;
   }
 
-  async execute(
+  async findRoles(
     idModule: string,
     page: number,
     size: number,

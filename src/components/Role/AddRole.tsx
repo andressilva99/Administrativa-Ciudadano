@@ -47,10 +47,10 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
 
     const apiService = new ApiService();
     const roleRepository = new RoleRepository(apiService);
-    const registerRole = new RegisterRole(roleRepository);
+    const registerNewRole = new RegisterRole(roleRepository);
 
     try {
-      await registerRole.execute(role);
+      await registerNewRole.registerRole(role);
       setSuccess(true);
       onRoleAdded(); // Notifica al componente padre sobre la adición del rol
       setRole({ 

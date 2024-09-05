@@ -8,7 +8,7 @@ export class FindRoleById {
         this._repository = repository;
     }
 
-    async execute(id: number): Promise<IRole> {
+    async findRoleById(id: number): Promise<IRole> {
         return await this._repository.findRoleById(id);
     }
 

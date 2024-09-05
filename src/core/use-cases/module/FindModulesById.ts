@@ -8,7 +8,7 @@ export class FindModulesById {
         this._repository = repository;
     }
 
-    async execute(id: number): Promise<IModule> {
+    async findModulesById(id: number): Promise<IModule> {
         return await this._repository.findModulesById(id);
     }
 }

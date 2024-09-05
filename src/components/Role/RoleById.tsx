@@ -17,7 +17,7 @@ const RoleById: React.FC<RolesByIdProps> = ({ id, findRoleById }) => {
     const getRole = async () => {
       setLoading(true);
       try {
-        const data = await findRoleById.execute(id);
+        const data = await findRoleById.findRoleById(id);
         setRole(data);
       } catch (error) {
         if (error instanceof Error) {

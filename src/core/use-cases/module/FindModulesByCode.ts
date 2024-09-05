@@ -8,7 +8,7 @@ export class FindModulesByCode {
         this._repository = repository;
     }
 
-    async execute(code: string): Promise<IModule> {
+    async findModulesBycode(code: string): Promise<IModule> {
         return await this._repository.findModulesByCode(code);
     }
 }

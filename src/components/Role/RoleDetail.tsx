@@ -32,7 +32,7 @@ const RoleTable: React.FC = () => {
   const fetchRoles = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await findRoles().execute(idModule, page, size);
+      const data = await findRoles().findRoles(idModule, page, size);
       setRoles(data.list);
       setTotal(data.total);
     } catch (error) {

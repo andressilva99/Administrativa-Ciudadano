@@ -8,7 +8,7 @@ export class RegisterRole {
     this._repository = repository;
   }
 
-  async execute(role: IRole): Promise<void> {
+  async registerRole(role: IRole): Promise<void> {
     const { idModule, name, description, permissionsList } = role;
     await this._repository.registerRole(idModule, name, description, permissionsList);
   }
