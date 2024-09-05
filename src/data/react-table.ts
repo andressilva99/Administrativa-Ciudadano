@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { FindUser } from '../core/use-cases/FindUsers';
 import { ApiService } from '../infrastructure/http/ApiService';
 import { AuthRepository } from '../infrastructure/repository/AuthRepository';
-import { IUserRegister } from '../core/entities/IUserRegister';
-import { IUserData } from '../core/entities/IUserData';
+import { IUserRegister } from '../core/entities/auth/IUserRegister';
+import { IUserData } from '../core/entities/auth/IUserData';
 
 export default function useData() {
   const [data, setData] = useState<IUserData[]>([]);
@@ -11,11 +11,10 @@ export default function useData() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        
         const apiService = new ApiService();
         const authRepository = new AuthRepository(apiService);
         const findUser = new FindUser(authRepository);
-  
+
         const users = await findUser.findUsers();
 
         const formattedData = users.map((user: IUserRegister) => ({

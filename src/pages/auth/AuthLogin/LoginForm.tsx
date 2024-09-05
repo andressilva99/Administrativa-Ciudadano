@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 import IconButton from '../../../components/@extended/IconButton';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import AnimateButton from '../../../components/@extended/AnimateButton';
-import { LoginUser } from '../../../core/use-cases/LoginUsers';
+import { LoginUser } from '../../../core/use-cases/auth/LoginUsers';
 import { ApiService } from '../../../infrastructure/http/ApiService';
 import { AuthRepository } from '../../../infrastructure/repository/AuthRepository';
 

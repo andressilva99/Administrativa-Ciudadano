@@ -57,7 +57,7 @@ import {
   DeleteTwoTone,
 } from '@ant-design/icons';
 import useData from '../../data/react-table';
-import { IUserData } from '../../core/entities/IUserData';
+import { IUserData } from '../../core/entities/auth/IUserData';
 
 // const avatarImage = require('assets/images/users');
 

@@ -1,6 +1,6 @@
-import { ITokens } from '../entities/ITokens';
-import { IUserLogin } from '../entities/IUserLogin';
-import { IAuthRepository } from '../interfaces/IAuthRepository';
+import { ITokens } from '../../entities/auth/ITokens';
+import { IUserLogin } from '../../entities/auth/IUserLogin';
+import { IAuthRepository } from '../../interfaces/IAuthRepository';
 
 export class LoginUser {
   private _repository: IAuthRepository;
@@ -13,7 +13,7 @@ export class LoginUser {
     try {
       const response: ITokens = await this._repository.signin(credentials);
       window.localStorage.setItem('access_token', response.access_token);
-      console.log("Token guardado:", response.access_token);
+      console.log('Token guardado:', response.access_token);
     } catch (err) {
       console.error('Error during sign in', err);
     }
