@@ -1,6 +1,7 @@
 import { ApiService } from '../http/ApiService';
 import { IRoleRepository } from '../../core/interfaces/IRoleRepository';
 import { Permission } from '../../core/entities/role/Permission';
+import { IRole } from '../../core/entities/role/IRole';
 
 export class RoleRepository implements IRoleRepository {
   private readonly _api: ApiService;
@@ -9,10 +10,14 @@ export class RoleRepository implements IRoleRepository {
     this._api = apiService;
   }
 
-  async findRoles(moduleCode: string, page: number, size: number): Promise<any> {
+  async findRoles(
+    idModule: string,
+    page: number,
+    size: number,
+  ): Promise<{ list: IRole[]; total: number }> {
     try {
       const response = await this._api.get(
-        `/adm-main/role/find?module_code=${moduleCode}&page=${page}&size=${size}`,
+        `/adm-main/role/find?module_code=${idModule}&page=${page}&size=${size}`,
       );
       return response.data;
     } catch (error) {
@@ -23,7 +28,7 @@ export class RoleRepository implements IRoleRepository {
 
   async findRoleById(id: number): Promise<any> {
     try {
-      const response = await this._api.get(`adm-main/role/${id}`);
+      const response = await this._api.get(`/adm-main/role/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -31,14 +36,14 @@ export class RoleRepository implements IRoleRepository {
     }
   }
 
-  async registerRol(
+  async registerRole(
     idModule: number,
     name: string,
     description: string,
     permissionsList: Permission[],
   ): Promise<any> {
     try {
-      const response = await this._api.post('adm-main/admrole/registerRol', {
+      const response = await this._api.post('/adm-main/admrole/registerRol', {
         idModule,
         name,
         description,

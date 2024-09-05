@@ -9,7 +9,7 @@ export class LoginUser {
     this._repository = repository;
   }
 
-  async signin(credentials: IUserLogin): Promise<void> {
+  async execute(credentials: IUserLogin): Promise<void> {
     try {
       const response: ITokens = await this._repository.signin(credentials);
       window.localStorage.setItem('access_token', response.access_token);

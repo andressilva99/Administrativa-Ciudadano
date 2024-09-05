@@ -48,7 +48,7 @@ import { openSnackbar } from '../../../store/reducers/snackbar';
 // assets
 import { CameraOutlined, DeleteFilled } from '@ant-design/icons';
 import { ApiService } from '../../../infrastructure/http/ApiService';
-import { RegisterUser } from '../../../core/use-cases/RegisterUser';
+import { RegisterUser } from '../../../core/use-cases/auth/RegisterUser';
 import { AuthRepository } from '../../../infrastructure/repository/AuthRepository';
 
 // const avatarImage = require('../../../assets/images/users');

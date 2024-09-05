@@ -8,7 +8,7 @@ export class FindModules {
         this._repository = repository;
     }
 
-    async findModules(page: number, size: number): Promise<IModule[]> {
+    async execute(page: number, size: number): Promise<IModule[]> {
         return await this._repository.findModules(page, size);
     }
 

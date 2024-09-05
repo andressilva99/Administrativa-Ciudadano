@@ -30,7 +30,7 @@ import EditModule from '../../components/module/EditModule';
 
 const ModuleList: React.FC = () => {
   const [moduleId, setModuleId] = useState<number | null>(null);
-  const [moduleCode, setModuleCode] = useState<string>('');
+  const [idModule, setidModule] = useState<string>('');
   const [editModuleId, setEditModuleId] = useState<number | null>(null);
   const [showModuleById, setShowModuleById] = useState(false);
   const [showModuleByCode, setShowModuleByCode] = useState(false);
@@ -78,7 +78,7 @@ const ModuleList: React.FC = () => {
     setShowModuleById(false);
     setShowEditModuleSearch(false);
     if (showModuleByCode) {
-      setModuleCode('');
+      setidModule('');
     }
   };
 
@@ -90,7 +90,7 @@ const ModuleList: React.FC = () => {
 
   const handleCloseModuleByCodeDialog = () => {
     setOpenModuleByCodeDialog(false);
-    setModuleCode('');
+    setidModule('');
   };
 
   const handleToggleEditModuleSearch = () => {
@@ -171,7 +171,7 @@ const ModuleList: React.FC = () => {
                   <TextField
                     label="Ingrese el código del módulo"
                     fullWidth
-                    onChange={(e) => setModuleCode(e.target.value)}
+                    onChange={(e) => setidModule(e.target.value)}
                   />
                   <IconButton
                     color="primary"
@@ -245,11 +245,11 @@ const ModuleList: React.FC = () => {
       <Dialog open={openModuleByCodeDialog} onClose={handleCloseModuleByCodeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle del Módulo por Código</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {moduleCode && (
+          {idModule && (
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <ModuleByCode code={moduleCode} />
+                  <ModuleByCode code={idModule} />
                 </TableBody>
               </Table>
             </TableContainer>
@@ -259,7 +259,7 @@ const ModuleList: React.FC = () => {
           <Button onClick={handleCloseModuleByCodeDialog} color="secondary">
             Salir
           </Button>
-          {moduleCode && (
+          {idModule && (
             <Button
               variant="contained"
               color="primary"

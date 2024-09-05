@@ -7,7 +7,7 @@ export class EditModule {
         this._repository = repository;
     }
 
-    async editModule(
+    async execute(
         moduleId: number, 
         enableNp: boolean,
         enableLp: boolean,

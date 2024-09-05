@@ -8,7 +8,7 @@ export class FindUser {
     this._repository = repository;
   }
 
-  async findUsers(): Promise<IUserRegister[]> {
+  async execute(): Promise<IUserRegister[]> {
     return await this._repository.findUsers();
   }
 }

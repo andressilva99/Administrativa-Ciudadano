@@ -20,7 +20,7 @@ export class ModuleRepository implements IModuleRepository {
 
   async findModulesByCode(code: string): Promise<any> {
     try {
-      const response = await this._api.get(`adm-main/module/code/${code}`);
+      const response = await this._api.get(`/adm-main/module/code/${code}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -30,7 +30,7 @@ export class ModuleRepository implements IModuleRepository {
 
   async findModulesById(id: number): Promise<any> {
     try {
-      const response = await this._api.get(`adm-main/module/${id}`);
+      const response = await this._api.get(`/adm-main/module/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);

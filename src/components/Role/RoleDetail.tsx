@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Table,
   TableBody,
@@ -10,64 +10,41 @@ import {
   CircularProgress,
   TablePagination,
 } from '@mui/material';
-import { AuthService } from '../../core/application/AuthService';
-
-interface Role {
-  id: number;
-  moduleCode: string;
-  idModule: number;
-  name: string;
-  description: string;
-  fixed: boolean;
-  enabled: boolean;
-  deleted: boolean;
-  tsi: string;
-  tsu: string;
-  permissionsList: string[];
-}
-
-interface RoleResponse {
-  list: Role[];
-  total: number;
-  size: number;
-}
-
-const fetchRole = async (moduleCode: string, page: number, size: number): Promise<RoleResponse> => {
-  const authService = new AuthService();
-  try {
-    console.log(`Fetching roles with params: module_Code=${moduleCode}, page=${page}, size=${size}`);
-    const response = await authService.findRoles(moduleCode, page, size);
-    return response;
-  } catch (error) {
-    console.error('Error fetching roles:', error);
-    throw new Error('Error fetching roles');
-  }
-};
+import { FindRoles } from '../../core/use-cases/role/FindRoles';
+import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
+import { ApiService } from '../../infrastructure/http/ApiService';
+import { IRole } from '../../core/entities/role/IRole';
 
 const RoleTable: React.FC = () => {
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [roles, setRoles] = useState<IRole[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [moduleCode, setModuleCode] = useState<string>("MAIN");
+  const [idModule] = useState<string>("MAIN");
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
-  useEffect(() => {
-    const getRoles = async () => {
-      setLoading(true);
-      try {
-        const data: RoleResponse = await fetchRole(moduleCode, page, size);
-        setRoles(data.list);
-        setTotal(data.total);
-      } catch (error) {
-        console.error('Error fetching roles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const findRoles = useCallback(() => {
+    const apiService = new ApiService();
+    const roleRepository = new RoleRepository(apiService);
+    return new FindRoles(roleRepository);
+  }, [])
 
-    getRoles();
-  }, [moduleCode, page, size]);
+  const fetchRoles = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await findRoles().execute(idModule, page, size);
+      setRoles(data.list);
+      setTotal(data.total);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [idModule, page, size, findRoles]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -89,7 +66,7 @@ const RoleTable: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>ID DE MODULO</TableCell>
+              <TableCell>CODE DE MODULO</TableCell>
               <TableCell>NOMBRE</TableCell>
               <TableCell>DESCRIPCIÓN</TableCell>
               <TableCell>FIJO</TableCell>

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { TextField, Button, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Grid } from '@mui/material';
-
-interface Role {
-  idModule: number;
-  name: string;
-  description: string;
-  permissionsList: string[];
-}
+import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
+import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
+import { ApiService } from '../../infrastructure/http/ApiService';
+import { IRoleAdd } from '../../core/entities/role/IRoleAdd';
+import { Permission } from '../../core/entities/role/Permission';
 
 interface AddRoleProps {
   onRoleAdded: () => void;
@@ -15,7 +12,7 @@ interface AddRoleProps {
 }
 
 const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
-  const [role, setRole] = useState<Role>({
+  const [role, setRole] = useState<IRoleAdd>({
     idModule: 0,
     name: '',
     description: '',
@@ -25,12 +22,7 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const permissions = [
-    'ADMUSER_VIEW_N', 'ADMUSER_VIEW_1', 'ADMUSER_ADD', 'ADMUSER_EDIT', 'ADMUSER_DELETE',
-    'ADMUSER_CHANGEPW', 'ADMUSER_ROLE_SET', 'ADMUSER_ROLE_UNSET', 'ADMROLE_VIEW_N',
-    'ADMROLE_VIEW_1', 'ADMROLE_ADD', 'ADMROLE_EDIT', 'ADMROLE_DELETE', 'MODULE_VIEW_N',
-    'MODULE_VIEW_1', 'MODULE_ADD', 'MODULE_EDIT', 'MODULE_DELETE'
-  ];
+  const permissions = Object.values(Permission);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,12 +31,12 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
 
   const handlePermissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, name } = e.target;
-    setRole(prevRole => {
-      const updatedPermissions = checked
+    setRole(prevRole => ({
+      ...prevRole,
+      permissionsList: checked
         ? [...prevRole.permissionsList, name]
-        : prevRole.permissionsList.filter(permission => permission !== name);
-      return { ...prevRole, permissionsList: updatedPermissions };
-    });
+        : prevRole.permissionsList.filter(permission => permission !== name)
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,40 +45,26 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
     setError(null);
     setSuccess(false);
 
+    const apiService = new ApiService();
+    const roleRepository = new RoleRepository(apiService);
+    const registerRole = new RegisterRole(roleRepository);
+
     try {
-      const response = await axios.post(
-        'http://localhost:8053/adm-main/admrole/',
-        role,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_AUTH_TOKEN' // Asegúrate de reemplazar esto con tu token real
-          }
-        }
-      );
-      console.log('Response:', response);
+      await registerRole.execute(role);
       setSuccess(true);
       onRoleAdded(); // Notifica al componente padre sobre la adición del rol
-      setRole({
-        idModule: 0,
-        name: '',
-        description: '',
-        permissionsList: []
+      setRole({ 
+        idModule: 0, 
+        name: '', 
+        description: '', 
+        permissionsList: [] 
       });
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        // Maneja errores de Axios
-        console.error('Error details:', err.response?.data || err.message);
-        setError(err.response?.data?.message || 'Error adding role. Please try again.');
-      } else {
-        // Maneja otros tipos de errores
-        console.error('Unexpected error:', err);
-        setError('Unexpected error occurred. Please try again.');
-      }
+      setError('Failed to add role. Please try again.');
     } finally {
       setLoading(false);
     }
+   
   };
 
   return (

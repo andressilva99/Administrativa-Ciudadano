@@ -8,7 +8,7 @@ export class RegisterUser {
     this._repository = repository;
   }
 
-  async register(user: IUserRegister): Promise<any> {
+  async execute(user: IUserRegister): Promise<any> {
     return await this._repository.register(user);
   }
 }

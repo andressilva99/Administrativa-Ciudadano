@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FindUser } from '../core/use-cases/FindUsers';
+import { FindUser } from '../core/use-cases/auth/FindUsers';
 import { ApiService } from '../infrastructure/http/ApiService';
 import { AuthRepository } from '../infrastructure/repository/AuthRepository';
 import { IUserRegister } from '../core/entities/auth/IUserRegister';

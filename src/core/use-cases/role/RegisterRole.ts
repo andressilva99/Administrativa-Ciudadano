@@ -1,5 +1,5 @@
 import { IRoleRepository } from '../../interfaces/IRoleRepository';
-import { Permission } from '../../entities/role/Permission';
+import { IRole } from '../../entities/role/IRole';
 
 export class RegisterRole {
   private readonly _repository: IRoleRepository;
@@ -8,12 +8,8 @@ export class RegisterRole {
     this._repository = repository;
   }
 
-  async registerRole(
-    idModule: number,
-    name: string,
-    description: string,
-    permissionList: Permission[],
-  ): Promise<void> {
-    await this._repository.registerRol(idModule, name, description, permissionList);
+  async execute(role: IRole): Promise<void> {
+    const { idModule, name, description, permissionsList } = role;
+    await this._repository.registerRole(idModule, name, description, permissionsList);
   }
 }
