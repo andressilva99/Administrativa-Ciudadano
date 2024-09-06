@@ -80,13 +80,13 @@ const ModulesDetail: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Código</TableCell>
-                <TableCell>Nombre</TableCell>
-                <TableCell>NP Habilitado</TableCell>
-                <TableCell>LP Habilitado</TableCell>
-                <TableCell>Min Nivel NP</TableCell>
-                <TableCell>Min Nivel LP</TableCell>
-                <TableCell>Acciones</TableCell>
+                <TableCell>CÓDIGO</TableCell>
+                <TableCell>NOMBRE</TableCell>
+                <TableCell>NP ACTIVO</TableCell>
+                <TableCell>LP ACTIVO</TableCell>
+                <TableCell>MIN NIVEL NP</TableCell>
+                <TableCell>MIN NIVEL LP</TableCell>
+                <TableCell>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

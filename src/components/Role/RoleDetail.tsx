@@ -66,15 +66,15 @@ const RoleTable: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>CODE DE MODULO</TableCell>
+              <TableCell>ID DE MODULO</TableCell>
               <TableCell>NOMBRE</TableCell>
               <TableCell>DESCRIPCIÓN</TableCell>
-              <TableCell>FIJO</TableCell>
-              <TableCell>HABILITADO</TableCell>
-              <TableCell>DESHABILITADO</TableCell>
+             {/* <TableCell>FIJO</TableCell>*/}
+              <TableCell>ACTIVO</TableCell>
+              {/*<TableCell>DESHABILITADO</TableCell>
               <TableCell>TSI</TableCell>
               <TableCell>TSU</TableCell>
-              {/*} COMENTO LA PARTE VISUAL DE LOS PERMISOS
+              } COMENTO LA PARTE VISUAL DE LOS PERMISOS
               <TableCell>PERMISOS</TableCell>
               */}
             </TableRow>
@@ -86,12 +86,12 @@ const RoleTable: React.FC = () => {
                 <TableCell>{role.idModule}</TableCell>
                 <TableCell>{role.name}</TableCell>
                 <TableCell>{role.description}</TableCell>
-                <TableCell>{role.fixed ? 'Yes' : 'No'}</TableCell>
+                {/*<TableCell>{role.fixed ? 'Yes' : 'No'}</TableCell>*/}
                 <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
+                {/*<TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
                 <TableCell>{role.tsi}</TableCell>
                 <TableCell>{role.tsu}</TableCell>
-                {/*
+                
                 <TableCell>
                    comento la visualizacion de los permisos
                   <ul>

@@ -5,10 +5,15 @@ export interface IRole {
   name: string;
   description: string;
   idModule: number;
-  permissionsList: Permission[];
+  permissionsList: PermissionItem[]; 
   fixed: boolean;
   enabled: boolean;
   deleted: boolean;
   tsi: string;
   tsu: string;
+}
+
+export interface PermissionItem {  
+  name: Permission;
+  description: string;
 }
