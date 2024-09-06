@@ -49,7 +49,7 @@ const ModulesDetail: React.FC = () => {
     getModules();
   }, [page, size]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -101,7 +101,7 @@ const ModulesDetail: React.FC = () => {
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(module.id)}>
-                      <EditIcon />
+                    <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
