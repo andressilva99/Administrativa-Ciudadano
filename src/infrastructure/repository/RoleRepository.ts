@@ -1,7 +1,7 @@
 import { ApiService } from '../http/ApiService';
 import { IRoleRepository } from '../../core/interfaces/IRoleRepository';
-import { Permission } from '../../core/entities/role/Permission';
 import { IRole } from '../../core/entities/role/IRole';
+import { IRoleAdd } from '../../core/entities/role/IRoleAdd';
 
 export class RoleRepository implements IRoleRepository {
   private readonly _api: ApiService;
@@ -36,19 +36,9 @@ export class RoleRepository implements IRoleRepository {
     }
   }
 
-  async registerRole(
-    idModule: number,
-    name: string,
-    description: string,
-    permissionsList: Permission[],
-  ): Promise<any> {
+  async registerRole(role: IRoleAdd): Promise<any> {
     try {
-      const response = await this._api.post('/adm-main/admrole/registerRol', {
-        idModule,
-        name,
-        description,
-        permissionsList,
-      });
+      const response = await this._api.post('/adm-main/admrole/registerRol', role);
       return response.data;
     } catch (error) {
       console.log(error);

@@ -2,22 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 import { IRole } from '../../core/entities/role/IRole';
 import { FindRoleById } from '../../core/use-cases/role/FindRoleById';
+import { ApiService } from '../../infrastructure/http/ApiService';
+import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 
 interface RolesByIdProps {
   id: number;
-  findRoleById: FindRoleById;
 }
 
-const RoleById: React.FC<RolesByIdProps> = ({ id, findRoleById }) => {
+const useRoleById = ( id: number ) => {
   const [role, setRole] = useState<IRole | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getRole = async () => {
-      setLoading(true);
+    const fetchRole = async () => {
+      const apiSerive = new ApiService();
+      const roleRepository = new RoleRepository(apiSerive);
+      const findById = new FindRoleById(roleRepository);
+
       try {
-        const data = await findRoleById.findRoleById(id);
+        const data = await findById.findRoleById(id);
         setRole(data);
       } catch (error) {
         if (error instanceof Error) {
@@ -30,8 +34,15 @@ const RoleById: React.FC<RolesByIdProps> = ({ id, findRoleById }) => {
       }
     };
 
-    getRole();
-  }, [id, findRoleById]);
+    fetchRole();
+  }, [id]);
+   
+  return { role, loading, error};
+}
+
+const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
+
+  const { role, loading, error} = useRoleById(id);
 
   if (loading) {
     return <CircularProgress />;

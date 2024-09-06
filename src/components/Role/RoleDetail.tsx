@@ -23,7 +23,7 @@ const RoleTable: React.FC = () => {
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
-  const findRoles = useCallback(() => {
+  const findRol = useCallback(() => {
     const apiService = new ApiService();
     const roleRepository = new RoleRepository(apiService);
     return new FindRoles(roleRepository);
@@ -32,7 +32,7 @@ const RoleTable: React.FC = () => {
   const fetchRoles = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await findRoles().findRoles(idModule, page, size);
+      const data = await findRol().findRoles(idModule, page, size);
       setRoles(data.list);
       setTotal(data.total);
     } catch (error) {
@@ -40,13 +40,13 @@ const RoleTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [idModule, page, size, findRoles]);
+  }, [idModule, page, size, findRol]);
 
   useEffect(() => {
     fetchRoles();
   }, [fetchRoles]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 

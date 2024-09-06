@@ -67,8 +67,9 @@ const Profile = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('access_token');
-
-    navigate('/auth/login');
+    setTimeout(() => {
+      navigate('/auth/login');
+    }, 100);
     console.log('Cierre de sesión');
   };
 
