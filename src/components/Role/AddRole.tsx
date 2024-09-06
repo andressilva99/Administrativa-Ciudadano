@@ -6,6 +6,7 @@ import { ApiService } from '../../infrastructure/http/ApiService';
 import { IRoleAdd } from '../../core/entities/role/IRoleAdd';
 import { Permission } from '../../core/entities/role/Permission';
 
+
 interface AddRoleProps {
   onRoleAdded: () => void;
   onCancel: () => void;

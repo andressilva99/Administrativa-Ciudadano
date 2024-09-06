@@ -87,7 +87,7 @@ const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
           secondary={
             role.permissionsList.map(permission => (
               <Typography key={permission.name}>
-                {`${permission.name} : ${permission.description}`}
+                {`${permission.description}`}
               </Typography>
             ))
           }
