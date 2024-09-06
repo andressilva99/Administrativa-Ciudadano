@@ -1,399 +1,157 @@
-import { useCallback, useEffect, useMemo, useState, Fragment } from 'react';
-
-// material-ui
-import { alpha, useTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
 import {
   Button,
-  Chip,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  TextField,
+  IconButton,
+  Box,
+  Paper,
   Dialog,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography,
-  useMediaQuery,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import UsersDetail from '../../components/user/UsersDetail';
+//import EditUser from '../../components/user/EditUser'; // Asegúrate de tener este componente
 
-// third-party
-import NumberFormat from 'react-number-format';
-import {
-  useFilters,
-  useExpanded,
-  useGlobalFilter,
-  useRowSelect,
-  useSortBy,
-  useTable,
-  usePagination,
-  Column,
-  Row,
-} from 'react-table';
+const UsersList: React.FC = () => {
+  const [searchUserId, setSearchUserId] = useState<string>('');
+  const [editUserId, setEditUserId] = useState<string | null>(null);
+  const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
 
-// project import
-import CustomerView from '../../sections/apps/customer/CustomerView';
-import AddCustomer from '../../sections/apps/customer/AddCustomer';
-import Avatar from '../../components/@extended/Avatar';
-import IconButton from '../../components/@extended/IconButton';
-import MainCard from '../../components/MainCard';
-import ScrollX from '../../components/ScrollX';
-import makeData from '../../data/react-table';
-import { renderFilterTypes, GlobalFilter } from '../../utils/react-table';
-import {
-  HeaderSort,
-  IndeterminateCheckbox,
-  SortingSelect,
-  TablePagination,
-  TableRowSelection,
-} from '../../components/third-party/ReactTable';
-
-// assets
-import {
-  CloseOutlined,
-  PlusOutlined,
-  EyeTwoTone,
-  EditTwoTone,
-  DeleteTwoTone,
-} from '@ant-design/icons';
-import useData from '../../data/react-table';
-import { IUserData } from '../../core/entities/auth/IUserData';
-
-// const avatarImage = require('assets/images/users');
-
-// ==============================|| REACT TABLE ||============================== //
-
-interface Props<T> {
-  columns: Column[];
-  data: T[];
-  getHeaderProps: (column: any) => void;
-  handleAdd: () => void;
-  renderRowSubComponent: (row: any) => JSX.Element;
-}
-
-function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, handleAdd }: Props<T>) {
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const filterTypes = useMemo(() => renderFilterTypes, []);
-  const sortBy = { id: 'firstName', desc: false };
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    setHiddenColumns,
-    allColumns,
-    visibleColumns,
-    rows,
-    // @ts-ignore
-    page,
-    // @ts-ignore
-    gotoPage,
-    // @ts-ignore
-    setPageSize,
-    // @ts-ignore
-    state: { globalFilter, selectedRowIds, pageIndex, pageSize },
-    // @ts-ignore
-    preGlobalFilteredRows,
-    // @ts-ignore
-    setGlobalFilter,
-    // @ts-ignore
-    setSortBy,
-  } = useTable(
-    {
-      columns,
-      data,
-      // @ts-ignore
-      filterTypes,
-      // @ts-ignore
-      initialState: {
-        pageIndex: 0,
-        pageSize: 10,
-        hiddenColumns: ['avatar'],
-        sortBy: [sortBy],
-      },
-    },
-    useGlobalFilter,
-    useFilters,
-    useSortBy,
-    useExpanded,
-    usePagination,
-    useRowSelect,
-  );
-
-  useEffect(() => {
-    if (matchDownSM) {
-      setHiddenColumns(['lastName', 'dni']);
-    } else {
-      setHiddenColumns(['lastName', 'dni']);
-    }
-  }, [matchDownSM]);
-
-  return (
-    <>
-      <TableRowSelection selected={Object.keys(selectedRowIds).length} />
-      <Stack spacing={3}>
-        <Stack
-          direction={matchDownSM ? 'column' : 'row'}
-          spacing={1}
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ p: 3, pb: 0 }}
-        >
-          <GlobalFilter
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            size="small"
-          />
-          <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={1}>
-            <SortingSelect sortBy={sortBy.id} setSortBy={setSortBy} allColumns={allColumns} />
-            <Button variant="contained" startIcon={<PlusOutlined />} onClick={handleAdd}>
-              Añadir Usuario
-            </Button>
-          </Stack>
-        </Stack>
-
-        <Table {...getTableProps()}>
-          <TableHead>
-            {headerGroups.map((headerGroup) => (
-              <TableRow
-                {...headerGroup.getHeaderGroupProps()}
-                sx={{ '& > th:first-of-type': { width: '58px' } }}
-              >
-                {headerGroup.headers.map((column: any) => (
-                  <TableCell
-                    {...column.getHeaderProps([
-                      { className: column.className },
-                      getHeaderProps(column),
-                    ])}
-                  >
-                    <HeaderSort column={column} />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {page.map((row: any, i: number) => {
-              prepareRow(row);
-              const rowProps = row.getRowProps();
-
-              return (
-                <Fragment key={i}>
-                  <TableRow
-                    {...row.getRowProps()}
-                    onClick={() => {
-                      row.toggleRowSelected();
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      bgcolor: row.isSelected
-                        ? alpha(theme.palette.primary.lighter, 0.35)
-                        : 'inherit',
-                    }}
-                  >
-                    {row.cells.map((cell: any) => (
-                      <TableCell {...cell.getCellProps([{ className: cell.column.className }])}>
-                        {cell.render('Cell')}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {row.isExpanded && renderRowSubComponent({ row, rowProps, visibleColumns })}
-                </Fragment>
-              );
-            })}
-            <TableRow sx={{ '&:hover': { bgcolor: 'transparent !important' } }}>
-              <TableCell sx={{ p: 2, py: 3 }} colSpan={9}>
-                <TablePagination
-                  gotoPage={gotoPage}
-                  rows={rows}
-                  setPageSize={setPageSize}
-                  pageSize={pageSize}
-                  pageIndex={pageIndex}
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Stack>
-    </>
-  );
-}
-
-// ==============================|| CUSTOMER - LIST VIEW ||============================== //
-
-const CustomerList = () => {
-  const theme = useTheme();
-
-  const data = useData();
-
-  const [customer, setCustomer] = useState<IUserData | null>(null);
-  const [add, setAdd] = useState<boolean>(false);
-
-  const handleAdd = () => {
-    setAdd(!add);
-    if (customer && !add) setCustomer(null);
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  // useEffect(() => {
-  //   findUsers()
-  // }, []);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-  const columns = useMemo(
-    () => [
-      {
-        title: 'Row Selection',
-        Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
-          <IndeterminateCheckbox indeterminate {...getToggleAllPageRowsSelectedProps()} />
-        ),
-        accessor: 'selection',
-        Cell: ({ row }: any) => <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />,
-        disableSortBy: true,
-      },
-      {
-        Header: '#',
-        accessor: 'id',
-        className: 'cell-center font-size',
-      },
-      {
-        Header: 'Usuario',
-        accessor: 'firstName',
-        Cell: ({ row }: any) => {
-          const { values } = row;
-          return (
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              {/* <Avatar alt="Avatar 1" size="sm" src={avatarImage(`./avatar-${!values.avatar ? 1 : values.avatar}.png`).default} /> */}
-              <Stack spacing={0}>
-                <Typography variant="subtitle1">{values.firstName} {values.lastName}</Typography>
-              </Stack>
-            </Stack>
-          );
-        },
-      },
-      {
-        accessor: 'lastName',
-      },
-      {
-        accessor: 'dni',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-        className: 'cell-center font-size',
-        Cell: ({ row }: any) => {
-          const { values } = row;
-          return (
-            <Stack spacing={0}>
-              <Typography variant="subtitle1">{values.email}</Typography>
-            </Stack>
-          );
-        },
-      },
-      {
-        Header: 'Celular',
-        accessor: 'phoneNumber',
-        className: 'cell-center font-size',
-        // eslint-disable-next-line
-        // Cell: ({ value }) => <NumberFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={value} />
-        Cell: ({ row }: any) => {
-          const { values } = row;
-          return (
-            <Stack spacing={0}>
-              <Typography variant="subtitle1">{values.phoneNumber}</Typography>
-            </Stack>
-          );
-        },
-      },
-      {
-        Header: 'Acciones',
-        className: 'cell-center font-size',
-        disableSortBy: true,
-        Cell: ({ row }: any) => {
-          const collapseIcon = row.isExpanded ? (
-            <CloseOutlined style={{ color: theme.palette.error.main }} />
-          ) : (
-            <EyeTwoTone twoToneColor={theme.palette.secondary.main} />
-          );
-          const { values } = row;
-          return (
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="Ver">
-                <IconButton
-                  color="secondary"
-                  onClick={(e: any) => {
-                    e.stopPropagation();
-                    row.toggleRowExpanded();
-                  }}
-                >
-                  {collapseIcon}
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Editar">
-                <IconButton
-                  color="primary"
-                  onClick={(e: any) => {
-                    e.stopPropagation();
-                    setCustomer(values);
-                    handleAdd();
-                  }}
-                >
-                  <EditTwoTone twoToneColor={theme.palette.primary.main} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Eliminar">
-                <IconButton
-                  color="error"
-                  onClick={(e: any) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <DeleteTwoTone twoToneColor={theme.palette.error.main} />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          );
-        },
-      },
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme, data],
-  );
+  const handleSearchUserById = () => {
+    setOpenUserDialog(true);
+    handleMenuClose();
+  };
 
-  const renderRowSubComponent = useCallback(
-    ({ row }: { row: any }) => 
-      <CustomerView 
-        data = {data.find((user) => user.id === row.original.id) || {}} 
-      />,
-    [data],
-  );
+  const handleCloseUserDialog = () => {
+    setOpenUserDialog(false);
+    setSearchUserId('');
+  };
+
+  const handleEditUser = () => {
+    setOpenEditDialog(true);
+    handleMenuClose();
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setEditUserId(null);
+  };
 
   return (
-    <MainCard content={false}>
-      <ScrollX>
-        <ReactTable
-          columns={columns}
-          data={data}
-          handleAdd={handleAdd}
-          getHeaderProps={(column: any) => column.getSortByToggleProps()}
-          renderRowSubComponent={renderRowSubComponent}
-        />
-      </ScrollX>
-
-      {/* add customer dialog */}
-      <Dialog
-        maxWidth="sm"
-        fullWidth
-        onClose={handleAdd}
-        open={add}
-        sx={{ '& .MuiDialog-paper': { p: 0 } }}
+    <div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleMenuClick}
+        style={{ marginBottom: '8px' }}
       >
-        {add && <AddCustomer customer={customer} onCancel={handleAdd} />}
+        <MoreVertIcon style={{ marginRight: '8px' }} />
+        Acciones
+      </Button>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleSearchUserById}>
+          <ListItemIcon>
+            <SearchIcon />
+          </ListItemIcon>
+          <ListItemText primary="Buscar por ID" />
+        </MenuItem>
+        <Box display="flex" alignItems="center" marginLeft="16px">
+          <TextField
+            label="Ingrese la ID del usuario"
+            fullWidth
+            value={searchUserId}
+            onChange={(e) => setSearchUserId(e.target.value)}
+          />
+          <IconButton
+            color="primary"
+            onClick={handleSearchUserById}
+            style={{ marginLeft: '8px' }}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Box>
+        <MenuItem onClick={handleEditUser}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText primary="Editar Usuario" />
+        </MenuItem>
+      </Menu>
+
+      <Paper style={{ padding: '16px', marginBottom: '16px' }}>
+        <UsersDetail />
+      </Paper>
+
+      <Dialog open={openUserDialog} onClose={handleCloseUserDialog} fullWidth maxWidth="md">
+        <DialogTitle>Detalle del Usuario</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {searchUserId && (
+            <div>
+              {/* Aquí podrías incluir un componente para mostrar los detalles del usuario */}
+              {/* Asegúrate de tener una función que cargue los detalles del usuario */}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseUserDialog} color="secondary">
+            Salir
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setEditUserId(searchUserId);
+              setOpenEditDialog(true);
+              handleCloseUserDialog();
+            }}
+          >
+            Editar
+          </Button>
+        </DialogActions>
       </Dialog>
-    </MainCard>
+
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
+        <DialogTitle>Editar Usuario</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>{/*
+          {editUserId && (
+            <EditUser
+              userId={editUserId}
+              onCancel={handleCloseEditDialog}
+            />
+          )}*/}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 
-export default CustomerList;
+export default UsersList;
