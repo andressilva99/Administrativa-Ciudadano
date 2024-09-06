@@ -27,13 +27,13 @@ export interface EModule {
 //ById
 export interface ByIdModule {
     id: number;
-  code: string;
-  moduleType: string;
-  name: string;
-  enabledNp: boolean;
-  enabledLp: boolean;
-  minNpLevel: number;
-  minLpLevel: number;
+    code: string;
+    moduleType: string;
+    name: string;
+    enabledNp: boolean;
+    enabledLp: boolean;
+    minNpLevel: number;
+    minLpLevel: number;
   configuraciones: {
     empty: boolean;
   };

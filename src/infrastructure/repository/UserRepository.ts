@@ -18,4 +18,14 @@ export class UserRepository implements IUserRepository {
       throw new Error('Error al obtener usuarios');
     }
   }
+//no tengo nada de buscar por id en endpoint
+  async findUsersById(id: number): Promise<any> {
+    try {
+      const response = await this._api.get(`/adm-main/module/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error al obtener modulo por id');
+    }
+  }
 }

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import UsersDetail from '../../components/user/UsersDetail';
 //import EditUser from '../../components/user/EditUser'; // Asegúrate de tener este componente
 
@@ -67,39 +67,25 @@ const UsersList: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
+      
         <MenuItem onClick={handleSearchUserById}>
-          <ListItemIcon>
-            <SearchIcon />
+        <ListItemIcon>
+            <AddIcon />
           </ListItemIcon>
-          <ListItemText primary="Buscar por ID" />
+          <ListItemText primary="Agregar Usuario" />
         </MenuItem>
-        <Box display="flex" alignItems="center" marginLeft="16px">
-          <TextField
-            label="Ingrese la ID del usuario"
-            fullWidth
-            value={searchUserId}
-            onChange={(e) => setSearchUserId(e.target.value)}
-          />
-          <IconButton
-            color="primary"
-            onClick={handleSearchUserById}
-            style={{ marginLeft: '8px' }}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Box>
+       {/*}
         <MenuItem onClick={handleEditUser}>
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
           <ListItemText primary="Editar Usuario" />
-        </MenuItem>
+        </MenuItem>*/}
       </Menu>
 
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
@@ -107,7 +93,7 @@ const UsersList: React.FC = () => {
       </Paper>
 
       <Dialog open={openUserDialog} onClose={handleCloseUserDialog} fullWidth maxWidth="md">
-        <DialogTitle>Detalle del Usuario</DialogTitle>
+        <DialogTitle>Agregar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           {searchUserId && (
             <div>
@@ -129,7 +115,7 @@ const UsersList: React.FC = () => {
               handleCloseUserDialog();
             }}
           >
-            Editar
+            Agregar
           </Button>
         </DialogActions>
       </Dialog>

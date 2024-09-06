@@ -21,3 +21,11 @@ export interface UserResponse {
   total: number;
   size: number;
 }
+
+//ById
+export interface ByIdUser {
+  id: number;
+}
+export interface UserByIdResponse {
+  user: IUser;
+}
