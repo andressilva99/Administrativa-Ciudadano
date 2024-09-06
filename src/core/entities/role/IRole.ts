@@ -16,4 +16,27 @@ export interface IRole {
 export interface PermissionItem {  
   name: Permission;
   description: string;
+  checked?: boolean; 
+}
+
+//ADD ROLE
+export interface IRoleAdd {
+  idModule: number,
+  name: string,
+  description: string,
+  permissionsList: string[];
+}
+
+//EDIT ROLE 
+export interface ERole {
+  id: number;
+  name: string;
+  description: string;
+  idModule: number;
+  permissionsList: PermissionItem[]; 
+  fixed: boolean;
+  enabled: boolean;
+  deleted: boolean;
+  tsi: string;
+  tsu: string;
 }

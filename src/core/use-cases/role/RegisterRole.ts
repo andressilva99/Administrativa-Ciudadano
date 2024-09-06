@@ -1,5 +1,5 @@
 import { IRoleRepository } from '../../interfaces/IRoleRepository';
-import { IRoleAdd } from '../../entities/role/IRoleAdd';
+import { IRoleAdd } from '../../entities/role/IRole';
 
 export class RegisterRole {
   private readonly _repository: IRoleRepository;

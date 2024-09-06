@@ -1,7 +1,6 @@
 import { ApiService } from '../http/ApiService';
 import { IRoleRepository } from '../../core/interfaces/IRoleRepository';
-import { IRole } from '../../core/entities/role/IRole';
-import { IRoleAdd } from '../../core/entities/role/IRoleAdd';
+import { IRole, IRoleAdd, ERole } from '../../core/entities/role/IRole';
 
 export class RoleRepository implements IRoleRepository {
   private readonly _api: ApiService;
@@ -26,7 +25,7 @@ export class RoleRepository implements IRoleRepository {
     }
   }
 
-  async findRoleById(id: number): Promise<any> {
+  async findRoleById(id: number): Promise<IRole> {
     try {
       const response = await this._api.get(`/adm-main/role/${id}`);
       return response.data;
@@ -36,13 +35,21 @@ export class RoleRepository implements IRoleRepository {
     }
   }
 
-  async registerRole(role: IRoleAdd): Promise<any> {
+  async registerRole(role: IRoleAdd): Promise<void> {
     try {
-      const response = await this._api.post('/adm-main/admrole/registerRol', role);
-      return response.data;
+      await this._api.post('/adm-main/admrole/registerRol', role);
     } catch (error) {
       console.log(error);
-      throw new Error('Error al cargar el usuario');
+      throw new Error('Error al registrar el rol');
+    }
+  }
+
+  async editRole(id: number, updatedRole: ERole): Promise<void> {
+    try {
+      await this._api.put(`/adm-main/role/edit${id}`, updatedRole);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error al editar el rol');
     }
   }
 }

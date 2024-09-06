@@ -3,7 +3,7 @@ import { TextField, Button, Paper, Typography, Checkbox, FormControlLabel, FormG
 import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
-import { IRoleAdd } from '../../core/entities/role/IRoleAdd';
+import { IRoleAdd } from '../../core/entities/role/IRole';
 import { Permission } from '../../core/entities/role/Permission';
 
 

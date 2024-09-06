@@ -1,5 +1,5 @@
-import { IRole } from '../entities/role/IRole';
-import { IRoleAdd } from '../entities/role/IRoleAdd';
+import { IRole, IRoleAdd, ERole} from '../entities/role/IRole';
+
 
 export interface IRoleRepository {
   findRoles(
@@ -9,4 +9,6 @@ export interface IRoleRepository {
   ): Promise<{ list: IRole[]; total: number }>;
   findRoleById(id: number): Promise<IRole>;
   registerRole(role: IRoleAdd): Promise<void>;
+  editRole(id: number, updatedRole: ERole): Promise<void>;
+
 }
