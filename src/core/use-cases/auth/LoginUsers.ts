@@ -1,5 +1,5 @@
-import { ITokens } from '../../entities/auth/ITokens';
-import { IUserLogin } from '../../entities/auth/IUserLogin';
+import { ITokens } from '../../entities/auth/IAuth';
+import { IUserLogin } from '../../entities/auth/IAuth';
 import { IAuthRepository } from '../../interfaces/IAuthRepository';
 
 export class LoginUser {

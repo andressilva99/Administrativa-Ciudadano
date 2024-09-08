@@ -1,5 +1,5 @@
 import { IAuthRepository } from '../../interfaces/IAuthRepository';
-import { IUserRegister } from '../../entities/auth/IUserRegister';
+import { IUserRegister } from '../../entities/auth/IAuth';
 
 export class RegisterUser {
   private _repository: IAuthRepository;

@@ -1,7 +1,7 @@
 import { ApiService } from '../http/ApiService';
-import { ITokens } from '../../core/entities/auth/ITokens';
-import { IUserRegister } from '../../core/entities/auth/IUserRegister';
-import { IUserLogin } from '../../core/entities/auth/IUserLogin';
+import { ITokens } from '../../core/entities/auth/IAuth';
+import { IUserRegister } from '../../core/entities/auth/IAuth';
+import { IUserLogin } from '../../core/entities/auth/IAuth';
 import { IAuthRepository } from '../../core/interfaces/IAuthRepository';
 
 export class AuthRepository implements IAuthRepository {
