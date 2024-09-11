@@ -19,7 +19,7 @@ import { FindRoles } from '../../core/use-cases/role/FindRoles';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { IRole } from '../../core/entities/role/IRole';
-import EditRole from './EditRole'; // Componente para editar roles
+import EditRole from './EditRole';
 
 const RoleTable: React.FC = () => {
   const [roles, setRoles] = useState<IRole[]>([]);
