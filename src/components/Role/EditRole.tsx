@@ -10,7 +10,7 @@ import {
   Checkbox,
   FormControlLabel
 } from '@mui/material';
-import { ERole, PermissionItem } from '../../core/entities/role/IRole';
+import { ERole } from '../../core/entities/role/IRole';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 

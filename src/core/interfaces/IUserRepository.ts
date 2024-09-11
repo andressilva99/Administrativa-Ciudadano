@@ -1,7 +1,10 @@
-import {  UserResponse, UserByIdResponse } from "../entities/user/IUser";
+import {  UserResponse, IUserAdd, EUser, IUser } from "../entities/user/IUser";
 
 export interface IUserRepository {
     findUsers(firtName : string): Promise<UserResponse>;
-    findUsersById(id: number): Promise<UserByIdResponse>;
-
+    findUsersById(id: number): Promise<IUser>;
+    findUsersByDni(dni: string): Promise<IUser>;
+    registerUser(user: IUserAdd): Promise<any>;
+    editUser(id: number, updatedUser: EUser): Promise<void>;
+    deleteUser(id: number): Promise<void>;
 }

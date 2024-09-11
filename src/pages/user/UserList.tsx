@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Menu,
@@ -15,18 +15,21 @@ import {
   DialogActions
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 import UsersDetail from '../../components/user/UsersDetail';
-//import EditUser from '../../components/user/EditUser'; // Asegúrate de tener este componente
+import AddUser from '../../components/user/AddUser';
+import UserById from '../../components/user/UserById';
 
 const UsersList: React.FC = () => {
-  const [searchUserId, setSearchUserId] = useState<string>('');
-  const [editUserId, setEditUserId] = useState<string | null>(null);
-  const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
-  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const openMenu = Boolean(anchorEl);
+  const [showSearchById, setShowSearchById] = useState(false);
+  const [showSearchByDni, setShowSearchByDni] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [dni, setDni] = useState<string>('');
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [showUserDetails, setShowUserDetails] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,27 +37,74 @@ const UsersList: React.FC = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setShowSearchById(false);
+    setShowSearchByDni(false);
+  };
+
+  const handleSearchById = () => {
+    setShowSearchById(prev => !prev);
+    setShowSearchByDni(false);
+    setShowAddUser(false);
+    setShowUserDetails(false);
+  };
+
+  const handleSearchByDni = () => {
+    setShowSearchByDni(prev => !prev);
+    setShowSearchById(false);
+    setShowAddUser(false);
+    setShowUserDetails(false);
+  };
+
+  const handleAddUser = () => {
+    setShowAddUser(true);
+    setShowSearchByDni(false);
+    setShowSearchById(false);
+    setShowUserDetails(false);
+    handleMenuClose();
+  };
+
+  const handleCancel = () => {
+    setShowAddUser(false);
+    setShowSearchByDni(false);
+    setShowSearchById(false);
+    setShowUserDetails(false);
+    setUserId(null);
+    setDni('');
+  };
+
+  const handleUserAdded = () => {
+    setShowAddUser(false);
   };
 
   const handleSearchUserById = () => {
-    setOpenUserDialog(true);
-    handleMenuClose();
+    if ( userId !== null) {
+      setShowUserDetails(true);
+    }
   };
 
-  const handleCloseUserDialog = () => {
-    setOpenUserDialog(false);
-    setSearchUserId('');
+  const handleSearchUserByDni = () => {
+    if ( dni ) {
+      setShowUserDetails(true);
+    }
   };
 
-  const handleEditUser = () => {
-    setOpenEditDialog(true);
-    handleMenuClose();
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if( menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        handleMenuClose();
+      }
+    };
 
-  const handleCloseEditDialog = () => {
-    setOpenEditDialog(false);
-    setEditUserId(null);
-  };
+    if (anchorEl) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [anchorEl]);
 
   return (
     <div>
@@ -67,75 +117,111 @@ const UsersList: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
+
       <Menu
+        id='action-menu'
         anchorEl={anchorEl}
+        keepMounted
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        ref={menuRef}
       >
-      
-        <MenuItem onClick={handleSearchUserById}>
-        <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Agregar Usuario" />
+        <MenuItem onClick={handleSearchById}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary='Buscar por ID' />
         </MenuItem>
-       {/*}
-        <MenuItem onClick={handleEditUser}>
-          <ListItemIcon>
-            <EditIcon />
-          </ListItemIcon>
-          <ListItemText primary="Editar Usuario" />
-        </MenuItem>*/}
+
+        { showSearchById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label ="Ingrese la ID del usuario"
+              type="number"
+              fullWidth
+              onChange={(e) => setUserId(Number(e.target.value))} 
+            />
+            <IconButton
+              color='primary'
+              onClick={handleSearchUserById}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        <MenuItem onClick={handleSearchByDni}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary='Buscar por DNI' />
+        </MenuItem>
+
+        { showSearchByDni && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label ="Ingrese el DNI del usuario"
+              type="string"
+              fullWidth
+              onChange={(e) => setDni(e.target.value)} 
+            />
+            <IconButton
+              color='primary'
+              onClick={handleSearchUserByDni}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        <MenuItem onClick={handleAddUser}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary='Agregar Usuario' />
+        </MenuItem>
       </Menu>
-
-      <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-        <UsersDetail />
-      </Paper>
-
-      <Dialog open={openUserDialog} onClose={handleCloseUserDialog} fullWidth maxWidth="md">
-        <DialogTitle>Agregar Usuario</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          {searchUserId && (
-            <div>
-              {/* Aquí podrías incluir un componente para mostrar los detalles del usuario */}
-              {/* Asegúrate de tener una función que cargue los detalles del usuario */}
-            </div>
+      
+      <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
+        <DialogTitle>Detalles del Usuario</DialogTitle>
+        <DialogContent>
+          {showUserDetails && userId !== null && (
+            <UserById id={userId} />
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseUserDialog} color="secondary">
+          <Button onClick={handleCancel} color="secondary">
             Salir
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setEditUserId(searchUserId);
-              setOpenEditDialog(true);
-              handleCloseUserDialog();
-            }}
-          >
-            Agregar
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
-        <DialogTitle>Editar Usuario</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>{/*
-          {editUserId && (
-            <EditUser
-              userId={editUserId}
-              onCancel={handleCloseEditDialog}
-            />
-          )}*/}
+      <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
+        <DialogTitle>Detalles del Usuario</DialogTitle>
+        <DialogContent>
+          {showUserDetails && dni && (
+            <UserById dni={dni} />
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditDialog} color="secondary">
+          <Button onClick={handleCancel} color="secondary">
             Salir
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={showAddUser} onClose={handleCancel} maxWidth="md" fullWidth>
+        <DialogTitle>Agregar Usuario</DialogTitle>
+        <DialogContent>
+          {showAddUser && (
+            <AddUser onUserAdded={handleUserAdded} onCancel=  {handleCancel} />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Paper style={{ padding: '16px', marginBottom: '16px' }}>
+        <UsersDetail /> {/*render table*/}
+      </Paper>
     </div>
   );
 };

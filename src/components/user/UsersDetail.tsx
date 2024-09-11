@@ -15,9 +15,12 @@ import {
   DialogContent,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete'
 import { IUser, UserResponse } from '../../core/entities/user/IUser';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import EditUser from './EditUser';
+import DeleteUser from './DeleteUser';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -29,23 +32,25 @@ const UsersDetail: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
-  const [editUserId, setEditUserId] = useState<string | null>(null);
+  const [editUserId, setEditUserId] = useState<number | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null)
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+
+  const getUsers = async () => {
+    setLoading(true);
+    try {
+      const data: UserResponse = await userRepository.findUsers(firstName);
+      setUsers(data.list); // Accede a la lista de usuarios
+      setTotal(data.total); // Usa el total de usuarios para la paginación
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getUsers = async () => {
-      setLoading(true);
-      try {
-        const data: UserResponse = await userRepository.findUsers(firstName);
-        setUsers(data.list); // Accede a la lista de usuarios
-        setTotal(data.total); // Usa el total de usuarios para la paginación
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     getUsers();
   }, [firstName, page, size]); // Dependencias añadidas para paginación
 
@@ -58,14 +63,24 @@ const UsersDetail: React.FC = () => {
     setPage(0); // Reinicia la página al cambiar el tamaño
   };
 
-  const handleEditClick = (userId: string) => {
+  const handleEditClick = (userId: number) => {
     setEditUserId(userId);
     setOpenEditDialog(true);
+  };
+  const handleDeleteClick = (userId: number) => {
+    setDeleteUserId(userId);
+    setOpenDeleteDialog(true);
   };
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
     setEditUserId(null);
+    getUsers();
+  };
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setDeleteUserId(null);
+    getUsers();
   };
 
   if (loading) {
@@ -98,8 +113,11 @@ const UsersDetail: React.FC = () => {
                   <TableCell>{user.dni}</TableCell>
                   <TableCell>{user.phoneNumber}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleEditClick(user.id.toString())}> {/* Cambia a ID */}
+                    <IconButton onClick={() => handleEditClick(user.id)}> {/* Cambia a ID */}
                       <EditIcon sx={{ color: 'primary.main' }} />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(user.id)}> {/* Cambia a ID */}
+                      <DeleteIcon sx={{ color: 'error.main' }} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -120,10 +138,23 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {/* 
-          Aquí deberías integrar un componente o formulario para editar el usuario,
-          usando editUserId para saber qué usuario editar.
-          */}
+          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} />}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog} maxWidth="md" fullWidth>
+        <DialogTitle>Eliminar Usuario</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {deleteUserId && 
+            <DeleteUser 
+              userId={deleteUserId} 
+              onCancel={handleCloseDeleteDialog} 
+              onUserDeleted={() => {
+                console.log('Usuario Eliminado');
+                handleCloseDeleteDialog();
+              }} 
+            />
+          }
         </DialogContent>
       </Dialog>
     </>

@@ -1,6 +1,5 @@
 import { ApiService } from '../http/ApiService';
 import { ITokens } from '../../core/entities/auth/IAuth';
-import { IUserRegister } from '../../core/entities/auth/IAuth';
 import { IUserLogin } from '../../core/entities/auth/IAuth';
 import { IAuthRepository } from '../../core/interfaces/IAuthRepository';
 
@@ -22,27 +21,6 @@ export class AuthRepository implements IAuthRepository {
     } catch (err) {
       console.log('Signin Error:', err);
       throw new Error('Error al intentar acceder');
-    }
-  }
-
-  async register(user: IUserRegister): Promise<any> {
-    try {
-      const response = await this._api.post('/adm-main/admuser/register', user);
-      return response.data;
-    } catch (err) {
-      console.log('Register Error: ', err);
-      throw new Error('Error al intentar acceder');
-    }
-  }
-
-  async findUsers(): Promise<IUserRegister[]> {
-    try {
-      const response = await this._api.get<IUserRegister[]>('/adm-main/admuser/find');
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.log('Find Users Error:', error);
-      throw new Error('Error al obtener usuarios');
     }
   }
 }
