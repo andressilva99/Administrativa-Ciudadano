@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../interfaces/IUserRepository";
 import { IUser } from "../../entities/user/IUser";
 
-export class findUsersByDni {
+export class FindUsersByDni {
     private readonly _repository: IUserRepository;
 
     constructor(repository: IUserRepository) {

@@ -197,19 +197,7 @@ const UsersList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
-        <DialogTitle>Detalles del Usuario</DialogTitle>
-        <DialogContent>
-          {showUserDetails && dni && (
-            <UserById dni={dni} />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="secondary">
-            Salir
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
       <Dialog open={showAddUser} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Agregar Usuario</DialogTitle>
         <DialogContent>

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {List, ListItem, ListItemText, CircularProgress} from '@mui/material'
 import { IUser } from '../../core/entities/user/IUser';
 import { FindUsersById } from '../../core/use-cases/user/FindUserById';
-import { findUsersByDni } from '../../core/use-cases/user/FindUserByDni';
+import { FindUsersByDni } from '../../core/use-cases/user/FindUserByDni';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 
@@ -22,15 +22,18 @@ const useUserByIdOrDni = (id?: number, dni?: string) => {
             const userRepository = new UserRepository(apiService);
 
             try {
+                let data: IUser | null = null;
+
                 if(id) {
                     const findById = new FindUsersById(userRepository);
-                    const data = await findById.findUsersById(id);
-                    setUser(data);
+                    data = await findById.findUsersById(id);
                 } else if (dni) {
-                    const findByDni = new findUsersByDni(userRepository);
-                    const data = await findByDni.findUsersByDni(dni);
-                    setUser(data);
+                    const findByDni = new FindUsersByDni(userRepository);
+                    data = await findByDni.findUsersByDni(dni);
                 }
+                console.log('Datos del user', data);
+
+                setUser(data ?? null);
             } catch (err) {
                 if (err instanceof Error) {
                     setError(err.message);
@@ -44,6 +47,7 @@ const useUserByIdOrDni = (id?: number, dni?: string) => {
 
         fetchUser();
     }, [id, dni]);
+
 
     return { user, loading, error };
 };
@@ -62,26 +66,30 @@ const UserById: React.FC<UserByIdProps> = ({ id, dni }) => {
     if(!user) {
         return <div>No user found</div>;
     }
-
+    
+    const admUser = user.admUser;
     return(
         <List>
             <ListItem>
-                <ListItemText primary="*ID" secondary={user.id} />
+                <ListItemText primary="*ID" secondary={admUser.id || 'N/A'} />
             </ListItem>
             <ListItem>
-                <ListItemText primary="*Nombre" secondary={user.firstName} />
+                <ListItemText primary="*Nombre" secondary={admUser.firstName || 'N/A'} />
             </ListItem>
             <ListItem>
-                <ListItemText primary="*Apellido" secondary={user.lastName} />
+                <ListItemText primary="*Apellido" secondary={admUser.lastName || 'N/A'} />
             </ListItem>
             <ListItem>
-                <ListItemText primary="*Email" secondary={user.email} />
+                <ListItemText primary="*Email" secondary={admUser.email || 'N/A'} />
             </ListItem>
             <ListItem>
-                <ListItemText primary="*DNI" secondary={user.dni} />
+                <ListItemText primary="*DNI" secondary={admUser.dni || 'N/A'} />
             </ListItem>
             <ListItem>
-                <ListItemText primary="*Teléfono" secondary={user.phoneNumber} />
+                <ListItemText primary="*Teléfono" secondary={admUser.phoneNumber || 'N/A'} />
+            </ListItem>
+            <ListItem>
+                <ListItemText primary="Último acceso" secondary={admUser.lastAccessDate || 'N/A'} />
             </ListItem>
         </List>
     );

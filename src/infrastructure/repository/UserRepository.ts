@@ -21,7 +21,7 @@ export class UserRepository implements IUserRepository {
 //no tengo nada de buscar por id en endpoint
   async findUsersById(id: number): Promise<any> {
     try {
-      const response = await this._api.get(`/adm-main/admuser/find/${id}`);
+      const response = await this._api.get(`/adm-main/admuser/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -30,7 +30,7 @@ export class UserRepository implements IUserRepository {
   }
   async findUsersByDni(dni: string): Promise<any> {
     try {
-      const response = await this._api.get(`/adm-main/admuser/find/${dni}`);
+      const response = await this._api.get(`/adm-main/admuser/find${dni}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -58,10 +58,10 @@ export class UserRepository implements IUserRepository {
 
   async deleteUser(id: number): Promise<void> {
     try {
-      await this._api.delete(`/adm-main/admuser/delete/${id}`);
+      await this._api.delete(`/adm-main/admuser/delete${id}`);
     } catch (err) {
       console.log(err);
-      throw new Error('Error al eliminar usuario')
+      throw new Error('Error al eliminar usuario');
     }
   }
 }

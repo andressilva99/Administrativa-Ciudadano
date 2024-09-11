@@ -1,4 +1,5 @@
 export interface IUser {
+  admUser: any;
   tsi: string;
   tsu: string;
   id: number;
