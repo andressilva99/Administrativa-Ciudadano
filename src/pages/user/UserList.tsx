@@ -20,6 +20,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import UsersDetail from '../../components/user/UsersDetail';
 import AddUser from '../../components/user/AddUser';
 import UserById from '../../components/user/UserById';
+import UserByDni from '../../components/user/UserByDni';
 
 const UsersList: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -29,6 +30,8 @@ const UsersList: React.FC = () => {
   const [dni, setDni] = useState<string>('');
   const [showAddUser, setShowAddUser] = useState(false);
   const [showUserDetails, setShowUserDetails] = useState(false);
+  const [searchType, setSearchType] = useState<'id'| 'dni' | null>(null);
+  
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +49,7 @@ const UsersList: React.FC = () => {
     setShowSearchByDni(false);
     setShowAddUser(false);
     setShowUserDetails(false);
+    setSearchType('id')
   };
 
   const handleSearchByDni = () => {
@@ -53,6 +57,7 @@ const UsersList: React.FC = () => {
     setShowSearchById(false);
     setShowAddUser(false);
     setShowUserDetails(false);
+    setSearchType('dni')
   };
 
   const handleAddUser = () => {
@@ -70,6 +75,7 @@ const UsersList: React.FC = () => {
     setShowUserDetails(false);
     setUserId(null);
     setDni('');
+    setSearchType(null);
   };
 
   const handleUserAdded = () => {
@@ -162,7 +168,7 @@ const UsersList: React.FC = () => {
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
               label ="Ingrese el DNI del usuario"
-              type="string"
+              type="text"
               fullWidth
               onChange={(e) => setDni(e.target.value)} 
             />
@@ -187,9 +193,13 @@ const UsersList: React.FC = () => {
       <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Usuario</DialogTitle>
         <DialogContent>
-          {showUserDetails && userId !== null && (
+          {searchType === 'id' && userId !== null && (
             <UserById id={userId} />
           )}
+          {searchType === 'dni' && dni && (
+            <UserByDni dni={dni} />
+          )}
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel} color="secondary">

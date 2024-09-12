@@ -1,4 +1,5 @@
 export interface IUser {
+  list: any;
   admUser: any;
   tsi: string;
   tsu: string;
@@ -30,27 +31,27 @@ export interface ByIdUser {
 
 //add user
 export interface IUserAdd {
-  firstName: string,
-  lastName: string,
-  dni: string,
-  email: string,
-  phoneNumber?: string,
-  enabled: boolean,
+  firstName: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  phoneNumber?: string;
+  enabled: boolean;
 }
 
 //edit user
 export interface EUser {
-  id: number,
-  firstName: string,
-  lastName: string,
-  email: string,
-  phoneNumber?: string,
-  enabled: boolean,
-  permissionList: IPermissionItem[],
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  enabled: boolean;
+  permissionList: IPermissionItem[];
 }
 
 export interface IPermissionItem {
-  name: string,
-  description: string,
-  checked?: boolean,
+  name: string;
+  description: string;
+  checked?: boolean;
 }

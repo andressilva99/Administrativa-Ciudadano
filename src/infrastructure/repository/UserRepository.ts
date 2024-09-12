@@ -1,5 +1,5 @@
 import { ApiService } from '../http/ApiService';
-import { IUserRepository } from '../../core/interfaces/IUserRepository'; 
+import { IUserRepository } from '../../core/interfaces/IUserRepository';
 import { EUser, IUserAdd, UserResponse } from '../../core/entities/user/IUser';
 
 export class UserRepository implements IUserRepository {
@@ -11,14 +11,16 @@ export class UserRepository implements IUserRepository {
 
   async findUsers(firstName: string): Promise<UserResponse> {
     try {
-      const response = await this._api.get<UserResponse>(`/adm-main/admuser/find?firstName=${firstName}`);
+      const response = await this._api.get<UserResponse>(
+        `/adm-main/admuser/find?firstName=${firstName}`,
+      );
       return response.data;
     } catch (error) {
       console.log(error);
       throw new Error('Error al obtener usuarios');
     }
   }
-//no tengo nada de buscar por id en endpoint
+  //no tengo nada de buscar por id en endpoint
   async findUsersById(id: number): Promise<any> {
     try {
       const response = await this._api.get(`/adm-main/admuser/${id}`);
@@ -30,7 +32,7 @@ export class UserRepository implements IUserRepository {
   }
   async findUsersByDni(dni: string): Promise<any> {
     try {
-      const response = await this._api.get(`/adm-main/admuser/find${dni}`);
+      const response = await this._api.get(`/adm-main/admuser/find?dni=${dni}`);
       return response.data;
     } catch (error) {
       console.log(error);
