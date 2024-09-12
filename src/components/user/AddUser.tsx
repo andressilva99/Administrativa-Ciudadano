@@ -17,7 +17,8 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
         dni: '',
         email: '',
         phoneNumber: '',
-        enabled: true
+        enabled: true,
+        password: "",
     });
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
@@ -48,10 +49,19 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
                 dni: '',
                 email: '',
                 phoneNumber: '',
-                enabled: true
+                enabled: true,
+                password: "",
             });
-        } catch(error) {
-            setError('Failed to add user. Please try again');
+        } catch (err) {
+            if (typeof err === "string") {
+              // Maneja el error si es una instancia de Error
+              console.error('Error updating module', err);
+              setError(err);
+            } else {
+              // Maneja otros casos si el error no es una instancia de Error
+              console.error('Unknown error updating module', err);
+              setError('Unknown error occurred');
+            }
         } finally {
             setLoading(false);
         }
@@ -101,6 +111,15 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
                     label= "Teléfono"
                     name="phoneNumber"
                     value={user.phoneNumber}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
+                <TextField
+                    label= "Contraseña"
+                    name="password"
+                    value={user.password}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"

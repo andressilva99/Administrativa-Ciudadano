@@ -37,6 +37,7 @@ export interface IUserAdd {
   email: string;
   phoneNumber?: string;
   enabled: boolean;
+  password: string;
 }
 
 //edit user

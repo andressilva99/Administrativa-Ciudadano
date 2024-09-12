@@ -43,9 +43,17 @@ export class UserRepository implements IUserRepository {
   async registerUser(user: IUserAdd): Promise<void> {
     try {
       await this._api.post('/adm-main/admuser/register', user);
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al registrar el nuevo usuario');
+    } catch (error : any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al editar el modulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error editing module', error);
+      }
+      throw new Error('Error al editar el módulo');
     }
   }
 
