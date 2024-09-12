@@ -1,4 +1,5 @@
 import { IModuleRepository } from "../../interfaces/IModuleRepository";
+import { EModule } from "../../entities/module/IModule";
 
 export class EditModule {
     private readonly _repository: IModuleRepository;
@@ -7,13 +8,9 @@ export class EditModule {
         this._repository = repository;
     }
 
-    async editModule(
-        moduleId: number, 
-        enableNp: boolean,
-        enableLp: boolean,
-        minNpLevel: number,
-        minLpLevel: number,
-    ) : Promise<void> {
-        await this._repository.editModule(moduleId, enableNp, enableLp, minNpLevel, minLpLevel);
+    // Refactorizamos el método para recibir un objeto de tipo EModule
+    async editModule(module: EModule): Promise<void> {
+        // Llama al repositorio con el objeto completo
+        await this._repository.editModule(module);
     }
 }

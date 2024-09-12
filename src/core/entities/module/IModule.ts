@@ -18,11 +18,31 @@ export interface EditModuleProps {
   onCancel: () => void;
 }
 export interface EModule {
-    moduleId: number;
-    enabledNp: boolean;
-    enabledLp: boolean;
-    minNpLevel: number;
-    minLpLevel: number;
+  id: number | null;
+  moduleId: number | null;
+  enabledNp: boolean;
+  enabledLp: boolean;
+  minNpLevel: number | null;
+  minLpLevel: number | null;
+  uiOrder: number;
+  configuraciones: Configuraciones;
+}
+//ICON
+interface Icon {
+  prefix: string;
+  name: string;
+  path: string | null;
+}
+
+interface Configuraciones {
+  description: string;
+  linkUrl: string;
+  icon: Icon;
+  deepLinkPackageAndroid: string | null;
+  deepLinkPackageIOS: string | null;
+  deepLinkValue: string | null;
+  deepLinkValueAsUri: boolean;
+  linkToExternalBrowser: boolean;
 }
 //ById
 export interface ByIdModule {
@@ -59,3 +79,4 @@ export interface ModuleDetailProps {
     code: string;
 }
 //ADD 
+

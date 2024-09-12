@@ -1,5 +1,8 @@
 import { ApiService } from '../http/ApiService';
 import { IModuleRepository } from '../../core/interfaces/IModuleRepository';
+import { IModule, EModule } from '../../core/entities/module/IModule';
+import { AxiosError } from 'axios';
+
 
 export class ModuleRepository implements IModuleRepository {
   private readonly _api: ApiService;
@@ -37,26 +40,21 @@ export class ModuleRepository implements IModuleRepository {
       throw new Error('Error al obtener modulo por id');
     }
   }
-
-  async editModule(
-    moduleId: number,
-    enabledNp: boolean,
-    enabledLp: boolean,
-    minNpLevel: number,
-    minLpLevel: number,
-  ): Promise<any> {
+  async editModule(module: EModule): Promise<void> {
     try {
-      const response = await this._api.put('/adm-main/module/edit', {
-        moduleId,
-        enabledNp,
-        enabledLp,
-        minNpLevel,
-        minLpLevel,
-      });
-      return response.data;
-    } catch (error) {
-      console.log(error);
+      await this._api.put(`/adm-main/module/edit`, module);
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al editar el modulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error editing module', error);
+      }
       throw new Error('Error al editar el módulo');
     }
   }
 }
+
