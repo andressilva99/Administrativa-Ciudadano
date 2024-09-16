@@ -4,6 +4,7 @@ import { IUser } from '../../core/entities/user/IUser';
 import { FindUsersByDni } from '../../core/use-cases/user/FindUserByDni';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
+import { CustomError } from '../../core/errors/CustomError';
 
 interface UserByDniProps {
     dni: string,
@@ -24,10 +25,10 @@ const UserByDni: React.FC<UserByDniProps> = ({ dni }) => {
                 const data = await findByDni.findUsersByDni(dni);
                 setUser(data);
             } catch (err) {
-                if( err instanceof Error) {
+                if (err instanceof CustomError) {
                     setError(err.message);
                 } else {
-                    setError('An unknow error ocurred');
+                    setError('Error desconocido para encontrar el usuario');
                 }
             } finally {
                 setLoading(false);
@@ -46,7 +47,7 @@ const UserByDni: React.FC<UserByDniProps> = ({ dni }) => {
     }
 
     if(!user || !user.list || user.list.length === 0) {
-        return <div>No user found</div>;
+        return <div>No se encontro un usuario con ese DNI</div>;
     }
     
     const userList = user.list[0];

@@ -7,12 +7,11 @@ import {
     CircularProgress,
     Typography,
     Grid,
-    Checkbox,
-    FormControlLabel
 } from '@mui/material';
-import { EUser, IPermissionItem } from '../../core/entities/user/IUser';
+import { EUser } from '../../core/entities/user/IUser';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import { CustomError } from '../../core/errors/CustomError';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -29,21 +28,21 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!userId) {
-            setError('User ID inválido');
-        }
         const fetchUser = async () => {
             setLoading(true);
             try {
                 const data = await userRepository.findUsersById(userId);
-                if (data){
+                if (data && data.admUser){
                     setUser(data);
                 } else {
                     setError('Usuario no encontrado');
                 }
             } catch (err) {
-                console.error('Error fetching user: ', err);
-                setError('Error fetching user');
+                if (err instanceof CustomError) {
+                    setError(err.message);
+                  } else {
+                    setError('Error desconocido para encontrar el usuario');
+                  }
             } finally {
                 setLoading(false);
             }
@@ -54,38 +53,31 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
 
     const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, type, value, checked } = e.target;
-        if (user) {
+        if (user?.admUser) {
             setUser(prevUser => ({
                 ...prevUser!,
-                [name]: type === 'checkbox' ? checked : value
+                admUser: {
+                    ...prevUser!.admUser,
+                    [name]: type === 'checkbox' ? checked : value
+                }
             }));
         }
     };
 
-    const handlePermissionChange = (permissionName: string) => {
-        if (user) {
-            const updatedPermissionList = user.permissionList.map(permission =>
-                permission.name === permissionName
-                    ? {...permission, checked: !permission.checked}
-                    : permission
-            );
-            
-            setUser(prevUser => prevUser ? {...prevUser, permissionList: updatedPermissionList} : null);
-
-        }
-    };
-
     const handleSubmit = async () => {
-        if (user) {
+        if (user && user.admUser) {
             setLoading(true),
             setError(null);
             setSuccess(false);
             try {
-                await userRepository.editUser(user.id, user);
+                await userRepository.editUser(user.admUser);
                 setSuccess(true);
             } catch (err) {
-                console.error('Error updating user: ', error);
-                setError('Error updating user');
+                if( err instanceof CustomError) {
+                    setError(err.message);
+                } else {
+                    setError('Error desconocido al editar el usuario')
+                }
             } finally {
                 setLoading(false);
             }
@@ -96,10 +88,11 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         return <CircularProgress />;
     }
 
-    if(!user) {
+    if(!user || !user.admUser) {
         return <Typography variant='body1'>No se pudo cargar el usuario.</Typography>;
     }
 
+    const admUser = user.admUser;
     return (
         <Card>
             <CardContent style={{ paddingBottom: 0}}>
@@ -112,7 +105,8 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         <TextField
                             label='ID de usuario'
                             name='id'
-                            value={user.id || ''}
+                            value={admUser.id}
+                            onChange={handleFieldChange}
                             type='number'
                             fullWidth
                             margin='normal'
@@ -123,7 +117,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         <TextField
                             label='Nombre'
                             name='firstName'
-                            value={user.firstName || ''}
+                            value={admUser.firstName || ''}
                             onChange={handleFieldChange}
                             fullWidth
                             margin='normal'
@@ -134,7 +128,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         <TextField
                             label='Apellido'
                             name='lastName'
-                            value={user.lastName || ''}
+                            value={admUser.lastName || ''}
                             onChange={handleFieldChange}
                             fullWidth
                             margin='normal'
@@ -145,7 +139,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         <TextField
                             label='Email'
                             name='email'
-                            value={user.email || ''}
+                            value={admUser.email || ''}
                             onChange={handleFieldChange}
                             fullWidth
                             margin='normal'
@@ -155,33 +149,23 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             label='Teléfono'
-                            name='telefono'
-                            value={user.phoneNumber || ''}
+                            name='phoneNumber'
+                            value={admUser.phoneNumber || ''}
                             onChange={handleFieldChange}
                             fullWidth
                             margin='normal'
-                            required
                         />
-                    </Grid>    
-                </Grid>
-
-                <Typography variant='h6' gutterBottom>
-                    Permisos
-                </Typography>
-                <Grid container spacing={2}>
-                    {user.permissionList && user.permissionList.map((permission: IPermissionItem) => (
-                        <Grid item xs={12} sm={6} key={permission.name}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={permission.checked || false}
-                                        onChange={() => handlePermissionChange(permission.name)} 
-                                    />
-                                } 
-                                label= {permission.description}
-                            />
-                        </Grid>
-                    ))}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label='Enabled'
+                            name='enabled'
+                            value={admUser.enabled ? 'True' : 'False'}
+                            fullWidth
+                            margin='normal'
+                            disabled
+                        />
+                    </Grid>     
                 </Grid>
                 
                 <Grid container spacing={2} justifyContent="flex-end" mb={2}>

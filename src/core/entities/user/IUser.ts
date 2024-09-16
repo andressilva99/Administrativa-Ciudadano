@@ -42,13 +42,13 @@ export interface IUserAdd {
 
 //edit user
 export interface EUser {
+  admUser: any;
   id: number;
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber?: string;
   enabled: boolean;
-  permissionList: IPermissionItem[];
 }
 
 export interface IPermissionItem {

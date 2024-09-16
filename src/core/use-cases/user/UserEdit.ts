@@ -8,10 +8,9 @@ export class UserEdit {
         this._repository = repository;
     }
 
-    async editUser(
-        id: number,                  
+    async editUser(            
         updatedUser: EUser            
     ): Promise<void> {
-        await this._repository.editUser(id, updatedUser);
+        await this._repository.editUser(updatedUser);
     }
 }

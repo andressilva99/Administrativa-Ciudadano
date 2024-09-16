@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import { CustomError } from '../../core/errors/CustomError';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -38,8 +39,11 @@ const DeleteUser: React.FC<DeleteUserProps> = ({ userId, onCancel, onUserDeleted
             setSuccess(true);
             onUserDeleted();
         } catch (err){
-            console.log("Error deleting user ", err);
-            setError("Error deleting user");
+            if (err instanceof CustomError) {
+                setError(err.message);
+              } else {
+                setError('Error desconocido para eliminar el usuario');
+              }
         } finally {
             setLoading(false);
             setOpenConfirmDialog(false)
