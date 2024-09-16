@@ -126,7 +126,7 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
                 {error && <Typography color="error">{error}</Typography> }
                 {success && <Typography color="primary">User added successfully!</Typography> }
 
-                <Grid container spacing={2} justifyContent="flex-end">
+                <Grid container spacing={2} justifyContent="flex-end" mb={2}>
                     <Grid item>
                         <Button color="secondary" onClick={onCancel}>
                             Salir
