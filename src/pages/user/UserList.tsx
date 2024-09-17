@@ -210,7 +210,7 @@ const UsersList: React.FC = () => {
       
       <Dialog open={showAddUser} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Agregar Usuario</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {showAddUser && (
             <AddUser onUserAdded={handleUserAdded} onCancel=  {handleCancel} />
           )}

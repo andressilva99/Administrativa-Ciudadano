@@ -44,12 +44,20 @@ export class RoleRepository implements IRoleRepository {
     }
   }
 
-  async editRole(id: number, updatedRole: ERole): Promise<void> {
+  async editRole(role : ERole): Promise<void> {
     try {
-      await this._api.put(`/adm-main/role/edit${id}`, updatedRole);
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al editar el rol');
+      await this._api.put(`/adm-main/role/edit`, role);
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al editar el modulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error editing module', error);
+      }
+      throw new Error('Error al editar el módulo');
     }
   }
 }

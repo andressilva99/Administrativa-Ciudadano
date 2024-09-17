@@ -39,6 +39,8 @@ const ModulesDetail: React.FC = () => {
         const data = await moduleRepository.findModules(page, size);
         setModules(data.list);
         setTotal(data.total);
+        //traigo todo el modulo en consola para controlar
+        console.log('Fetched modules:', data.list);
       } catch (error) {
         console.error('Error fetching modules:', error);
       } finally {
@@ -72,6 +74,7 @@ const ModulesDetail: React.FC = () => {
     return <CircularProgress />;
   }
 
+
   return (
     <>
       <Paper>
@@ -95,8 +98,8 @@ const ModulesDetail: React.FC = () => {
                   <TableCell>{module.id}</TableCell>
                   <TableCell>{module.code}</TableCell>
                   <TableCell>{module.name}</TableCell>
-                  <TableCell>{module.enableNp ? 'Sí' : 'No'}</TableCell>
-                  <TableCell>{module.enableLp ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enabledNp  ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enabledLp  ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>

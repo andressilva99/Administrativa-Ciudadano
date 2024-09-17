@@ -9,5 +9,5 @@ export interface IRoleRepository {
   ): Promise<{ list: IRole[]; total: number }>;
   findRoleById(id: number): Promise<IRole>;
   registerRole(role: IRoleAdd): Promise<void>;
-  editRole(id: number, updatedRole: ERole): Promise<void>;
+  editRole(role: ERole): Promise<void>;
 }

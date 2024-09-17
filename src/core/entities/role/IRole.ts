@@ -29,10 +29,10 @@ export interface IRoleAdd {
 
 //EDIT ROLE 
 export interface ERole {
-  id: number;
+  id: number | null;
   name: string;
   description: string;
-  idModule: number;
+  idModule: number | null;
   permissionsList: PermissionItem[]; 
   fixed: boolean;
   enabled: boolean;

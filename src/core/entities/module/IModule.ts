@@ -4,8 +4,8 @@ export interface IModule {
     code: string;
     name: string;
     description: string;
-    enableNp: boolean;
-    enableLp: boolean;
+    enabledNp: boolean;
+    enabledLp: boolean;
     minNpLevel: number;
     minLpLevel: number;
     configuraciones: {

@@ -23,6 +23,7 @@ const useRoleById = (id: number) => {
       try {
         const data = await findById.findRoleById(id);
         setRole(data);
+        console.log('Fetched role:', data); 
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);

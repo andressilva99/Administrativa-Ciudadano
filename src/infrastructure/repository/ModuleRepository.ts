@@ -1,7 +1,7 @@
 import { ApiService } from '../http/ApiService';
 import { IModuleRepository } from '../../core/interfaces/IModuleRepository';
-import { IModule, EModule } from '../../core/entities/module/IModule';
-import { AxiosError } from 'axios';
+import { EModule } from '../../core/entities/module/IModule';
+
 
 
 export class ModuleRepository implements IModuleRepository {
