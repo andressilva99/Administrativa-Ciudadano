@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import { RouteObject } from 'react-router';
 import Loadable from '../components/Loadable';
 import AuthLayout from '../layout/AuthLayout';
-import ProtectedRoutes from '../components/ProtectedRoutes';
+import ProtectedRoutes from './ProtectedRoutes';
 
 const Login = Loadable(lazy(() => import('../pages/auth/AuthLogin')));
 

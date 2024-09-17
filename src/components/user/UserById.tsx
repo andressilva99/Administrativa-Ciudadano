@@ -51,6 +51,7 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
     }
     
     const admUser = user.admUser;
+    const modules = user.moduleList || [];
     return(
         <List>
             <ListItem>
@@ -74,6 +75,19 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
             <ListItem>
                 <ListItemText primary="*Último acceso" secondary={admUser?.lastAccessDate || 'N/A'} />
             </ListItem>
+
+            {modules.length > 0 && (
+                <>
+                    <ListItem>
+                        <ListItemText primary="Módulos asignados: " />
+                    </ListItem>
+                    {modules.map((module, index) => (
+                        <ListItem key={index}>
+                            <ListItemText primary={`- ${module.name}`} />
+                        </ListItem>
+                    ))}
+                </>
+            )}
         </List>
     );
 };

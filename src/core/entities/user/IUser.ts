@@ -1,4 +1,7 @@
+import { IModule } from "../module/IModule";
+
 export interface IUser {
+  moduleList: IModule[];
   list: any;
   admUser: any;
   tsi: string;

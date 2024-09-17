@@ -3,7 +3,7 @@ import { Navigate, RouteObject } from 'react-router';
 
 import Loadable from '../components/Loadable';
 import MainLayout from '../layout/MainLayout';
-import ProtectedRoutes from '../components/ProtectedRoutes';
+import ProtectedRoutes from './ProtectedRoutes';
 
 const Home = Loadable(lazy(() => import('../pages/home')));
 const User = Loadable(lazy(() => import('../pages/user/UserList')));
@@ -24,35 +24,19 @@ const MainRoutes: RouteObject = {
         },
         {
           path: '/home',
-          element: (
-            <ProtectedRoutes>
-              <Home />  
-            </ProtectedRoutes>
-          ),
+          element: <Home />,
         },
         {
           path: 'user',
-          element: (
-            <ProtectedRoutes>
-              <User />  
-            </ProtectedRoutes>
-          ),
+          element: <User />,
         },
         {
           path: 'role',
-          element: (
-            <ProtectedRoutes>
-              <Role />  
-            </ProtectedRoutes>
-          ),
+          element: <Role />,
         },
         {
           path: 'module',
-          element: (
-            <ProtectedRoutes>
-              <Module />  
-            </ProtectedRoutes>
-          ),
+          element: <Module /> ,
         },
       ],
     },
