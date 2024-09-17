@@ -21,6 +21,7 @@ import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import EditUser from './EditUser';
 import DeleteUser from './DeleteUser';
+import { CustomError } from '../../core/errors/CustomError';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -28,6 +29,7 @@ const userRepository = new UserRepository(apiService);
 const UsersDetail: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [firstName, setFirstName] = useState<string>("");
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
@@ -39,12 +41,17 @@ const UsersDetail: React.FC = () => {
 
   const getUsers = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data: UserResponse = await userRepository.findUsers(firstName);
       setUsers(data.list); // Accede a la lista de usuarios
       setTotal(data.total); // Usa el total de usuarios para la paginación
-    } catch (error) {
-      console.error('Error fetching users:', error);
+    } catch (err) {
+      if (err instanceof CustomError) {
+        setError(err.message)
+      } else {
+        setError('Ocurrió un error al cargar los usuarios');
+      }
     } finally {
       setLoading(false);
     }
@@ -85,6 +92,10 @@ const UsersDetail: React.FC = () => {
 
   if (loading) {
     return <CircularProgress />;
+  }
+
+  if (error) {
+    return <div> Error: {error} </div>;
   }
 
   return (

@@ -4,6 +4,7 @@ import { IUser } from '../../core/entities/user/IUser';
 import { FindUsersById } from '../../core/use-cases/user/FindUserById';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
+import { CustomError } from '../../core/errors/CustomError';
 
 interface UserByIdProps {
     id: number,
@@ -24,10 +25,10 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
                 const data = await findById.findUsersById(id);
                 setUser(data);
             } catch (err) {
-                if (err instanceof Error) {
+                if (err instanceof CustomError) {
                     setError(err.message);
                 } else {
-                    setError('An unknow error occurred');
+                    setError('Error desconocido para encontrar el usuario');
                 }
             } finally {
                 setLoading(false);
@@ -45,8 +46,8 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
         return <div>Error: {error}</div>;
     }
 
-    if(!user) {
-        return <div>No user found</div>;
+    if(!user || !user.admUser) {
+        return <div>No se encontro un usario con ese ID</div>;
     }
     
     const admUser = user.admUser;

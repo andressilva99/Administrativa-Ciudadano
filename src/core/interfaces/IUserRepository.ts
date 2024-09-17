@@ -5,6 +5,6 @@ export interface IUserRepository {
     findUsersById(id: number): Promise<IUser>;
     findUsersByDni(dni: string): Promise<IUser>;
     registerUser(user: IUserAdd): Promise<any>;
-    editUser(id: number, updatedUser: EUser): Promise<void>;
+    editUser(updatedUser: EUser): Promise<void>;
     deleteUser(id: number): Promise<void>;
 }

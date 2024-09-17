@@ -4,6 +4,7 @@ import { ApiService } from "../../infrastructure/http/ApiService";
 import { UserRepository } from "../../infrastructure/repository/UserRepository";
 import { IUserAdd } from "../../core/entities/user/IUser";
 import { RegisterUser } from "../../core/use-cases/user/RegisterUser";
+import { CustomError } from "../../core/errors/CustomError";
 
 interface AddUserProps {
     onUserAdded: () => void;
@@ -53,14 +54,10 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
                 password: "",
             });
         } catch (err) {
-            if (typeof err === "string") {
-              // Maneja el error si es una instancia de Error
-              console.error('Error updating module', err);
-              setError(err);
+            if (err instanceof CustomError) {
+              setError(err.message);
             } else {
-              // Maneja otros casos si el error no es una instancia de Error
-              console.error('Unknown error updating module', err);
-              setError('Unknown error occurred');
+              setError('Error desconocido para buscar el usuario');
             }
         } finally {
             setLoading(false);

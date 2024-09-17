@@ -107,6 +107,14 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
     }
   };
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (!role) {
+    return <Typography variant="body1">No se pudo cargar el rol.</Typography>;
+  }
+  
   return (
     <Card>
       <CardContent style={{ paddingBottom: 0 }}>
