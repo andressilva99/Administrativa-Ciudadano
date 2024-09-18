@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Paper,
-  CircularProgress,
   TablePagination,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  TableRow
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete'
+import React, { useEffect, useState } from 'react';
 import { IUser, UserResponse } from '../../core/entities/user/IUser';
-import { UserRepository } from '../../infrastructure/repository/UserRepository';
-import { ApiService } from '../../infrastructure/http/ApiService';
-import EditUser from './EditUser';
-import DeleteUser from './DeleteUser';
 import { CustomError } from '../../core/errors/CustomError';
+import { ApiService } from '../../infrastructure/http/ApiService';
+import { UserRepository } from '../../infrastructure/repository/UserRepository';
+import DeleteUser from './DeleteUser';
+import EditUser from './EditUser';
+import UserById from './UserById';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -30,14 +32,17 @@ const UsersDetail: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState<string>("");
+  const [firstName] = useState<string>("");
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [editUserId, setEditUserId] = useState<number | null>(null);
-  const [deleteUserId, setDeleteUserId] = useState<number | null>(null)
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [viewUserId, setViewUserId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+
 
   const getUsers = async () => {
     setLoading(true);
@@ -78,6 +83,10 @@ const UsersDetail: React.FC = () => {
     setDeleteUserId(userId);
     setOpenDeleteDialog(true);
   };
+  const handleViewClick = (userId: number) => {
+    setViewUserId(userId);
+    setOpenViewDialog(true);
+  };
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
@@ -89,6 +98,10 @@ const UsersDetail: React.FC = () => {
     setDeleteUserId(null);
     getUsers();
   };
+  const handleCloseViewDialog = () => {
+    setOpenViewDialog(false);
+    setViewUserId(null);
+  }; 
 
   if (loading) {
     return <CircularProgress />;
@@ -124,6 +137,9 @@ const UsersDetail: React.FC = () => {
                   <TableCell>{user.dni}</TableCell>
                   <TableCell>{user.phoneNumber}</TableCell>
                   <TableCell>
+                    <IconButton onClick={() => handleViewClick(user.id)}> {/* Cambia a ID */}
+                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                    </IconButton>
                     <IconButton onClick={() => handleEditClick(user.id)}> {/* Cambia a ID */}
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
@@ -145,6 +161,13 @@ const UsersDetail: React.FC = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
+        <DialogTitle>Detalles del Usuario</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {viewUserId && <UserById id={viewUserId} />}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
