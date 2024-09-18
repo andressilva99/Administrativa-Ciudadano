@@ -15,16 +15,18 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
 import ModulesDetail from '../../components/module/ModulesDetail';
 import ModuleById from '../../components/module/ModuleById';
 import ModuleByCode from '../../components/module/ModuleByCode';
 import EditModule from '../../components/module/EditModule';
-
+import CreateModule from '../../components/module/CreateModule'; // Asegúrate de que la ruta sea correcta
 
 const ModuleList: React.FC = () => {
   const [moduleId, setModuleId] = useState<number | null>(null);
@@ -36,6 +38,7 @@ const ModuleList: React.FC = () => {
   const [openModuleDialog, setOpenModuleDialog] = useState(false);
   const [openModuleByCodeDialog, setOpenModuleByCodeDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState(false); // Estado para el diálogo de creación
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
@@ -61,7 +64,6 @@ const ModuleList: React.FC = () => {
 
   const handleSearchModuleById = () => {
     setOpenModuleDialog(true);
-    setModuleId(moduleId || 0);
     setShowModuleById(false);
     handleMenuClose();
   };
@@ -118,92 +120,112 @@ const ModuleList: React.FC = () => {
     setEditModuleId(null);
   };
 
+  const handleOpenCreateDialog = () => {
+    setOpenCreateDialog(true);
+    handleMenuClose();
+  };
+
+  const handleCloseCreateDialog = () => {
+    setOpenCreateDialog(false);
+  };
+
+  const handleSuccess = () => {
+    // Lógica después de la actualización exitosa
+    handleCloseEditDialog();
+  };
+
   return (
     <div>
       <Button
-              variant="contained"
+        variant="contained"
+        color="primary"
+        onClick={handleMenuClick}
+        style={{ marginBottom: '8px' }}
+      >
+        <MoreVertIcon style={{ marginRight: '8px' }} />
+        Acciones
+      </Button>
+      
+      <Menu
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleToggleModuleById}>
+          <ListItemIcon>
+            <SearchIcon />
+          </ListItemIcon>
+          <ListItemText primary="Buscar por ID" />
+        </MenuItem>
+        {showModuleById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese la ID del módulo"
+              type="number"
+              fullWidth
+              onChange={(e) => setModuleId(Number(e.target.value))}
+            />
+            <IconButton
               color="primary"
-              onClick={handleMenuClick}
-              style={{ marginBottom: '8px' }}
+              onClick={handleSearchModuleById}
+              style={{ marginLeft: '8px' }}
             >
-              <MoreVertIcon style={{ marginRight: '8px' }} />
-              Acciones
-            </Button>
-            
-            <Menu
-              anchorEl={anchorEl}
-              open={openMenu}
-              onClose={handleMenuClose}
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+        <MenuItem onClick={handleToggleModuleByCode}>
+          <ListItemIcon>
+            <SearchIcon />
+          </ListItemIcon>
+          <ListItemText primary="Buscar por Código" />
+        </MenuItem>
+        {showModuleByCode && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese el código del módulo"
+              fullWidth
+              onChange={(e) => setidModule(e.target.value)}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchModuleByCode}
+              style={{ marginLeft: '8px' }}
             >
-              <MenuItem onClick={handleToggleModuleById}>
-                <ListItemIcon>
-                  <SearchIcon />
-                </ListItemIcon>
-                <ListItemText primary="Buscar por ID" />
-              </MenuItem>
-              {showModuleById && (
-                <Box display="flex" alignItems="center" marginLeft="16px">
-                  <TextField
-                    label="Ingrese la ID del módulo"
-                    type="number"
-                    fullWidth
-                    onChange={(e) => setModuleId(Number(e.target.value))}
-                  />
-                  <IconButton
-                    color="primary"
-                    onClick={handleSearchModuleById}
-                    style={{ marginLeft: '8px' }}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </Box>
-              )}
-              <MenuItem onClick={handleToggleModuleByCode}>
-                <ListItemIcon>
-                  <SearchIcon />
-                </ListItemIcon>
-                <ListItemText primary="Buscar por Código" />
-              </MenuItem>
-              {showModuleByCode && (
-                <Box display="flex" alignItems="center" marginLeft="16px">
-                  <TextField
-                    label="Ingrese el código del módulo"
-                    fullWidth
-                    onChange={(e) => setidModule(e.target.value)}
-                  />
-                  <IconButton
-                    color="primary"
-                    onClick={handleSearchModuleByCode}
-                    style={{ marginLeft: '8px' }}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </Box>
-              )}
-              <MenuItem onClick={handleToggleEditModuleSearch}>
-                <ListItemIcon>
-                  <EditIcon />
-                </ListItemIcon>
-                <ListItemText primary="Editar Módulo" />
-              </MenuItem>
-              {showEditModuleSearch && (
-                <Box display="flex" alignItems="center" marginLeft="16px">
-                  <TextField
-                    label="Ingrese el ID del módulo para editar"
-                    type="number"
-                    fullWidth
-                    onChange={(e) => setEditModuleId(Number(e.target.value))}
-                  />
-                  <IconButton
-                    color="primary"
-                    onClick={handleSearchEditModule}
-                    style={{ marginLeft: '8px' }}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </Box>
-              )}
-            </Menu>
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+        <MenuItem onClick={handleToggleEditModuleSearch}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText primary="Editar Módulo" />
+        </MenuItem>
+        {showEditModuleSearch && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese el ID del módulo para editar"
+              type="number"
+              fullWidth
+              onChange={(e) => setEditModuleId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchEditModule}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+        <MenuItem onClick={handleOpenCreateDialog}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Crear Módulo" />
+        </MenuItem>
+      </Menu>
 
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>
         <ModulesDetail />
@@ -262,30 +284,43 @@ const ModuleList: React.FC = () => {
               variant="contained"
               color="primary"
               onClick={() => {
-                setEditModuleId(null); // Resetea el ID de edición para evitar conflictos
+                setEditModuleId(Number(idModule));
                 setOpenEditDialog(true);
                 handleCloseModuleByCodeDialog();
               }}
             >
               Editar
             </Button>
-            
           )}
         </DialogActions>
       </Dialog>
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
         <DialogTitle>Editar Módulo</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
+        <DialogContent>
           {editModuleId !== null && (
-            <EditModule
-              moduleId={editModuleId}
-              onCancel={handleCancelEdit}
-            />
+            <EditModule 
+            moduleId={editModuleId} 
+            onCancel={handleCloseEditDialog} // Asegúrate de pasar esta función
+            onSuccess={handleSuccess}/>
           )}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleCloseEditDialog} color="secondary">
+            Salir
+          </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} fullWidth maxWidth="md">
+        <DialogTitle>Crear Módulo</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          <CreateModule
+            onModuleCreated={() => handleCloseCreateDialog()} // Callback para cuando se cree un módulo
+            onCancel={() => handleCloseCreateDialog()} // Callback para cancelar
+          />
+        </DialogContent>
+        
       </Dialog>
     </div>
   );

@@ -8,10 +8,9 @@ export class EditRole {
         this._repository = repository;
     }
 
-    async editRole(
-        id: number,                  
-        updatedRole: ERole            
-    ): Promise<void> {
-        await this._repository.editRole(id, updatedRole);
+    // Refactorizamos el método para recibir un objeto de tipo EModule
+    async editRole(role: ERole): Promise<void> {
+        // Llama al repositorio con el objeto completo
+        await this._repository.editRole(role);
     }
 }

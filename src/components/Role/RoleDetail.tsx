@@ -13,13 +13,20 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { FindRoles } from '../../core/use-cases/role/FindRoles';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
-import { IRole } from '../../core/entities/role/IRole';
+import { IRole, PermissionItem } from '../../core/entities/role/IRole';
 import EditRole from './EditRole';
+
+// Función para formatear los permisos en una cadena
+const formatPermissions = (permissionsList: PermissionItem[]): string => {
+  return permissionsList.map(permission => permission.name).join(', ');
+};
 
 const RoleTable: React.FC = () => {
   const [roles, setRoles] = useState<IRole[]>([]);
@@ -30,6 +37,8 @@ const RoleTable: React.FC = () => {
   const [total, setTotal] = useState<number>(0);
   const [editRoleId, setEditRoleId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null); // Estado para mensajes de error
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
   const findRol = useCallback(() => {
     const apiService = new ApiService();
@@ -39,12 +48,20 @@ const RoleTable: React.FC = () => {
 
   const fetchRoles = useCallback(async () => {
     setLoading(true);
+    setError(null); // Limpiar errores anteriores
     try {
       const data = await findRol().findRoles(idModule, page, size);
       setRoles(data.list);
       setTotal(data.total);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
+    } catch (err) {
+      if (typeof err === "string") {
+        console.error('Error fetching roles:', err);
+        setError(err);
+      } else {
+        console.error('Unknown error fetching roles:', err);
+        setError('Unknown error occurred');
+      }
+      setOpenSnackbar(true); // Mostrar el Snackbar en caso de error
     } finally {
       setLoading(false);
     }
@@ -73,6 +90,10 @@ const RoleTable: React.FC = () => {
     setEditRoleId(null);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -89,7 +110,8 @@ const RoleTable: React.FC = () => {
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>DESCRIPCIÓN</TableCell>
                 <TableCell>ACTIVO</TableCell>
-                <TableCell>ACCIONES</TableCell> {/* Columna de acciones */}
+                <TableCell>PERMISOS</TableCell>
+                <TableCell>ACCIONES</TableCell> 
               </TableRow>
             </TableHead>
             <TableBody>
@@ -100,6 +122,7 @@ const RoleTable: React.FC = () => {
                   <TableCell>{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
                   <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{formatPermissions(role.permissionsList)}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(role.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
@@ -131,6 +154,16 @@ const RoleTable: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {error || 'Unknown error occurred'}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
