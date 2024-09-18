@@ -17,7 +17,7 @@ import { ApiService } from '../../infrastructure/http/ApiService';
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
 
-const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
+const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  }) => {
   const [module, setModule] = useState<EModule | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
@@ -94,6 +94,7 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel }) => {
   
         await moduleRepository.editModule(payload);
         setSuccess(true);
+        onSuccess();
       } catch (err) {
         if (typeof err === "string") {
           // Maneja el error si es una instancia de Error

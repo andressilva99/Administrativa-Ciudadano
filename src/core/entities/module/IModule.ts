@@ -16,6 +16,7 @@ export interface IModule {
 export interface EditModuleProps {
     moduleId: number;
   onCancel: () => void;
+  onSuccess: () => void;
 }
 export interface EModule {
   id: number | null;
@@ -79,4 +80,29 @@ export interface ModuleDetailProps {
     code: string;
 }
 //ADD 
-
+export interface AModule {
+  moduleType: string;
+  code: string;
+  name: string;
+  enabledNp: boolean;
+  enabledLp: boolean;
+  minNpLevel: number;
+  minLpLevel: number;
+  uiOrder: number;
+  configuraciones: AConfiguraciones;
+}
+export interface AConfiguraciones {
+  description: string;
+  linkUrl: string;
+  linkToExternalBrowser: boolean;
+  deepLinkPackageAndroid: string | null;
+  deepLinkPackageIOS: string | null;
+  deepLinkValue: string | null;
+  deepLinkValueAsUri: boolean;
+  icon: AIcon;
+}
+export interface AIcon {
+  prefix: string;
+  name: string;
+  path: string | null;
+}

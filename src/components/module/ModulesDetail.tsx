@@ -19,6 +19,7 @@ import { IModule } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import EditModule from './EditModule';
+import CreateModule from './CreateModule';
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -31,23 +32,24 @@ const ModulesDetail: React.FC = () => {
   const [total, setTotal] = useState<number>(0);
   const [editModuleId, setEditModuleId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+
+  const getModules = async (fetchAll: boolean = false) => {
+    setLoading(true);
+    try {
+      const currentPage = fetchAll ? 0 : page;
+      const pageSize = fetchAll ? total : size;
+      const data = await moduleRepository.findModules(currentPage, pageSize);
+      setModules(data.list);
+      setTotal(data.total);
+    } catch (error) {
+      console.error('Error fetching modules:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getModules = async () => {
-      setLoading(true);
-      try {
-        const data = await moduleRepository.findModules(page, size);
-        setModules(data.list);
-        setTotal(data.total);
-        //traigo todo el modulo en consola para controlar
-        console.log('Fetched modules:', data.list);
-      } catch (error) {
-        console.error('Error fetching modules:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     getModules();
   }, [page, size]);
 
@@ -70,10 +72,24 @@ const ModulesDetail: React.FC = () => {
     setEditModuleId(null);
   };
 
+  const handleModuleEditSuccess = () => {
+    getModules(true); // Fetch all modules to refresh the table
+    handleCloseEditDialog();
+  };
+
+  const handleModuleCreated = () => {
+    console.log("Módulo creado, actualizando la tabla...");
+    getModules(true); // Fetch all modules to refresh the table
+    handleCloseCreateDialog();
+  };
+
+  const handleCloseCreateDialog = () => {
+    setOpenCreateDialog(false);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
-
 
   return (
     <>
@@ -98,13 +114,13 @@ const ModulesDetail: React.FC = () => {
                   <TableCell>{module.id}</TableCell>
                   <TableCell>{module.code}</TableCell>
                   <TableCell>{module.name}</TableCell>
-                  <TableCell>{module.enabledNp  ? 'Sí' : 'No'}</TableCell>
-                  <TableCell>{module.enabledLp  ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enabledNp ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>{module.enabledLp ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(module.id)}>
-                    <EditIcon sx={{ color: 'primary.main' }} />
+                      <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -129,8 +145,19 @@ const ModulesDetail: React.FC = () => {
             <EditModule
               moduleId={editModuleId}
               onCancel={handleCloseEditDialog}
+              onSuccess={handleModuleEditSuccess}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} maxWidth="md" fullWidth>
+        <DialogTitle>Crear Módulo</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          <CreateModule
+            onModuleCreated={handleModuleCreated}
+            onCancel={handleCloseCreateDialog}
+          />
         </DialogContent>
       </Dialog>
     </>

@@ -33,10 +33,16 @@ export interface ERole {
   name: string;
   description: string;
   idModule: number | null;
-  permissionsList: PermissionItem[]; 
+  permissionsList: EPermissionItem[]; 
   fixed: boolean;
   enabled: boolean;
   deleted: boolean;
   tsi: string;
   tsu: string;
+}
+
+export interface EPermissionItem {  
+  name: Permission; 
+  description: string;
+  checked?: boolean; 
 }

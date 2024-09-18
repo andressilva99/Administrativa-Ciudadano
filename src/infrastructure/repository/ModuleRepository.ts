@@ -1,6 +1,6 @@
 import { ApiService } from '../http/ApiService';
 import { IModuleRepository } from '../../core/interfaces/IModuleRepository';
-import { EModule } from '../../core/entities/module/IModule';
+import { AModule, EModule } from '../../core/entities/module/IModule';
 
 
 
@@ -54,6 +54,22 @@ export class ModuleRepository implements IModuleRepository {
         console.error('Error editing module', error);
       }
       throw new Error('Error al editar el módulo');
+    }
+  }
+  async registerModule(module: AModule): Promise<void> {
+    try {
+      await this._api.post('/adm-main/module/create', module);
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al crear el modulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error editing module', error);
+      }
+      throw new Error('Error al crear el módulo');
     }
   }
 }

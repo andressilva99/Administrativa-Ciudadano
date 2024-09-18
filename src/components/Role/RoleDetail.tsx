@@ -20,8 +20,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import { FindRoles } from '../../core/use-cases/role/FindRoles';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
-import { IRole } from '../../core/entities/role/IRole';
+import { IRole, PermissionItem } from '../../core/entities/role/IRole';
 import EditRole from './EditRole';
+
+// Función para formatear los permisos en una cadena
+const formatPermissions = (permissionsList: PermissionItem[]): string => {
+  return permissionsList.map(permission => permission.name).join(', ');
+};
 
 const RoleTable: React.FC = () => {
   const [roles, setRoles] = useState<IRole[]>([]);
@@ -105,6 +110,7 @@ const RoleTable: React.FC = () => {
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>DESCRIPCIÓN</TableCell>
                 <TableCell>ACTIVO</TableCell>
+                <TableCell>PERMISOS</TableCell>
                 <TableCell>ACCIONES</TableCell> 
               </TableRow>
             </TableHead>
@@ -116,6 +122,7 @@ const RoleTable: React.FC = () => {
                   <TableCell>{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
                   <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{formatPermissions(role.permissionsList)}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(role.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
