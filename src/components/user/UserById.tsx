@@ -83,7 +83,10 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
                     </ListItem>
                     {modules.map((module, index) => (
                         <ListItem key={index}>
-                            <ListItemText primary={`- ${module.name}`} />
+                            <ListItemText 
+                                primary={`~ ${module.name}`} 
+                                secondary={module.role ? `Rol: ${module.role.name}` : 'Rol: No asignado'}
+                            />
                         </ListItem>
                     ))}
                 </>

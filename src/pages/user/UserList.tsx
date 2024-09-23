@@ -21,6 +21,7 @@ import UsersDetail from '../../components/user/UsersDetail';
 import AddUser from '../../components/user/AddUser';
 import UserById from '../../components/user/UserById';
 import UserByDni from '../../components/user/UserByDni';
+import EditUser from '../../components/user/EditUser';
 
 const UsersList: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -30,6 +31,7 @@ const UsersList: React.FC = () => {
   const [dni, setDni] = useState<string>('');
   const [showAddUser, setShowAddUser] = useState(false);
   const [showUserDetails, setShowUserDetails] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [searchType, setSearchType] = useState<'id'| 'dni' | null>(null);
   
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -73,6 +75,7 @@ const UsersList: React.FC = () => {
     setShowSearchByDni(false);
     setShowSearchById(false);
     setShowUserDetails(false);
+    setShowEditUserModal(false);
     setUserId(null);
     setDni('');
     setSearchType(null);
@@ -93,6 +96,14 @@ const UsersList: React.FC = () => {
       setShowUserDetails(true);
     }
   };
+
+  const handleOpenEditUserModal = () => {
+    setShowEditUserModal(true);
+  }
+
+  const handleCloseEditUserModal = () => {
+    setShowEditUserModal(false);
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -205,6 +216,11 @@ const UsersList: React.FC = () => {
           <Button onClick={handleCancel} color="secondary">
             Salir
           </Button>
+          {searchType === 'id' && (
+            <Button onClick={handleOpenEditUserModal} color='primary'>
+              Editar Usuario
+          </Button>
+          )}
         </DialogActions>
       </Dialog>
       
@@ -215,6 +231,15 @@ const UsersList: React.FC = () => {
             <AddUser onUserAdded={handleUserAdded} onCancel=  {handleCancel} />
           )}
         </DialogContent>
+      </Dialog>
+
+      <Dialog open={showEditUserModal} onClose={handleCloseEditUserModal} maxWidth="md" fullWidth>
+          <DialogTitle>Editar Usuario</DialogTitle>
+          <DialogContent>
+            {searchType === 'id' && userId !== null && (
+              <EditUser userId={userId} onCancel={handleCloseEditUserModal} />
+            )}
+          </DialogContent>
       </Dialog>
 
       <Paper style={{ padding: '16px', marginBottom: '16px' }}>

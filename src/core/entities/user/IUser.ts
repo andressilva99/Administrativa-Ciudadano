@@ -45,6 +45,7 @@ export interface IUserAdd {
 
 //edit user
 export interface EUser {
+  moduleList: IModule[];
   admUser: any;
   id: number;
   firstName: string;

@@ -7,11 +7,15 @@ import {
     CircularProgress,
     Typography,
     Grid,
+    Dialog,
+    Checkbox,
+    FormControlLabel,
 } from '@mui/material';
 import { EUser } from '../../core/entities/user/IUser';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { CustomError } from '../../core/errors/CustomError';
+import SelectModules from './SelectModule';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -24,8 +28,11 @@ interface EditUserProps {
 const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
     const [user, setUser ] = useState<EUser | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [success, setSuccess] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<boolean>(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [selectedModules, setSelectedModules] = useState<any[]>([]);
+    const [openModuleModal, setOpenModuleModal] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -34,6 +41,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                 const data = await userRepository.findUsersById(userId);
                 if (data && data.admUser){
                     setUser(data);
+                    setSelectedModules(data.moduleList.map((mod: { id: any; }) => mod.id));
                 } else {
                     setError('Usuario no encontrado');
                 }
@@ -69,9 +77,17 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
             setLoading(true),
             setError(null);
             setSuccess(false);
+            setSuccessMessage(null);
+            
+            const updatedUser = {
+                ...user.admUser,
+                moduleList: selectedModules
+            };
+
             try {
-                await userRepository.editUser(user.admUser);
+                await userRepository.editUser(updatedUser);
                 setSuccess(true);
+                setSuccessMessage('Usuario actualizado de manera exitosa!');
             } catch (err) {
                 if( err instanceof CustomError) {
                     setError(err.message);
@@ -83,6 +99,12 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
             }
         }
     };
+
+    const handleModuleSelect = (modules: number[]) => {
+        setSelectedModules(modules);
+        setOpenModuleModal(false);
+    };
+
 
     if (loading) {
         return <CircularProgress />;
@@ -101,18 +123,6 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                 </Typography>
 
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label='ID de usuario'
-                            name='id'
-                            value={admUser.id}
-                            onChange={handleFieldChange}
-                            type='number'
-                            fullWidth
-                            margin='normal'
-                            disabled
-                        />
-                    </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             label='Nombre'
@@ -157,13 +167,15 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            label='Enabled'
-                            name='enabled'
-                            value={admUser.enabled ? 'True' : 'False'}
-                            fullWidth
-                            margin='normal'
-                            disabled
+                        <FormControlLabel
+                            control= {
+                                <Checkbox
+                                    name='enabled'
+                                    checked={admUser.enabled}
+                                    onChange={handleFieldChange}
+                                />
+                            } 
+                            label= {admUser.enabled? 'Habilitado' : 'Deshabilitado'}
                         />
                     </Grid>     
                 </Grid>
@@ -171,7 +183,15 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                 <Grid container spacing={2} justifyContent="flex-end" mb={2}>
                     <Grid item>
                         <Button color='secondary' onClick={onCancel}>
-                            Salir
+                            Cancelar
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            color='primary'
+                            onClick={() => setOpenModuleModal(true)}
+                        >
+                            Editar Módulos
                         </Button>
                     </Grid>
                     <Grid item>
@@ -185,17 +205,28 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
                         </Button>
                     </Grid>
                 </Grid>
-
-                {success && (
+            
+                
+                {success && successMessage && (
                     <Typography variant='body1' color="success.main">
-                        Usuario actualizado exitosamente!
+                        {successMessage}
                     </Typography>
                 )}
+                            
                 {error && (
                     <Typography variant='body1' color="error.main">
                         {error}
                     </Typography>
                 )}
+
+                <Dialog open={openModuleModal} onClose={() => setOpenModuleModal(false)} fullWidth>
+                    <SelectModules 
+                        modules={user.moduleList}
+                        selectedModules={selectedModules}
+                        onModulesSelect={handleModuleSelect}
+                        onCancel={() => setOpenModuleModal(false)}
+                    />
+                </Dialog>
             </CardContent>
         </Card>
     );

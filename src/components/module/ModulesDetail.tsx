@@ -90,7 +90,7 @@ const ModulesDetail: React.FC = () => {
   if (loading) {
     return <CircularProgress />;
   }
-
+  console.log(module)
   return (
     <>
       <Paper>

@@ -1,5 +1,7 @@
 //Find
 export interface IModule {
+    role: any;
+    moduleType: any;
     id: number;
     code: string;
     name: string;
