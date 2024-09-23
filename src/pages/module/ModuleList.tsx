@@ -1,32 +1,31 @@
-import React, { useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SearchIcon from '@mui/icons-material/Search';
 import {
-  TextField,
+  Box,
   Button,
-  Paper,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Paper,
   Table,
   TableBody,
   TableContainer,
-  IconButton,
-  Box,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Typography
+  TextField
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AddIcon from '@mui/icons-material/Add';
-import ModulesDetail from '../../components/module/ModulesDetail';
-import ModuleById from '../../components/module/ModuleById';
-import ModuleByCode from '../../components/module/ModuleByCode';
-import EditModule from '../../components/module/EditModule';
+import React, { useState } from 'react';
 import CreateModule from '../../components/module/CreateModule'; // Asegúrate de que la ruta sea correcta
+import EditModule from '../../components/module/EditModule';
+import ModuleByCode from '../../components/module/ModuleByCode';
+import ModuleById from '../../components/module/ModuleById';
+import ModulesDetail from '../../components/module/ModulesDetail';
 
 const ModuleList: React.FC = () => {
   const [moduleId, setModuleId] = useState<number | null>(null);
