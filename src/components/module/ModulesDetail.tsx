@@ -13,13 +13,18 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
+  
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { IModule } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import EditModule from './EditModule';
 import CreateModule from './CreateModule';
+import ModuleById from './ModuleById';
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -33,6 +38,9 @@ const ModulesDetail: React.FC = () => {
   const [editModuleId, setEditModuleId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+  const [viewModuleId, setViewModuleId] = useState<number | null>(null);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+
 
   const getModules = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -87,6 +95,16 @@ const ModulesDetail: React.FC = () => {
     setOpenCreateDialog(false);
   };
 
+  const handleViewClick = (moduleId: number) => {
+    setViewModuleId(moduleId);
+    setOpenViewDialog(true);
+  };
+
+  const handleCloseViewDialog = () => {
+    setOpenViewDialog(false);
+    setViewModuleId(null);
+  }; 
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -119,6 +137,9 @@ const ModulesDetail: React.FC = () => {
                   <TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>
+                  <IconButton onClick={() => handleViewClick(module.id)}> {/* Cambia a ID */}
+                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                    </IconButton>
                     <IconButton onClick={() => handleEditClick(module.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
@@ -160,6 +181,18 @@ const ModulesDetail: React.FC = () => {
           />
         </DialogContent>
       </Dialog>
+
+      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
+  <DialogTitle>Detalles del Módulo</DialogTitle>
+  <DialogContent style={{ paddingBottom: 0 }}>
+    {viewModuleId && <ModuleById id={viewModuleId} />}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseViewDialog} color="secondary">
+      Salir
+    </Button>
+  </DialogActions>
+</Dialog>
     </>
   );
 };

@@ -2,6 +2,7 @@ import { Permission } from './Permission';
 
 export interface IRole {
   id: number;
+  idRol: number | null;
   name: string;
   description: string;
   idModule: number;
@@ -30,6 +31,7 @@ export interface IRoleAdd {
 //EDIT ROLE 
 export interface ERole {
   id: number | null;
+  idRol: number | null;
   name: string;
   description: string;
   idModule: number | null;
@@ -43,6 +45,6 @@ export interface ERole {
 
 export interface EPermissionItem {  
   name: Permission; 
- 
-  checked?: boolean; 
+  description: string; 
+  active?: boolean; 
 }
