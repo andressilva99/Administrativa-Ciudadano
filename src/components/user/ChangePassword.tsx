@@ -6,8 +6,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
+  InputAdornment,
   TextField,
 } from '@mui/material';
+import { Visibility, VisibilityOff} from '@mui/icons-material';
 import { AuthRepository } from '../../infrastructure/repository/AuthRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 
@@ -24,6 +27,10 @@ const ChangePasswordModal = ({open, onClose}: ChangePasswordModalProps) => {
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const [showOldPassword, setShowOldPassword] = useState<boolean>(false);
+    const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const handleSubmit = async () => {
         setErrorMessage(null);
@@ -50,27 +57,63 @@ const ChangePasswordModal = ({open, onClose}: ChangePasswordModalProps) => {
             <DialogContent>
                 <TextField
                     label='Contraseña Actual'
-                    type='password'
+                    type={showOldPassword ? 'text' : 'password'}
                     fullWidth
                     margin='normal'
                     value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)} 
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowOldPassword(!showOldPassword)}
+                              edge="end"
+                            >
+                              {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }} 
                 />
                 <TextField
                     label='Nueva Contraseña'
-                    type='password'
+                    type={showNewPassword ? 'text' : 'password'}
                     fullWidth
                     margin='normal'
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)} 
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowNewPassword(!showNewPassword)}
+                              edge="end"
+                            >
+                              {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }} 
                 />
                 <TextField
                     label='Repita la nueva Contraseña'
-                    type='password'
+                    type={showConfirmPassword ? 'text' : 'password'}
                     fullWidth
                     margin='normal'
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)} 
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              edge="end"
+                            >
+                              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }} 
                 />
                 {errorMessage && <Box color="red">{errorMessage}</Box>}
             </DialogContent>
