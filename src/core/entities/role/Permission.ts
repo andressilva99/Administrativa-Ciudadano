@@ -1,4 +1,24 @@
 export enum Permission {
+  VIEW_N = 'ADMUSER_VIEW_N',
+  VIEW_1 = 'VIEW_1',
+  ADD = 'ADD',
+  EDIT = 'Usuarios - modificar',
+  DELETE = 'Usuarios - eliminar',
+  CHANGEPW = 'Usuarios - restablecer contraseña',
+  ROLE_SET = 'Usuarios - Rol establecer',
+  ROLE_UNSET = 'Usuarios - Rol quitar',
+  ROLE_VIEW_N = 'Rol de usuario - listado',
+  ROLE_VIEW_1 = 'Rol de usuario - información',
+  ROLE_ADD = 'Rol de usuario - alta',
+  ROLE_EDIT = 'Rol de usuario - modificar',
+  ROLE_DELETE = 'Rol de usuario - eliminar',
+  MODULE_VIEW_N = 'Módulos - listado',
+  MODULE_VIEW_1 = 'Módulos - información',
+  MODULE_ADD = 'Módulos - alta',
+  MODULE_EDIT = 'Módulos - modificar',
+  MODULE_DELETE = 'Módulos - eliminar',
+}
+/*export enum Permission {
   VIEW_N = 'Usuarios - listado',
   VIEW_1 = 'Usuarios - información',
   ADD = 'Usuarios - alta',
@@ -17,4 +37,4 @@ export enum Permission {
   MODULE_ADD = 'Módulos - alta',
   MODULE_EDIT = 'Módulos - modificar',
   MODULE_DELETE = 'Módulos - eliminar',
-}
+}*/

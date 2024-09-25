@@ -43,6 +43,6 @@ export interface ERole {
 
 export interface EPermissionItem {  
   name: Permission; 
-  description: string;
+ 
   checked?: boolean; 
 }

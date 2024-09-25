@@ -10,7 +10,7 @@ import {
   Checkbox,
   FormControlLabel
 } from '@mui/material';
-import { ERole, EPermissionItem } from '../../core/entities/role/IRole';
+import { IRole, ERole, EPermissionItem } from '../../core/entities/role/IRole';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { Permission } from '../../core/entities/role/Permission';
@@ -23,7 +23,7 @@ interface EditRoleProps {
   onCancel: () => void;
 }
 
-const getDescription = (permission: EPermissionItem): string => {
+const getDescription = (permission: Permission): string => {
   // Implementa la lógica para obtener la descripción del permiso
   return `Description for ${permission}`;
 };
@@ -55,11 +55,11 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
     if (role) {
       const { name, checked } = e.target;
 
-      if (Object.values(Permission).includes(name as EPermissionItem)) {
-        const updatedPermissionsList = checked
+      if (Object.values(Permission).includes(name as Permission)) {
+        const updatedPermissionsList: EPermissionItem[] = checked
           ? [
               ...role.permissionsList,
-              { name: name as EPermissionItem, checked: true, description: getDescription(name as EPermissionItem) }
+              { name: name as Permission, checked: true } // Ajustado para coincidir con `EPermissionItem`
             ]
           : role.permissionsList.filter((permission) => permission.name !== name);
 
@@ -83,26 +83,34 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
       setError(null);
       setSuccess(false);
 
-      const formattedPermissionsList = role.permissionsList
+      // Convierte `permissionsList` de `ERole` a un formato adecuado
+      const formattedPermissionsList: EPermissionItem[] = role.permissionsList
         .filter(permission => permission.checked)
-        .map(permission => permission.name);
+        .map(permission => ({
+          name: permission.name,
+          checked: permission.checked
+          
+          // `description` no se usa aquí si `EPermissionItem` no lo tiene
+        }));
 
-      const payload = {
-        idRol: role.id,
-        id: null,
-        idModule: role.idModule || 0,
+      const payload: ERole = {
+        id: role.id,
         name: role.name,
         description: role.description,
-        permissionsList: formattedPermissionsList,
-        fixed: role.fixed || false,
-        enabled: role.enabled || true,
-        deleted: role.deleted || false,
-        tsi: role.tsi || new Date().toISOString(),
-        tsu: role.tsu || new Date().toISOString()
+        idModule: role.idModule,
+        permissionsList: formattedPermissionsList, 
+        fixed: role.fixed,
+        enabled: role.enabled,
+        deleted: role.deleted,
+        tsi: role.tsi,
+        tsu: role.tsu
       };
+      console.log('Cuerpo de la solicitud:', payload);
 
       try {
         await roleRepository.editRole(payload);
+        
+
         setSuccess(true);
       } catch (err) {
         console.error('Error updating role', err);
