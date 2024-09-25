@@ -20,3 +20,8 @@ export interface IUserLogin {
     username: string;
     password: string;
 }
+
+export interface IPasswordChange {
+    oldPassword: string;
+    newPassword: string;
+}
