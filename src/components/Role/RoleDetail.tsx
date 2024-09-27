@@ -15,13 +15,17 @@ import {
   DialogContent,
   Snackbar,
   Alert,
+  DialogActions,
+  Button,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { FindRoles } from '../../core/use-cases/role/FindRoles';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { IRole, PermissionItem } from '../../core/entities/role/IRole';
 import EditRole from './EditRole';
+import RoleById from './RoleById';
 
 // Función para formatear los permisos en una cadena
 const formatPermissions = (permissionsList: PermissionItem[]): string => {
@@ -39,6 +43,8 @@ const RoleTable: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null); // Estado para mensajes de error
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [viewRoleId, setViewRoleId] = useState<number | null>(null);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
 
   const findRol = useCallback(() => {
     const apiService = new ApiService();
@@ -94,6 +100,16 @@ const RoleTable: React.FC = () => {
     setOpenSnackbar(false);
   };
 
+  const handleViewClick = (roleId: number) => {
+    setViewRoleId(roleId);
+    setOpenViewDialog(true);
+  };
+
+  const handleCloseViewDialog = () => {
+    setOpenViewDialog(false);
+    setViewRoleId(null);
+  }; 
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -109,8 +125,7 @@ const RoleTable: React.FC = () => {
                 <TableCell>ID DE MÓDULO</TableCell>
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>DESCRIPCIÓN</TableCell>
-                <TableCell>ACTIVO</TableCell>
-                <TableCell>PERMISOS</TableCell>
+                <TableCell>ACTIVO</TableCell>                
                 <TableCell>ACCIONES</TableCell> 
               </TableRow>
             </TableHead>
@@ -121,9 +136,11 @@ const RoleTable: React.FC = () => {
                   <TableCell>{role.idModule}</TableCell>
                   <TableCell>{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
-                  <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
-                  <TableCell>{formatPermissions(role.permissionsList)}</TableCell>
+                  <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>                  
                   <TableCell>
+                  <IconButton onClick={() => handleViewClick(role.id)}> {/* Cambia a ID */}
+                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                    </IconButton>
                     <IconButton onClick={() => handleEditClick(role.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
@@ -154,6 +171,17 @@ const RoleTable: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
+  <DialogTitle>Detalles del Rol</DialogTitle>
+  <DialogContent style={{ paddingBottom: 0 }}>
+    {viewRoleId && <RoleById id={viewRoleId} />}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseViewDialog} color="secondary">
+      Salir
+    </Button>
+  </DialogActions>
+</Dialog>
 
       <Snackbar
         open={openSnackbar}
