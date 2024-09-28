@@ -138,7 +138,7 @@ const RoleTable: React.FC = () => {
                   <TableCell>{role.description}</TableCell>
                   <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>                  
                   <TableCell>
-                  <IconButton onClick={() => handleViewClick(role.id)}> {/* Cambia a ID */}
+                  <IconButton onClick={() => handleViewClick(role.id)}> 
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
                     <IconButton onClick={() => handleEditClick(role.id)}>
