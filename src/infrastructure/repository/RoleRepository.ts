@@ -83,6 +83,7 @@ export class RoleRepository implements IRoleRepository {
     try {
       await this._api.post('/adm-main/admuser/role/unset', payload);
     } catch (error : any) {
+      console.error('Error details:', error.response?.data);  
       const message = error.response?.data?.message || "Error al quitar el rol de usario";
       throw new CustomError(message, error.response?.status);
     }

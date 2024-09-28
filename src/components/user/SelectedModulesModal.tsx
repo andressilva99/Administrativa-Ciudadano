@@ -1,19 +1,17 @@
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Button,
-  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  Grid,
   List,
   ListItem,
   ListItemText,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
@@ -37,12 +35,9 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
 }) => {
   const [modules, setModules] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [permissions, setPermissions] = useState<any[]>([]);
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const [selectedRoles, setSelectedRoles] = useState<number | null>(null);
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
-  const [loadingPermissions, setLoadingPermissions] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [loadingRoles, setLoadingRoles] = useState<boolean>(false);
+  const [message, setMessage] = useState<{type: 'success'| 'error'; text: string} | null>(null);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -53,7 +48,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
         );
         setModules(filteredModules);
       } catch (error) {
-        console.error('Error fetching modules', error);
+        setMessage({ type: 'error', text: 'Error al obtener los módulos'});
       }
     };
 
@@ -61,153 +56,105 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
   }, []);
 
   const handleFetchRoles = async (moduleCode: string) => {
+    setLoadingRoles(true);
     try {
       const data = await roleRepository.findRoles(moduleCode, 0, 100);
       setRoles(data.list);
+      setMessage(null);
     } catch (err) {
+      setMessage({ type: 'error', text: 'Error al obtener los roles'});
       console.error('Error fetching roles', err);
-    }
-  };
-
-  const handleFetchPermissions = async (roleId: number) => {
-    setLoadingPermissions(true);
-    try {
-      const role = await roleRepository.findRoleById(roleId);
-      setPermissions(role.permissionsList);
-    } catch (err) {
-      console.error('Error fetching permissions', err);
     } finally {
-      setLoadingPermissions(false);
+      setLoadingRoles(false);
     }
   };
 
-  const handlePermissionToggle = (permissionName: string) => {
-    if (selectedPermissions.includes(permissionName)) {
-      setSelectedPermissions((prev) => prev.filter((name) => name !== permissionName));
+  const handleModuleClick = (module: any) => {
+    if (selectedModule === module.id) {
+      setSelectedModule(null);
     } else {
-      setSelectedPermissions((prev) => [...prev, permissionName]);
+      setSelectedModule(module.id);
+      handleFetchRoles(module.code);
     }
-
-    setSuccessMessage('Permiso seleccionado con éxito');
   };
 
-  const handleRoleClick = (module: any) => {
-    setSelectedModule(module.id);
-    handleFetchRoles(module.code);
-  };
-
-  const handleRoleSelection = (roleId: number) => {
-    setSelectedRoles(roleId);
-    handleFetchPermissions(roleId);
-  };
-
-  const handleSaveRoles = async () => {
+  const handleRoleToggle = async (roleId: number) => {
     try {
-      const selectedRole = roles.find((role) => role.id === selectedRoles);
-      if (selectedRole) {
-        const permissionsToUpdate = permissions.map((permission) => ({
-          ...permission,
-          checked: selectedPermissions.includes(permission.name),
-        }));
-
-        const payload = {
-          idAdmUser: userId,
-          idAdmRole: selectedRole.id,
-          permissionsList: permissionsToUpdate,
-        };
-
-        await roleRepository.setRole(userId, selectedRole.id);
-        setSuccessMessage('Roles y permisos guardados con éxito');
-
-        setTimeout(() => {
-          setSelectedRoles(null);
-          setSuccessMessage(null);
-        }, 2000);
+      const isAssigned = selectedModules.includes(roleId);
+      if (isAssigned) {
+        await roleRepository.unsetRole(userId, roleId);
+        setMessage({ type: 'success', text: 'Rol quitado con éxito'});
+      } else {
+        await roleRepository.setRole(userId, roleId);
+        setMessage({ type: 'success', text: 'Rol asignado con éxito'});
       }
-    } catch (err) {
-      console.error('Error al guardar los roles', err);
-    }
-  };
 
-  const handleCloseModuleModal = () => {
-    setSelectedRoles(null);
-    onClose();
+      onSave([selectedModule!]);
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 4000);
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Error al asignar/quitar el rol'});
+    }
   };
 
   return (
-    <>
-      <Dialog open={selectedRoles === null} onClose={onClose} fullWidth maxWidth="sm">
-        <DialogTitle>Seleccionar Módulos</DialogTitle>
+      <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogTitle>Módulos</DialogTitle>
         <DialogContent>
+          {message && <Alert severity={message.type}>{message.text}</Alert>}
+
           <List>
             {modules.map((module) => (
-              <ListItem key={module.id}>
-                <ListItemText primary={module.name} />
-                <Button variant="outlined" onClick={() => handleRoleClick(module)}>
-                  Agregar Rol
-                </Button>
-              </ListItem>
+              <React.Fragment key={module.id}>
+                <ListItem
+                  style={{
+                    display:
+                      selectedModule === null || selectedModule === module.id ? 'block' : 'none',
+                  }}
+                >
+                  <ListItemText primary={module.name} />
+                  <Button variant="outlined" onClick={() => handleModuleClick(module)}>
+                    {selectedModule === module.id ? 'Ocultar Roles' : 'Mostrar Roles'}
+                  </Button>
+                </ListItem>
+
+                {selectedModule === module.id && (
+                  <List component="div" disablePadding style={{ marginLeft: '20px' }}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Roles
+                    </Typography>
+                    {loadingRoles ? (
+                      <CircularProgress />
+                    ) : (
+                      roles.map((role) => (
+                        <ListItem
+                          key={role.id}
+                          style={{
+                            paddingLeft: '10px',
+                            marginBottom: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <ListItemText primary={role.name} />
+                          <Button variant="outlined" onClick={() => handleRoleToggle(role.id)}>
+                            {selectedModules.includes(role.id) ? 'Quitar Rol' : 'Dar Rol'}
+                          </Button>
+                        </ListItem>
+                      ))
+                    )}
+                  </List>
+                )}
+              </React.Fragment>
             ))}
           </List>
-
-          {selectedModule && (
-            <>
-              <Typography variant="h6">Seleccionar Rol</Typography>
-              <List>
-                {roles.map((role) => (
-                  <ListItem key={role.id}>
-                    <ListItemText primary={role.name} />
-                    <Button variant="outlined" onClick={() => handleRoleSelection(role.id)}>
-                      Permisos
-                    </Button>
-                  </ListItem>
-                ))}
-              </List>
-            </>
-          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancelar</Button>
         </DialogActions>
       </Dialog>
-
-      {selectedRoles !== null && (
-        <Dialog open onClose={handleCloseModuleModal} fullWidth maxWidth="sm">
-          <DialogTitle>Gestionar Permisos del Rol</DialogTitle>
-          <DialogContent>
-            {loadingPermissions ? (
-              <CircularProgress />
-            ) : (
-              <>
-                <Typography variant="h6">Permisos</Typography>
-                <Grid container spacing={2}>
-                  {permissions.map((permission) => (
-                    <Grid item xs={12} key={permission.name}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={selectedPermissions.includes(permission.name)}
-                            onChange={() => handlePermissionToggle(permission.name)}
-                          />
-                        }
-                        label={permission.description}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            )}
-
-            {successMessage && <Typography color="primary">{successMessage}</Typography>}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleSaveRoles} color="primary">
-              Guardar Cambios
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </>
   );
 };
 
