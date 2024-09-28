@@ -33,7 +33,7 @@ const UsersDetail: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [firstName] = useState<string>("");
+  const [firstName] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
@@ -44,7 +44,6 @@ const UsersDetail: React.FC = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
 
-
   const getUsers = async () => {
     setLoading(true);
     setError(null);
@@ -54,7 +53,7 @@ const UsersDetail: React.FC = () => {
       setTotal(data.total); // Usa el total de usuarios para la paginación
     } catch (err) {
       if (err instanceof CustomError) {
-        setError(err.message)
+        setError(err.message);
       } else {
         setError('Ocurrió un error al cargar los usuarios');
       }
@@ -102,7 +101,7 @@ const UsersDetail: React.FC = () => {
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
     setViewUserId(null);
-  }; 
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -119,7 +118,7 @@ const UsersDetail: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-              <TableCell>ID</TableCell>
+                <TableCell>ID</TableCell>
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>APELLIDO</TableCell>
                 <TableCell>EMAIL</TableCell>
@@ -130,7 +129,7 @@ const UsersDetail: React.FC = () => {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}> {/* Usar ID en lugar de DNI como clave */}
+                <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.firstName}</TableCell>
                   <TableCell>{user.lastName}</TableCell>
@@ -138,13 +137,13 @@ const UsersDetail: React.FC = () => {
                   <TableCell>{user.dni}</TableCell>
                   <TableCell>{user.phoneNumber}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleViewClick(user.id)}> {/* Cambia a ID */}
+                    <IconButton onClick={() => handleViewClick(user.id)}>
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleEditClick(user.id)}> {/* Cambia a ID */}
+                    <IconButton onClick={() => handleEditClick(user.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(user.id)}> {/* Cambia a ID */}
+                    <IconButton onClick={() => handleDeleteClick(user.id)}>
                       <DeleteIcon sx={{ color: 'error.main' }} />
                     </IconButton>
                   </TableCell>
@@ -185,16 +184,16 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog} maxWidth="md" fullWidth>
         <DialogTitle>Eliminar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {deleteUserId && 
-            <DeleteUser 
-              userId={deleteUserId} 
-              onCancel={handleCloseDeleteDialog} 
+          {deleteUserId && (
+            <DeleteUser
+              userId={deleteUserId}
+              onCancel={handleCloseDeleteDialog}
               onUserDeleted={() => {
                 console.log('Usuario Eliminado');
                 handleCloseDeleteDialog();
-              }} 
+              }}
             />
-          }
+          )}
         </DialogContent>
       </Dialog>
     </>

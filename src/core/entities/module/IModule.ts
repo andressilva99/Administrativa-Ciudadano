@@ -11,6 +11,7 @@ export interface IModule {
     minNpLevel: number;
     minLpLevel: number;
     configuraciones: {
+        description: string | null;
         empty: boolean;
       };
 }
