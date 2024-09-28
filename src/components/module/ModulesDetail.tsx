@@ -137,10 +137,10 @@ const ModulesDetail: React.FC = () => {
                   <TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>
                   <TableCell>
-                  <IconButton onClick={() => handleViewClick(module.id)}> {/* Cambia a ID */}
+                  <IconButton onClick={() => handleViewClick(module.id)} aria-label="Ver módulo">
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleEditClick(module.id)}>
+                    <IconButton onClick={() => handleEditClick(module.id)} aria-label="Editar módulo">
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>

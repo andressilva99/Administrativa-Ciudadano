@@ -14,7 +14,8 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
-  TableRow,
+  TableRow,DialogActions,
+  Button
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { IUser, UserResponse } from '../../core/entities/user/IUser';
@@ -166,6 +167,11 @@ const UsersDetail: React.FC = () => {
         <DialogContent style={{ paddingBottom: 0 }}>
           {viewUserId && <UserById id={viewUserId} />}
         </DialogContent>
+        <DialogActions>
+    <Button onClick={handleCloseViewDialog} color="secondary">
+      Salir
+    </Button>
+  </DialogActions>
       </Dialog>
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>

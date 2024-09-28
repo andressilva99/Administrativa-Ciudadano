@@ -23,7 +23,6 @@ interface EditRoleProps {
   onCancel: () => void;
 }
 
-// Lista de permisos predeterminados
 const defaultPermissions: EPermissionItem[] = [
   { name: Permission.ADMUSER_VIEW_N, active: false, description: 'Usuarios - listado' },
   { name: Permission.ADMUSER_VIEW_1, active: false, description: 'Usuarios - información' },
@@ -69,30 +68,33 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
   }, [roleId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked, type } = e.target;
+
     if (role) {
-      const { name, checked } = e.target;
+      if (type === 'text') {
+        setRole((prevRole) => prevRole ? { ...prevRole, [name]: value } : prevRole);
+      }
 
-      // Buscar el permiso en la lista actual de permissionsList
-      const permissionIndex = role.permissionsList.findIndex(permission => permission.name === name);
+      if (type === 'checkbox') {
+        const permissionIndex = role.permissionsList.findIndex(permission => permission.name === name);
 
-      if (permissionIndex >= 0) {
-        // Si el permiso existe, actualizar el campo 'active'
-        const updatedPermissionsList = [...role.permissionsList];
-        updatedPermissionsList[permissionIndex] = {
-          ...updatedPermissionsList[permissionIndex],
-          active: checked // Actualiza solo el estado activo
-        };
+        if (permissionIndex >= 0) {
+          const updatedPermissionsList = [...role.permissionsList];
+          updatedPermissionsList[permissionIndex] = {
+            ...updatedPermissionsList[permissionIndex],
+            active: checked,
+          };
 
-        setRole((prevRole) => prevRole ? { ...prevRole, permissionsList: updatedPermissionsList } : prevRole);
-      } else if (checked) {
-        // Si el permiso no está en la lista y se ha marcado, agregarlo
-        const newPermission: EPermissionItem = {
-          name: name as Permission,
-          active: checked,
-          description: '', // Establecer una descripción adecuada si es necesario
-        };
+          setRole((prevRole) => prevRole ? { ...prevRole, permissionsList: updatedPermissionsList } : prevRole);
+        } else if (checked) {
+          const newPermission: EPermissionItem = {
+            name: name as Permission,
+            active: checked,
+            description: '',
+          };
 
-        setRole((prevRole) => prevRole ? { ...prevRole, permissionsList: [...prevRole.permissionsList, newPermission] } : prevRole);
+          setRole((prevRole) => prevRole ? { ...prevRole, permissionsList: [...prevRole.permissionsList, newPermission] } : prevRole);
+        }
       }
     }
   };
@@ -103,12 +105,11 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
       setError(null);
       setSuccess(false);
 
-      // Crear un nuevo permissionsList que contenga todos los permisos, tanto activos como inactivos
       const formattedPermissionsList: EPermissionItem[] = defaultPermissions.map(permission => {
         const existingPermission = role.permissionsList.find(p => p.name === permission.name);
         return {
           ...permission,
-          active: existingPermission ? existingPermission.active : false, // Determina si el permiso está activo o no
+          active: existingPermission ? existingPermission.active : false,
         };
       });
 

@@ -17,6 +17,8 @@ import {
   Paper,
   Table,
   TableBody,
+  TableRow,
+  TableCell,
   TableContainer,
   TextField
 } from '@mui/material';
@@ -235,9 +237,11 @@ const ModuleList: React.FC = () => {
         <DialogContent style={{ paddingBottom: 0 }}>
           {moduleId !== null && (
             <TableContainer component={Paper}>
-              <Table>
+              <Table>                
                 <TableBody>
+                
                   <ModuleById id={moduleId} />
+                 
                 </TableBody>
               </Table>
             </TableContainer>
