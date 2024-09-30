@@ -40,7 +40,11 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         const data = await userRepository.findUsersById(userId);
         if (data && data.admUser) {
           setUser(data);
-          setSelectedModules(data.moduleList.map((mod: { id: any }) => mod.id));
+          console.log(data);
+          
+          // Extraer los IDs de los roles de moduleList
+          const roleIds = data.moduleList.map((mod: { role: { id: any; }; }) => mod.role.id);
+          setSelectedModules(roleIds);
         } else {
           setError('Usuario no encontrado');
         }
@@ -54,9 +58,10 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         setLoading(false);
       }
     };
-
+  
     fetchUser();
   }, [userId]);
+  
 
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, value, checked } = e.target;
@@ -102,7 +107,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
     return <Typography variant="body1">No se pudo cargar el usuario.</Typography>;
   }
 
-  const admUser = user.admUser;
+  const admUser = {...user.admUser};
   return (
     <Card>
       <CardContent style={{ paddingBottom: 0 }}>
@@ -201,7 +206,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         {isModalOpen && (
           <SelectModulesModal
             userId={userId}
-            selectedModules={selectedModules}
+            selectedRoleIds={selectedModules}
             onSave={(updatedModules) => {
               setSelectedModules(updatedModules);
             }}
