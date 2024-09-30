@@ -17,8 +17,6 @@ import {
   Paper,
   Table,
   TableBody,
-  TableRow,
-  TableCell,
   TableContainer,
   TextField
 } from '@mui/material';
@@ -111,10 +109,7 @@ const ModuleList: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleCancelEdit = () => {
-    setEditModuleId(null);
-    setOpenEditDialog(false);
-  };
+  
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
@@ -250,18 +245,7 @@ const ModuleList: React.FC = () => {
         <DialogActions>
           <Button onClick={handleCloseModuleDialog} color="secondary">
             Salir
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setEditModuleId(moduleId);
-              setOpenEditDialog(true);
-              handleCloseModuleDialog();
-            }}
-          >
-            Editar
-          </Button>
+          </Button>          
         </DialogActions>
       </Dialog>
 
@@ -282,37 +266,21 @@ const ModuleList: React.FC = () => {
           <Button onClick={handleCloseModuleByCodeDialog} color="secondary">
             Salir
           </Button>
-          {idModule && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setEditModuleId(Number(idModule));
-                setOpenEditDialog(true);
-                handleCloseModuleByCodeDialog();
-              }}
-            >
-              Editar
-            </Button>
-          )}
+          
         </DialogActions>
       </Dialog>
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="md">
         <DialogTitle>Editar Módulo</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {editModuleId !== null && (
             <EditModule 
             moduleId={editModuleId} 
             onCancel={handleCloseEditDialog} // Asegúrate de pasar esta función
             onSuccess={handleSuccess}/>
           )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseEditDialog} color="secondary">
-            Salir
-          </Button>
-        </DialogActions>
+        </DialogContent>        
+        
       </Dialog>
 
       <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} fullWidth maxWidth="md">

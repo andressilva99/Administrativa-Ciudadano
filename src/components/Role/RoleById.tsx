@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText, CircularProgress, Typography } from '@mui/material';
+import {  CircularProgress, Typography,Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableContainer, TableHead } from '@mui/material';
 import { IRole } from '../../core/entities/role/IRole';
 import { FindRoleById } from '../../core/use-cases/role/FindRoleById';
 import { ApiService } from '../../infrastructure/http/ApiService';
@@ -16,8 +20,8 @@ const useRoleById = (id: number) => {
 
   useEffect(() => {
     const fetchRole = async () => {
-      const apiSerive = new ApiService();
-      const roleRepository = new RoleRepository(apiSerive);
+      const apiService = new ApiService();
+      const roleRepository = new RoleRepository(apiService);
       const findById = new FindRoleById(roleRepository);
 
       try {
@@ -28,7 +32,7 @@ const useRoleById = (id: number) => {
         if (error instanceof Error) {
           setError(error.message);
         } else {
-          setError(error instanceof Error ? error.message : 'An unknown error occurred');
+          setError('An unknown error occurred');
         }
       } finally {
         setLoading(false);
@@ -56,45 +60,67 @@ const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
     return <div>No role found</div>;
   }
 
+  const activePermissions = role.permissionsList.filter(permission => permission.active);
+
   return (
-    <List>
-      <ListItem>
-        <ListItemText primary="*ID:" secondary={role.id} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*DESCRIPCIÓN:" secondary={role.description} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*ID DE MODULO:" secondary={role.idModule} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*FIJO:" secondary={role.fixed ? 'Yes' : 'No'} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*HABILITADO:" secondary={role.enabled ? 'Yes' : 'No'} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*DESHABILITADO:" secondary={role.deleted ? 'Yes' : 'No'} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*TSI:" secondary={role.tsi} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*TSU:" secondary={role.tsu} />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="*PERMISOS:"
-          secondary={
-            role.permissionsList.map(permission => (
-              <Typography key={permission.name}>
-                {`${permission.description}`}
-              </Typography>
-            ))
-          }
-        />
-      </ListItem>
-    </List>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>*Campo</TableCell>
+            <TableCell>Valor</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>*ID:</TableCell>
+            <TableCell>{role.id}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*DESCRIPCIÓN:</TableCell>
+            <TableCell>{role.description}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*ID DE MÓDULO:</TableCell>
+            <TableCell>{role.idModule}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*FIJO:</TableCell>
+            <TableCell>{role.fixed ? 'Yes' : 'No'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*HABILITADO:</TableCell>
+            <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*DESHABILITADO:</TableCell>
+            <TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*TSI:</TableCell>
+            <TableCell>{role.tsi}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*TSU:</TableCell>
+            <TableCell>{role.tsu}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*PERMISOS ACTIVOS:</TableCell>
+            <TableCell>
+              {activePermissions.length > 0 ? (
+                activePermissions.map(permission => (
+                  <Typography key={permission.name}>
+                    {permission.description}
+                  </Typography>
+                ))
+              ) : (
+                <Typography>No active permissions</Typography>
+              )}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

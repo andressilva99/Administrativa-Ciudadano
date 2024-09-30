@@ -17,6 +17,7 @@ const RoleList: React.FC = () => {
   const [roleId, setRoleId] = useState<number | null>(null);
   const [showAddRole, setShowAddRole] = useState(false);
   const [showRoleDetails, setShowRoleDetails] = useState(false);
+  const [updateTable, setUpdateTable] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -50,6 +51,7 @@ const RoleList: React.FC = () => {
 
   const handleRoleAdded = () => {
     // Lógica adicional después de agregar un rol
+    setUpdateTable(prev => !prev);
     setShowAddRole(false);
   };
 
@@ -148,8 +150,8 @@ const RoleList: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* La tabla siempre está visible */}
-      <RoleTable />
+      
+      <RoleTable updateTable={updateTable} /> {/* Pasa updateTable a RoleTable */}
     </div>
   );
 };

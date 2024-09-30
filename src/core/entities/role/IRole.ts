@@ -17,16 +17,32 @@ export interface IRole {
 export interface PermissionItem {  
   name: Permission;
   description: string;
-  checked?: boolean; 
+  active?: boolean; 
 }
-
+export interface RoleResponse {
+  list: IRole[];
+  total: number;
+  
+}
 //ADD ROLE
 export interface IRoleAdd {
   idModule: number,
   name: string,
   description: string,
-  permissionsList: string[];
+  permissionsList: APermissionItem[];
 }
+export interface APermissionItem {  
+  name: Permission; 
+  description: string; 
+  active?: boolean; 
+}
+
+export interface AddRoleProps {
+  onRoleAdded: () => void;
+  onCancel: () => void;
+  
+}
+
 
 //EDIT ROLE 
 export interface ERole {
@@ -47,4 +63,9 @@ export interface EPermissionItem {
   name: Permission; 
   description: string; 
   active?: boolean; 
+}
+export interface EditRoleProps {
+  roleId: number;
+  onCancel: () => void;
+  onEditSuccess: () => void;
 }

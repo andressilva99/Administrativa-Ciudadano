@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -20,19 +20,20 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { FindRoles } from '../../core/use-cases/role/FindRoles';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
-import { IRole, PermissionItem } from '../../core/entities/role/IRole';
+import { IRole } from '../../core/entities/role/IRole';
+import { RoleResponse } from '../../core/entities/role/IRole';
 import EditRole from './EditRole';
 import RoleById from './RoleById';
 
-// Función para formatear los permisos en una cadena
-const formatPermissions = (permissionsList: PermissionItem[]): string => {
-  return permissionsList.map(permission => permission.name).join(', ');
-};
 
-const RoleTable: React.FC = () => {
+
+interface RoleTableProps {
+  updateTable: boolean; // Prop para controlar la actualización
+}
+
+const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
   const [roles, setRoles] = useState<IRole[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [idModule] = useState<string>("MAIN");
@@ -41,41 +42,33 @@ const RoleTable: React.FC = () => {
   const [total, setTotal] = useState<number>(0);
   const [editRoleId, setEditRoleId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null); // Estado para mensajes de error
+  const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [viewRoleId, setViewRoleId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
 
-  const findRol = useCallback(() => {
-    const apiService = new ApiService();
-    const roleRepository = new RoleRepository(apiService);
-    return new FindRoles(roleRepository);
-  }, []);
+  const apiService = new ApiService();
+  const roleRepository = new RoleRepository(apiService);
 
-  const fetchRoles = useCallback(async () => {
+  
+  const getRoles = async () => {
     setLoading(true);
-    setError(null); // Limpiar errores anteriores
+    setError(null);
     try {
-      const data = await findRol().findRoles(idModule, page, size);
+      const data: RoleResponse = await roleRepository.findRoles(idModule, page, size);
       setRoles(data.list);
       setTotal(data.total);
-    } catch (err) {
-      if (typeof err === "string") {
-        console.error('Error fetching roles:', err);
-        setError(err);
-      } else {
-        console.error('Unknown error fetching roles:', err);
-        setError('Unknown error occurred');
-      }
-      setOpenSnackbar(true); // Mostrar el Snackbar en caso de error
+      
+    } catch (error) {
+      console.error('Error fetching modules:', error);
     } finally {
       setLoading(false);
     }
-  }, [idModule, page, size, findRol]);
+  };
 
   useEffect(() => {
-    fetchRoles();
-  }, [fetchRoles]);
+    getRoles();
+  }, [idModule, page, size, updateTable]); 
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -108,7 +101,13 @@ const RoleTable: React.FC = () => {
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
     setViewRoleId(null);
-  }; 
+  };
+
+  const handleRoleEditSuccess = () => {
+    getRoles(); // Refresh the roles after editing
+    handleCloseEditDialog();
+  };
+  
 
   if (loading) {
     return <CircularProgress />;
@@ -125,8 +124,8 @@ const RoleTable: React.FC = () => {
                 <TableCell>ID DE MÓDULO</TableCell>
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>DESCRIPCIÓN</TableCell>
-                <TableCell>ACTIVO</TableCell>                
-                <TableCell>ACCIONES</TableCell> 
+                <TableCell>ACTIVO</TableCell>
+                <TableCell>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -136,9 +135,9 @@ const RoleTable: React.FC = () => {
                   <TableCell>{role.idModule}</TableCell>
                   <TableCell>{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
-                  <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>                  
+                  <TableCell>{role.enabled ? 'Yes' : 'No'}</TableCell>
                   <TableCell>
-                  <IconButton onClick={() => handleViewClick(role.id)}> 
+                    <IconButton onClick={() => handleViewClick(role.id)}>
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
                     <IconButton onClick={() => handleEditClick(role.id)}>
@@ -167,21 +166,26 @@ const RoleTable: React.FC = () => {
             <EditRole
               roleId={editRoleId}
               onCancel={handleCloseEditDialog}
+              onEditSuccess={handleRoleEditSuccess}
             />
+            
           )}
+          
         </DialogContent>
       </Dialog>
+
+      
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
-  <DialogTitle>Detalles del Rol</DialogTitle>
-  <DialogContent style={{ paddingBottom: 0 }}>
-    {viewRoleId && <RoleById id={viewRoleId} />}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseViewDialog} color="secondary">
-      Salir
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Detalles del Rol</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {viewRoleId && <RoleById id={viewRoleId} />}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={openSnackbar}
