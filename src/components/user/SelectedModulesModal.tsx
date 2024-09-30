@@ -85,7 +85,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
 
   const saveChanges = async () => {
     if (pendingRole === null) return;
-    console.log(pendingRole);
+    
     try {
       const isAssigned = selectedModules.includes(pendingRole);
 
@@ -101,11 +101,14 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
 
       setTimeout(() => {
         setMessage(null);
+        setPendingRole(null);
       }, 3000);
     } catch (err) {
       setMessage({ type: 'error', text: 'Error al asignar/quitar el rol' });
-    } finally {
-      setPendingRole(null);
+      
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     }
   };
 
@@ -157,7 +160,6 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
       <DialogTitle>Módulos</DialogTitle>
       <DialogContent>
         {message && <Alert severity={message.type}>{message.text}</Alert>}
-
         <List>{memoizedModules}</List>
       </DialogContent>
       <DialogActions>

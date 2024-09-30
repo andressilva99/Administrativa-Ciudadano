@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate} from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 //  material ui
 import {
@@ -14,6 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Typography,
 } from '@mui/material';
 
 // third party
@@ -183,7 +184,13 @@ const LoginForm = () => {
         )}
       </Formik>
 
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">
           Recuperar Contraseña
           <IconButton

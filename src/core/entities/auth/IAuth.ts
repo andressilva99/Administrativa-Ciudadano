@@ -27,5 +27,6 @@ export interface IPasswordChange {
 }
 
 export interface IPasswordRecovery {
-    email: string;
+    email?: string;
+    dni?: string;
 }
