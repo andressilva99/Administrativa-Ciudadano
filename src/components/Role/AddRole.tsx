@@ -1,16 +1,41 @@
 import React, { useState } from 'react';
-import { TextField, Button, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Grid } from '@mui/material';
-import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
+import {
+  TextField,
+  Button,
+  Paper,
+  Typography,
+  Checkbox,
+  FormControlLabel,  
+  Grid,
+  CircularProgress
+} from '@mui/material';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
-import { ApiService } from '../../infrastructure/http/ApiService';
-import { IRoleAdd } from '../../core/entities/role/IRole';
+import { IRoleAdd, APermissionItem } from '../../core/entities/role/IRole';
+import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
 import { Permission } from '../../core/entities/role/Permission';
+import { ApiService } from "../../infrastructure/http/ApiService";
+import { AddRoleProps } from '../../core/entities/role/IRole';
 
-
-interface AddRoleProps {
-  onRoleAdded: () => void;
-  onCancel: () => void;
-}
+const defaultPermissions: APermissionItem[] = [
+  { name: Permission.ADMUSER_VIEW_N, active: false, description: 'Usuarios - listado' },
+  { name: Permission.ADMUSER_VIEW_1, active: false, description: 'Usuarios - información' },
+  { name: Permission.ADMUSER_ADD, active: false, description: 'Usuarios - alta' },
+  { name: Permission.ADMUSER_EDIT, active: false, description: 'Usuarios - modificar' },
+  { name: Permission.ADMUSER_DELETE, active: false, description: 'Usuarios - eliminar' },
+  { name: Permission.ADMUSER_CHANGEPW, active: false, description: 'Usuarios - restablecer contraseña' },
+  { name: Permission.ADMUSER_ROLE_SET, active: false, description: 'Usuarios - Rol establecer' },
+  { name: Permission.ADMUSER_ROLE_UNSET, active: false, description: 'Usuarios - Rol quitar' },
+  { name: Permission.ADMROLE_VIEW_N, active: false, description: 'Rol de usuario - listado' },
+  { name: Permission.ADMROLE_VIEW_1, active: false, description: 'Rol de usuario - información' },
+  { name: Permission.ADMROLE_ADD, active: false, description: 'Rol de usuario - alta' },
+  { name: Permission.ADMROLE_EDIT, active: false, description: 'Rol de usuario - modificar' },
+  { name: Permission.ADMROLE_DELETE, active: false, description: 'Rol de usuario - eliminar' },
+  { name: Permission.MODULE_VIEW_N, active: false, description: 'Módulos - listado' },
+  { name: Permission.MODULE_VIEW_1, active: false, description: 'Módulos - información' },
+  { name: Permission.MODULE_ADD, active: false, description: 'Módulos - alta' },
+  { name: Permission.MODULE_EDIT, active: false, description: 'Módulos - modificar' },
+  { name: Permission.MODULE_DELETE, active: false, description: 'Módulos - eliminar' },
+];
 
 const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
   const [role, setRole] = useState<IRoleAdd>({
@@ -23,24 +48,35 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const permissions = Object.values(Permission);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setRole(prevRole => ({ ...prevRole, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === 'checkbox') {
+      const permissionIndex = role.permissionsList.findIndex(permission => permission.name === name);
+  
+      if (permissionIndex >= 0) {
+        const updatedPermissionsList = [...role.permissionsList];
+        updatedPermissionsList[permissionIndex] = {
+          ...updatedPermissionsList[permissionIndex],
+          active: checked,
+        };
+  
+        setRole(prevRole => ({ ...prevRole, permissionsList: updatedPermissionsList }));
+      } else if (checked) {
+        const newPermission: APermissionItem = {
+          name: name as Permission,
+          active: checked,
+          description: '',
+        };
+  
+        setRole(prevRole => ({ ...prevRole, permissionsList: [...prevRole.permissionsList, newPermission] }));
+      }
+    } else {
+      setRole(prevRole => ({ ...prevRole, [name]: type === 'number' ? Number(value) : value }));
+    }
   };
 
-  const handlePermissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked, name } = e.target;
-    setRole(prevRole => ({
-      ...prevRole,
-      permissionsList: checked
-        ? [...prevRole.permissionsList, name]
-        : prevRole.permissionsList.filter(permission => permission !== name)
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -50,22 +86,29 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
     const roleRepository = new RoleRepository(apiService);
     const registerNewRole = new RegisterRole(roleRepository);
 
+    const payload: IRoleAdd = {
+      idModule: role.idModule,
+      name: role.name,
+      description: role.description,
+      permissionsList: defaultPermissions.map(permission => ({
+        name: permission.name,
+        description: permission.description,
+        active: role.permissionsList.find(p => p.name === permission.name)?.active || false,
+      })),
+    };
+
+    console.log('Cuerpo de la solicitud:', payload);
+    
     try {
-      await registerNewRole.registerRole(role);
+      await registerNewRole.registerRole(payload);
       setSuccess(true);
-      onRoleAdded(); // Notifica al componente padre sobre la adición del rol
-      setRole({ 
-        idModule: 0, 
-        name: '', 
-        description: '', 
-        permissionsList: [] 
-      });
+      onRoleAdded();      
     } catch (err) {
-      setError('Failed to add role. Please try again.');
+      console.error('Error al agregar el rol', err);
+      setError('Error al agregar el rol');
     } finally {
       setLoading(false);
     }
-   
   };
 
   return (
@@ -75,7 +118,7 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
         <TextField
           label="ID de módulo"
           name="idModule"
-          value={role.idModule}
+          value={role.idModule || ''}
           onChange={handleChange}
           fullWidth
           margin="normal"
@@ -83,18 +126,17 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
           required
         />
         <TextField
-          label="Nombre"
+          label="Nombre del rol"
           name="name"
-          value={role.name}
+          value={role.name || ''}
           onChange={handleChange}
           fullWidth
           margin="normal"
-          required
         />
         <TextField
           label="Descripción"
           name="description"
-          value={role.description}
+          value={role.description || ''}
           onChange={handleChange}
           fullWidth
           margin="normal"
@@ -102,40 +144,44 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
         <Typography variant="subtitle1" gutterBottom>
           Permisos
         </Typography>
-        <FormGroup>
-          {permissions.map(permission => (
-            <FormControlLabel
-              key={permission}
-              control={
-                <Checkbox
-                  checked={role.permissionsList.includes(permission)}
-                  onChange={handlePermissionChange}
-                  name={permission}
-                />
-              }
-              label={permission}
-            />
+        <Grid container spacing={2}>
+          {defaultPermissions.map(permission => (
+            <Grid item xs={12} key={permission.name}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name={permission.name}
+                    checked={role.permissionsList.some(p => p.name === permission.name && p.active)}
+                    onChange={handleChange}
+                  />
+                }
+                label={permission.description}
+              />
+            </Grid>
           ))}
-        </FormGroup>
-        {error && <Typography color="error">{error}</Typography>}
-        {success && <Typography color="primary">Role added successfully!</Typography>}
-        <Grid container spacing={2} justifyContent="flex-end" mb={2}> 
-        <Grid item>
-        <Button
-          color="secondary"
-          onClick={onCancel}
-          style={{ marginLeft: '8px' }}
-        >
-          Salir
-        </Button>
         </Grid>
-        
-        <Grid item>
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? 'Adding...' : 'Agregar Rol'}
-        </Button>
+        <Grid container spacing={2} justifyContent="flex-end" mb={2}>
+          <Grid item>
+            <Button variant="outlined" color="secondary" onClick={onCancel}>
+              Salir
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" type="submit" disabled={loading}>
+              {loading ? <CircularProgress size={24} /> : 'Agregar Rol'}
+            </Button>
+          </Grid>
         </Grid>
-        </Grid>
+        {success && (
+          <Typography variant="body1" color="success.main">
+            ¡Rol agregado exitosamente!
+          </Typography>
+        )}
+        {error && (
+          <Typography variant="body1" color="error.main">
+            {error}
+          </Typography>
+        )}
       </form>
     </Paper>
   );

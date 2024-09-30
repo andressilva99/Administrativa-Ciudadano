@@ -14,14 +14,12 @@ import { ERole, EPermissionItem } from '../../core/entities/role/IRole';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { Permission } from '../../core/entities/role/Permission';
+import { EditRoleProps } from '../../core/entities/role/IRole';
 
 const apiService = new ApiService();
 const roleRepository = new RoleRepository(apiService);
 
-interface EditRoleProps {
-  roleId: number;
-  onCancel: () => void;
-}
+
 
 const defaultPermissions: EPermissionItem[] = [
   { name: Permission.ADMUSER_VIEW_N, active: false, description: 'Usuarios - listado' },
@@ -44,7 +42,7 @@ const defaultPermissions: EPermissionItem[] = [
   { name: Permission.MODULE_DELETE, active: false, description: 'Módulos - eliminar' },
 ];
 
-const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
+const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel, onEditSuccess }) => {
   const [role, setRole] = useState<ERole | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
@@ -132,6 +130,7 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel }) => {
       try {
         await roleRepository.editRole(payload);
         setSuccess(true);
+        onEditSuccess(); 
       } catch (err) {
         console.error('Error al actualizar el rol', err);
         setError('Error al actualizar el rol');

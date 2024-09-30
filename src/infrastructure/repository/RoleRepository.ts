@@ -38,7 +38,7 @@ export class RoleRepository implements IRoleRepository {
 
   async registerRole(role: IRoleAdd): Promise<void> {
     try {
-      await this._api.post('/adm-main/admrole/registerRol', role);
+      await this._api.post('/adm-main/role/create', role);
     } catch (error) {
       console.log(error);
       throw new Error('Error al registrar el rol');
