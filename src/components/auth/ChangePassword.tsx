@@ -9,10 +9,12 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Typography,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { AuthRepository } from '../../infrastructure/repository/AuthRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import { CustomError } from '../../core/errors/CustomError';
 
 interface ChangePasswordModalProps {
     open: boolean,
@@ -22,34 +24,27 @@ interface ChangePasswordModalProps {
 const apiService = new ApiService();
 const authRepository = new AuthRepository(apiService);
 
-const validatePassword = (password: string): string | null => {
-  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-  if (!password) return 'La contraseña no puede estar vacía';
-  if (!passwordRegex.test(password)) {
-    return 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un número.';
-  }
-  return null;
-};
-
 const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState({
         old: false,
         new: false,
         confirm: false,
     });
 
+    const resetForm = () => {
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+    }
+
     const handleSubmit = async () => {
         setErrorMessage(null);
-
-        const newPasswordError = validatePassword(newPassword);
-        if (newPasswordError) {
-            setErrorMessage(newPasswordError);
-            return;
-        }
+        setSuccessMessage(null);
 
         if (newPassword !== confirmPassword) {
             setErrorMessage('Las contraseñas no coinciden');
@@ -61,9 +56,30 @@ const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
                 oldPassword,
                 newPassword,
             });
-            onClose(); 
-        } catch (err) {
-            setErrorMessage('Error al cambiar la contraseña, Inténtelo nuevamente.');
+            setSuccessMessage('Constraseñna cambiada con exito');
+
+            setTimeout(() => {
+                onClose();
+                resetForm();
+            }, 1500);
+        } catch (err: any) {
+            if (err instanceof CustomError) {
+                switch (err.statusCode) {
+                    case 400:
+                        setErrorMessage('Solicitud inválida. Verifique los campos e intente nuevamente.');
+                        break;
+                    case 401:
+                        setErrorMessage('Autenticación fallida. La contraseña actual es incorrecta.');
+                        break;
+                    case 500:
+                        setErrorMessage('Error interno del servidor. Intente más tarde.');
+                        break;
+                    default:
+                        setErrorMessage(err.message || 'Error al cambiar la contraseña.');
+                }
+            } else {
+                setErrorMessage('Error desconocido. Inténtelo nuevamente.');
+            }
         }
     };
 
@@ -132,6 +148,11 @@ const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
                     }}
                 />
                 {errorMessage && <Box color="red">{errorMessage}</Box>}
+                {successMessage && (
+                    <Box color="green">
+                        <Typography>{successMessage}</Typography>
+                    </Box>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancelar</Button>

@@ -1,5 +1,5 @@
 import { ApiService } from '../http/ApiService';
-import { IPasswordChange, ITokens } from '../../core/entities/auth/IAuth';
+import { IPasswordChange, IPasswordRecovery, ITokens } from '../../core/entities/auth/IAuth';
 import { IUserLogin } from '../../core/entities/auth/IAuth';
 import { IAuthRepository } from '../../core/interfaces/IAuthRepository';
 
@@ -31,6 +31,16 @@ export class AuthRepository implements IAuthRepository {
     } catch (err) {
       console.error('Error al cambiar la contraseña', err);
       throw new Error('Error al intentar cambiar la contraseña');
+    }
+  }
+
+  async recoveredPw(passwordRecovered: IPasswordRecovery): Promise<void> {
+    try {
+      await this._api.post('/adm-main/session/recoverpw', passwordRecovered );
+      console.log('Contraseña de recuperación enviado exitosamente');
+    } catch (err) {
+      console.error('Error al enviar correo de recuperación', err);
+      throw new Error('Error al intentar recuperar la contraseña');
     }
   }
 }
