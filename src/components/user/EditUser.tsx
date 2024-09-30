@@ -202,7 +202,10 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
           <SelectModulesModal
             userId={userId}
             selectedModules={selectedModules}
-            onSave={(updatedModules) => setSelectedModules(updatedModules)}
+            onSave={(updatedModules) => {
+              setSelectedModules(updatedModules);
+              setIsModalOpen(false);
+            }}
             onClose={() => setIsModalOpen(false)}
           />
         )}

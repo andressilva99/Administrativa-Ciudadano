@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ChangePasswordModal from '../../../../../components/user/ChangePassword';
+import ChangePasswordModal from '../../../../../components/auth/ChangePassword';
 
 //  project import
 import Avatar from '../../../../../components/@extended/Avatar';

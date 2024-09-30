@@ -25,3 +25,7 @@ export interface IPasswordChange {
     oldPassword: string;
     newPassword: string;
 }
+
+export interface IPasswordRecovery {
+    email: string;
+}

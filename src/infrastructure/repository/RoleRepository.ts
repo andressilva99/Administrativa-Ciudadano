@@ -76,12 +76,12 @@ export class RoleRepository implements IRoleRepository {
     }
   }
   async unsetRole(userId: number, roleId: number): Promise<void> {
-    const payload = {
+    const payload2 = {
       idAdmUser: userId,
       idAdmRole: roleId
     };
     try {
-      await this._api.post('/adm-main/admuser/role/unset', payload);
+      await this._api.post('/adm-main/admuser/role/unset', payload2);
     } catch (error : any) {
       const message = error.response?.data?.message || "Error al quitar el rol de usario";
       throw new CustomError(message, error.response?.status);
