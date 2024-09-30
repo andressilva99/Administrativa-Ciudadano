@@ -61,6 +61,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
     try {
       const data = await roleRepository.findRoles(moduleCode, 0, 100);
       setRoles(data.list);
+      console.log(data);
       setMessage(null);
     } catch (err) {
       setMessage({ type: 'error', text: 'Error al obtener los roles' });
@@ -88,6 +89,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
     
     try {
       const isAssigned = selectedModules.includes(pendingRole);
+      console.log(pendingRole);
 
       if (isAssigned) {
         await roleRepository.unsetRole(userId, pendingRole);

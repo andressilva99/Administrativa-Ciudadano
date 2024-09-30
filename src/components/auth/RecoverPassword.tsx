@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Typography, TextField } from '@mui/material';
+import { Alert, Box, Button, Typography, TextField, Divider } from '@mui/material';
 import { useState } from 'react';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { AuthRepository } from '../../infrastructure/repository/AuthRepository';
@@ -50,8 +50,10 @@ const RecoverPassword: React.FC = () => {
         width: '100%',
       }}
     >
-      <Typography variant='h5' align="center" gutterBottom>
-        Ingrese su Correo o DNI
+      <Divider sx={{ marginBottom: 2}} />
+
+      <Typography variant='h5' gutterBottom>
+        Ingrese tu correo electrónico o DNI para recuperar la contraseña
       </Typography>
       <TextField
         label="Correo Electrónico o DNI"
@@ -64,6 +66,8 @@ const RecoverPassword: React.FC = () => {
       />
 
       {message && <Alert severity={message.type}> {message.message} </Alert>}
+
+      <Divider sx={{ marginTop: 2}} />
 
       <Button variant="contained" color="primary" type="submit" fullWidth disabled={isSubmitting} >
         {isSubmitting ? 'Enviando...' : 'Enviar correo'}
