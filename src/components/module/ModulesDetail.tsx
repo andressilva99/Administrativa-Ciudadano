@@ -125,8 +125,8 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>NP ACTIVO</TableCell>
                 <TableCell>LP ACTIVO</TableCell>
-                <TableCell>MIN NIVEL NP</TableCell>
-                <TableCell>MIN NIVEL LP</TableCell>
+               {/* <TableCell>MIN NIVEL NP</TableCell>
+                <TableCell>MIN NIVEL LP</TableCell>*/}
                 <TableCell>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
@@ -138,8 +138,8 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
                   <TableCell>{module.name}</TableCell>
                   <TableCell>{module.enabledNp ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{module.enabledLp ? 'Sí' : 'No'}</TableCell>
-                  <TableCell>{module.minNpLevel}</TableCell>
-                  <TableCell>{module.minLpLevel}</TableCell>
+                  {/*<TableCell>{module.minNpLevel}</TableCell>
+                  <TableCell>{module.minLpLevel}</TableCell>*/}
                   <TableCell>
                   <IconButton onClick={() => handleViewClick(module.id)} aria-label="Ver módulo">
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
