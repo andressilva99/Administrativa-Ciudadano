@@ -40,6 +40,12 @@ export interface APermissionItem {
 export interface AddRoleProps {
   onRoleAdded: () => void;
   onCancel: () => void;
+  roleToCopy?: {
+    name: string;
+    description: string;
+    permissionsList: PermissionItem[];
+    idModule: number;
+  };
   
 }
 

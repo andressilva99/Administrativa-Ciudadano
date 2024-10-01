@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TextField,
   Button,
   Paper,
   Typography,
   Checkbox,
-  FormControlLabel,  
+  FormControlLabel,
   Grid,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { IRoleAdd, APermissionItem } from '../../core/entities/role/IRole';
 import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
 import { Permission } from '../../core/entities/role/Permission';
-import { ApiService } from "../../infrastructure/http/ApiService";
+import { ApiService } from '../../infrastructure/http/ApiService';
 import { AddRoleProps } from '../../core/entities/role/IRole';
 
 const defaultPermissions: APermissionItem[] = [
@@ -37,30 +37,42 @@ const defaultPermissions: APermissionItem[] = [
   { name: Permission.MODULE_DELETE, active: false, description: 'Módulos - eliminar' },
 ];
 
-const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
+const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel, roleToCopy }) => {
   const [role, setRole] = useState<IRoleAdd>({
     idModule: 0,
     name: '',
     description: '',
-    permissionsList: []
+    permissionsList: [],
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Cargar datos si estamos copiando un rol existente
+  useEffect(() => {
+    if (roleToCopy) {
+      setRole({
+        idModule: roleToCopy.idModule,
+        name: roleToCopy.name,
+        description: roleToCopy.description,
+        permissionsList: roleToCopy.permissionsList,
+      });
+    }
+  }, [roleToCopy]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
 
     if (type === 'checkbox') {
       const permissionIndex = role.permissionsList.findIndex(permission => permission.name === name);
-  
+
       if (permissionIndex >= 0) {
         const updatedPermissionsList = [...role.permissionsList];
         updatedPermissionsList[permissionIndex] = {
           ...updatedPermissionsList[permissionIndex],
           active: checked,
         };
-  
+
         setRole(prevRole => ({ ...prevRole, permissionsList: updatedPermissionsList }));
       } else if (checked) {
         const newPermission: APermissionItem = {
@@ -68,7 +80,7 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
           active: checked,
           description: '',
         };
-  
+
         setRole(prevRole => ({ ...prevRole, permissionsList: [...prevRole.permissionsList, newPermission] }));
       }
     } else {
@@ -98,11 +110,12 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
     };
 
     console.log('Cuerpo de la solicitud:', payload);
-    
+
     try {
       await registerNewRole.registerRole(payload);
       setSuccess(true);
-      onRoleAdded();      
+      onRoleAdded();
+      onCancel();
     } catch (err) {
       console.error('Error al agregar el rol', err);
       setError('Error al agregar el rol');
@@ -113,7 +126,7 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
 
   return (
     <Paper style={{ padding: 16 }}>
-      <Typography variant="h6">Agregar Rol</Typography>
+      <Typography variant="h6">{roleToCopy ? 'Agregar Rol' : 'Agregar Rol'}</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           label="ID de módulo"
@@ -168,13 +181,13 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel }) => {
           </Grid>
           <Grid item>
             <Button variant="contained" color="primary" type="submit" disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : 'Agregar Rol'}
+              {loading ? <CircularProgress size={24} /> : roleToCopy ? 'Agregar Rol' : 'Agregar Rol'}
             </Button>
           </Grid>
         </Grid>
         {success && (
           <Typography variant="body1" color="success.main">
-            ¡Rol agregado exitosamente!
+            ¡Rol {roleToCopy ? 'copiado' : 'agregado'} exitosamente!
           </Typography>
         )}
         {error && (

@@ -29,7 +29,11 @@ import ModuleById from './ModuleById';
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
 
-const ModulesDetail: React.FC = () => {
+interface ModuleDetailProps {
+  updateTable: boolean; // Prop para controlar la actualización
+}
+
+const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
   const [modules, setModules] = useState<IModule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
@@ -59,7 +63,7 @@ const ModulesDetail: React.FC = () => {
 
   useEffect(() => {
     getModules();
-  }, [page, size]);
+  }, [page, size, updateTable]);
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);

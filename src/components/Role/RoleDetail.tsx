@@ -26,6 +26,9 @@ import { IRole } from '../../core/entities/role/IRole';
 import { RoleResponse } from '../../core/entities/role/IRole';
 import EditRole from './EditRole';
 import RoleById from './RoleById';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import AddRole from './AddRole';
+import { IRoleAdd } from '../../core/entities/role/IRole';
 
 
 
@@ -46,6 +49,8 @@ const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [viewRoleId, setViewRoleId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+  const [openCopyDialog, setOpenCopyDialog] = useState<boolean>(false);
+  const [initialRoleData, setInitialRoleData] = useState<IRoleAdd | null>(null);
 
   const apiService = new ApiService();
   const roleRepository = new RoleRepository(apiService);
@@ -107,6 +112,27 @@ const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
     getRoles(); // Refresh the roles after editing
     handleCloseEditDialog();
   };
+
+  const handleCopyClick = (role: IRole) => {
+    const { idModule, name, description, permissionsList } = role;
+    const roleToCopy: IRoleAdd = {
+      idModule,
+      name,
+      description,
+      permissionsList: permissionsList.map(p => ({
+        name: p.name,
+        description: p.description,
+        active: p.active ?? false, // Asignar un valor booleano si `active` no está definido
+      })),
+    };
+    setInitialRoleData(roleToCopy);
+    setOpenCopyDialog(true);
+  };
+  
+  const handleCloseCopyDialog = () => {
+    setOpenCopyDialog(false);
+    setInitialRoleData(null);
+  };
   
 
   if (loading) {
@@ -143,6 +169,9 @@ const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
                     <IconButton onClick={() => handleEditClick(role.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
+                    <IconButton onClick={() => handleCopyClick(role)}>
+                <FileCopyIcon sx={{ color: 'primary.main' }} />
+              </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -196,6 +225,18 @@ const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
           {error || 'Unknown error occurred'}
         </Alert>
       </Snackbar>
+      <Dialog open={openCopyDialog} onClose={handleCloseCopyDialog} maxWidth="md" fullWidth>
+      <DialogTitle>Copiar Rol</DialogTitle>
+      <DialogContent style={{ paddingBottom: 0 }}>
+        {initialRoleData && (
+          <AddRole
+            onRoleAdded={getRoles} // Refrescar la tabla de roles después de añadir
+            onCancel={handleCloseCopyDialog}
+            roleToCopy={initialRoleData} // Pasar los datos iniciales al componente AddRole
+          />
+        )}
+      </DialogContent>
+    </Dialog>
     </>
   );
 };

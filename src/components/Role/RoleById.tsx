@@ -95,15 +95,7 @@ const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
           <TableRow>
             <TableCell>*DESHABILITADO:</TableCell>
             <TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>*TSI:</TableCell>
-            <TableCell>{role.tsi}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>*TSU:</TableCell>
-            <TableCell>{role.tsu}</TableCell>
-          </TableRow>
+          </TableRow>      
           <TableRow>
             <TableCell>*PERMISOS ACTIVOS:</TableCell>
             <TableCell>

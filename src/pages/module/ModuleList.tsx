@@ -39,6 +39,8 @@ const ModuleList: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openCreateDialog, setOpenCreateDialog] = useState(false); // Estado para el diálogo de creación
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [updateTable, setUpdateTable] = useState(false);
+  const [showAddModule, setShowAddModule] = useState(false);
   const openMenu = Boolean(anchorEl);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -125,6 +127,12 @@ const ModuleList: React.FC = () => {
     setOpenCreateDialog(false);
   };
 
+  const handleModuleAdded = () => {
+    // Lógica adicional después de agregar un rol
+    setUpdateTable(prev => !prev);
+    setOpenCreateDialog(false);
+    
+  };
   const handleSuccess = () => {
     // Lógica después de la actualización exitosa
     handleCloseEditDialog();
@@ -223,9 +231,7 @@ const ModuleList: React.FC = () => {
         </MenuItem>
       </Menu>
 
-      <Paper style={{ padding: '16px', marginBottom: '16px' }}>
-        <ModulesDetail />
-      </Paper>
+      
 
       <Dialog open={openModuleDialog} onClose={handleCloseModuleDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle del Módulo</DialogTitle>
@@ -287,12 +293,14 @@ const ModuleList: React.FC = () => {
         <DialogTitle>Crear Módulo</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           <CreateModule
-            onModuleCreated={() => handleCloseCreateDialog()} // Callback para cuando se cree un módulo
+            onModuleCreated={() => handleModuleAdded()} // Callback para cuando se cree un módulo
             onCancel={() => handleCloseCreateDialog()} // Callback para cancelar
           />
         </DialogContent>
         
       </Dialog>
+
+      <ModulesDetail updateTable={updateTable} /> {/* Pasa updateTable a RoleTable */}
     </div>
   );
 };
