@@ -1,5 +1,5 @@
 // third-party
-import { FormattedMessage } from 'react-intl';
+//import { FormattedMessage } from 'react-intl';
 
 // assets
 import { HomeOutlined, UserOutlined, DatabaseOutlined, GoldOutlined } from '@ant-design/icons';

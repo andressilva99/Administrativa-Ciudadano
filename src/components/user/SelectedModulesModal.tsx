@@ -58,6 +58,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
 
   const handleFetchRoles = async (moduleCode: string) => {
     setLoadingRoles(true);
+    
     try {
       const data = await roleRepository.findRoles(moduleCode, 0, 100);
       setRoles(data.list);

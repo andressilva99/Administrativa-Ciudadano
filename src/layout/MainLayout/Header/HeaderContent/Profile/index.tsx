@@ -125,7 +125,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="xs" />
-          <Typography variant="subtitle1">Lucas Barbero</Typography>
+          <Typography variant="subtitle1">Sección Activa</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -172,7 +172,7 @@ const Profile = () => {
                               sx={{ width: 32, height: 32 }}
                             />
                             <Stack>
-                              <Typography variant="h6">Lucas Barbero</Typography>
+                              <Typography variant="h6">Sección Activa</Typography>
                               <Typography variant="body2" color="textSecondary">
                                 UI/UX Designer
                               </Typography>

@@ -1,139 +1,68 @@
-//  material-ui
-import { Grid } from '@mui/material';
+import { Grid, Typography, Box, Card, CardContent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-
-//  projects import
-import ReportCard from '../../components/cards/statitics/ReportCard';
-import HoverSocialCard from '../../components/cards/statitics/HoverSocialCard';
-import UserCountCard from '../../components/cards/statitics/UserCountCard';
-import ToDoList from '../../sections/home/ToDoList';
-import TrafficSources from '../../sections/home/TrafficSources';
-import TeamMembers from '../../sections/home/TeamMembers';
-
-// assets
-import {
-  BarChartOutlined,
-  CalendarOutlined,
-  ContactsOutlined,
-  DownloadOutlined,
-  FacebookOutlined,
-  FileTextOutlined,
-  FileProtectOutlined,
-  LinkedinOutlined,
-  RedditOutlined,
-  TwitterOutlined,
-  YoutubeOutlined,
-} from '@ant-design/icons';
 
 const Home = () => {
   const theme = useTheme();
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} lg={3} sm={6}>
-        <ReportCard
-          primary="$30200"
-          secondary="All Earnings"
-          color={theme.palette.secondary.main}
-          iconPrimary={BarChartOutlined}
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <ReportCard
-          primary="145"
-          secondary="Task"
-          color={theme.palette.error.main}
-          iconPrimary={CalendarOutlined}
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <ReportCard
-          primary="290+"
-          secondary="Page Views"
-          color={theme.palette.success.dark}
-          iconPrimary={FileTextOutlined}
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <ReportCard
-          primary="500"
-          secondary="Downloads"
-          color={theme.palette.primary.main}
-          iconPrimary={DownloadOutlined}
-        />
-      </Grid>
+    <Grid 
+      container 
+      spacing={3} 
+      justifyContent="center" 
+      alignItems="flex-start"
+      style={{ minHeight: '70vh', textAlign: 'center', paddingTop: theme.spacing(4) }}
+    >
+      {/* Contenedor para la imagen y las tarjetas */}
+      <Grid item container xs={12} spacing={3} justifyContent="center">
+        {/* Tarjeta con texto de bienvenida y descripción */}
+        <Grid item xs={12} sm={6} md={6}>
+          <Card sx={{ maxWidth: '100%', margin: 'auto', padding: 2 }}>
+            <CardContent>
+              <Typography 
+                variant="h2" 
+                color={theme.palette.primary.main} 
+                sx={{ 
+                  fontWeight: 'bold', 
+                  mb: 2, 
+                  fontSize: { xs: '1.5rem', sm: '2.5rem', md: '3rem' } 
+                }}
+              >
+                ¡Bienvenido a la App Administrativa!
+              </Typography>
 
-      {/* row 1 */}
-      <Grid item xs={12} lg={4} md={6}>
-        <ToDoList />
-      </Grid>
-      <Grid item xs={12} lg={4} md={6}>
-        <TrafficSources />
-      </Grid>
-      <Grid item xs={12} lg={4} md={12}>
-        <TeamMembers />
-      </Grid>
+              <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+                Funcionalidades de la App
+              </Typography>
 
-      <Grid item xs={12} lg={3} sm={6}>
-        <HoverSocialCard
-          primary="Facebook Users"
-          secondary="1165 +"
-          iconPrimary={FacebookOutlined}
-          color={theme.palette.primary.main}
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <HoverSocialCard
-          primary="Twitter Users"
-          secondary="780 +"
-          iconPrimary={TwitterOutlined}
-          color={theme.palette.info.main}
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <HoverSocialCard
-          primary="Linked In Users"
-          secondary="998 +"
-          iconPrimary={LinkedinOutlined}
-          color={
-            theme.palette.mode === 'dark'
-              ? theme.palette.secondary.lighter
-              : theme.palette.secondary.dark
-          }
-        />
-      </Grid>
-      <Grid item xs={12} lg={3} sm={6}>
-        <HoverSocialCard
-          primary="Youtube Videos"
-          secondary="650 +"
-          iconPrimary={YoutubeOutlined}
-          color={theme.palette.error.main}
-        />
-      </Grid>
+              <div>
+                <Typography variant="h5" sx={{ mb: 1 }}>
+                  Esta aplicación facilita la administración de usuarios, roles y módulos de manera eficiente. Dependiendo de los permisos que tengas habilitados, podrás:
+                </Typography>
+                <ul style={{ listStyleType: 'disc', paddingLeft: '0', textAlign: 'left' }}>
+                  <li><strong>Crear:</strong> nuevos usuarios y roles para gestionar tu equipo.</li>
+                  <li><strong>Modificar:</strong> actualizar la información de usuarios y roles según sea necesario.</li>
+                  <li><strong>Ver detalles:</strong> consultar la información específica de usuarios, roles y módulos.</li>
+                  <li><strong>Realizar asignaciones:</strong> asignar roles y permisos a los usuarios para optimizar el flujo de trabajo.</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
 
-      <Grid item xs={12} lg={4}>
-        <UserCountCard
-          primary="Daily user"
-          secondary="1,658"
-          iconPrimary={ContactsOutlined}
-          color={theme.palette.success.light}
-        />
-      </Grid>
-      <Grid item xs={12} lg={4} sm={6}>
-        <UserCountCard
-          primary="Daily page view"
-          secondary="1K"
-          iconPrimary={FileProtectOutlined}
-          color={theme.palette.primary.main}
-        />
-      </Grid>
-      <Grid item xs={12} lg={4} sm={6}>
-        <UserCountCard
-          primary="Last month visitor"
-          secondary="5,678"
-          iconPrimary={RedditOutlined}
-          color={theme.palette.warning.dark}
-        />
+        {/* Imagen más grande */}
+        <Grid item xs={12} sm={6} md={6}>
+          <Box
+            component="img"
+            src="https://sanfrancisco.utn.edu.ar/imagenes/noticias/fotografias/gf-2336-692651.jpg" 
+            alt="Logo UTN"
+            sx={{ 
+              width: { xs: '90%', sm: '80%', md: '100%' }, 
+              height: 'auto', 
+              borderRadius: '16px', 
+              boxShadow: theme.shadows[3] 
+            }}
+          />
+        </Grid>
       </Grid>
     </Grid>
   );
