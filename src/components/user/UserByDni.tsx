@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { CircularProgress,Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { IUser } from '../../core/entities/user/IUser'; 
 import { FindUsersByDni } from '../../core/use-cases/user/FindUserByDni';
 import { ApiService } from '../../infrastructure/http/ApiService';
@@ -51,31 +51,48 @@ const UserByDni: React.FC<UserByDniProps> = ({ dni }) => {
     }
     
     const userList = user.list[0];
-    return(
-        <List>
-            <ListItem>
-                <ListItemText primary="*ID" secondary={userList.id || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Nombre" secondary={userList.firstName || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Apellido" secondary={userList.lastName || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Email" secondary={userList.email || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*DNI" secondary={userList.dni || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Teléfono" secondary={userList.phoneNumber || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Último acceso" secondary={userList.lastAccessDate || 'N/A'} />
-            </ListItem>
-        </List>
-    );
+    return (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>*Campo</TableCell>
+                <TableCell>Valor</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>*ID</TableCell>
+                <TableCell>{userList.id || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Nombre</TableCell>
+                <TableCell>{userList.firstName || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Apellido</TableCell>
+                <TableCell>{userList.lastName || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Email</TableCell>
+                <TableCell>{userList.email || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*DNI</TableCell>
+                <TableCell>{userList.dni || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Teléfono</TableCell>
+                <TableCell>{userList.phoneNumber || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Último acceso</TableCell>
+                <TableCell>{userList.lastAccessDate || 'N/A'}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
 };
 
 export default UserByDni;

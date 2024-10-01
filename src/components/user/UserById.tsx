@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {List, ListItem, ListItemText, CircularProgress} from '@mui/material'
+import { CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material'
 import { IUser } from '../../core/entities/user/IUser';
 import { FindUsersById } from '../../core/use-cases/user/FindUserById';
 import { ApiService } from '../../infrastructure/http/ApiService';
@@ -52,47 +52,63 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
     
     const admUser = user.admUser;
     const modules = user.moduleList || [];
-    return(
-        <List>
-            <ListItem>
-                <ListItemText primary="*ID" secondary={admUser?.id || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Nombre" secondary={admUser?.firstName || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Apellido" secondary={admUser?.lastName || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Email" secondary={admUser?.email || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*DNI" secondary={admUser?.dni || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Teléfono" secondary={admUser?.phoneNumber || 'N/A'} />
-            </ListItem>
-            <ListItem>
-                <ListItemText primary="*Último acceso" secondary={admUser?.lastAccessDate || 'N/A'} />
-            </ListItem>
-
-            {modules.length > 0 && (
+    return (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>*Campo</TableCell>
+                <TableCell>Valor</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>*ID</TableCell>
+                <TableCell>{admUser?.id || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Nombre</TableCell>
+                <TableCell>{admUser?.firstName || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Apellido</TableCell>
+                <TableCell>{admUser?.lastName || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Email</TableCell>
+                <TableCell>{admUser?.email || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*DNI</TableCell>
+                <TableCell>{admUser?.dni || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Teléfono</TableCell>
+                <TableCell>{admUser?.phoneNumber || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>*Último acceso</TableCell>
+                <TableCell>{admUser?.lastAccessDate || 'N/A'}</TableCell>
+              </TableRow>
+    
+              {modules.length > 0 && (
                 <>
-                    <ListItem>
-                        <ListItemText primary="Módulos asignados: " />
-                    </ListItem>
-                    {modules.map((module, index) => (
-                        <ListItem key={index}>
-                            <ListItemText 
-                                primary={`- ${module.name}`} 
-                                secondary={`${module.configuraciones.description}`}
-                            />
-                        </ListItem>
-                    ))}
+                  <TableRow>
+                    <TableCell>Módulos asignados:</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  {modules.map((module, index) => (
+                    <TableRow key={index}>
+                      <TableCell>- {module.name}</TableCell>
+                      <TableCell>{module.configuraciones.description}</TableCell>
+                    </TableRow>
+                  ))}
                 </>
-            )}
-        </List>
-    );
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
 };
 
 export default UserById;

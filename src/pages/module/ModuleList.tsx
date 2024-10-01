@@ -40,7 +40,6 @@ const ModuleList: React.FC = () => {
   const [openCreateDialog, setOpenCreateDialog] = useState(false); // Estado para el diálogo de creación
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [updateTable, setUpdateTable] = useState(false);
-  const [showAddModule, setShowAddModule] = useState(false);
   const openMenu = Boolean(anchorEl);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
