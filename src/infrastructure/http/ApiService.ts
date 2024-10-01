@@ -40,7 +40,19 @@ export class ApiService {
         }
         return Promise.reject(error);
       }
-    )
+    );
+
+    this._instance.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response?.status === 401) {
+          window.localStorage.setItem('session_expired', 'true');
+          window.localStorage.removeItem('access_token');
+          window.localStorage.href('/auth/login');
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
@@ -52,7 +64,15 @@ export class ApiService {
     data: R,
     config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
-    return await this._instance.post<T>(url, data, config);
+    const finalConfig: AxiosRequestConfig = {
+      ...config,
+      headers: {
+        ...config?.headers,
+        'Content-Type': 'application/json'
+      }
+    }
+
+    return await this._instance.post<T>(url, data, finalConfig);
   }
 
   async put<T = any, R = any>(

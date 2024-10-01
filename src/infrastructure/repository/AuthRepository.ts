@@ -36,7 +36,18 @@ export class AuthRepository implements IAuthRepository {
 
   async recoveredPw(passwordRecovered: IPasswordRecovery): Promise<void> {
     try {
-      await this._api.post('/adm-main/session/recoverpw', passwordRecovered );
+      const recoverdata = passwordRecovered.email || passwordRecovered.dni;
+
+      if (!recoverdata) {
+        throw new Error('Debe proporcionar un email o DNI');
+      }
+
+      const headers = {
+        recoverdata,
+      };
+
+      await this._api.post('/adm-main/session/recoverpw', {}, { headers });
+      
       console.log('Contraseña de recuperación enviado exitosamente');
     } catch (err) {
       console.error('Error al enviar correo de recuperación', err);

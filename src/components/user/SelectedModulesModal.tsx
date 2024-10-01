@@ -22,26 +22,28 @@ const roleRepository = new RoleRepository(apiService);
 
 interface SelectModulesProps {
   userId: number;
-  selectedModules: number[];
+  selectedRoleIds: number[];
   onSave: (updatedModules: number[]) => void;
   onClose: () => void;
 }
 
 const SelectModulesModal: React.FC<SelectModulesProps> = ({
   userId,
-  selectedModules,
+  selectedRoleIds,
   onSave,
   onClose,
 }) => {
   const [modules, setModules] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
+  const [loadingModules, setLoadingModules] = useState<boolean>(false);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [pendingRole, setPendingRole] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchModules = async () => {
+      setLoadingModules(true);
       try {
         const data = await moduleRepository.findModules(0, 100);
         const filteredModules = data.list.filter(
@@ -50,6 +52,8 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
         setModules(filteredModules);
       } catch (error) {
         setMessage({ type: 'error', text: 'Error al obtener los módulos' });
+      } finally {
+        setLoadingModules(false);
       }
     };
 
@@ -61,7 +65,13 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
     
     try {
       const data = await roleRepository.findRoles(moduleCode, 0, 100);
-      setRoles(data.list);
+      setRoles(
+        data.list.map((role) => ({
+          ...role,
+          id: role.id,
+        }))
+      );
+      console.log(data);
       setMessage(null);
     } catch (err) {
       setMessage({ type: 'error', text: 'Error al obtener los roles' });
@@ -86,27 +96,35 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
 
   const saveChanges = async () => {
     if (pendingRole === null) return;
-    console.log(pendingRole);
+    
     try {
-      const isAssigned = selectedModules.includes(pendingRole);
+      const isAssigned = selectedRoleIds.includes(pendingRole);
+      console.log(pendingRole);
 
       if (isAssigned) {
         await roleRepository.unsetRole(userId, pendingRole);
         setMessage({ type: 'success', text: 'Rol quitado con éxito' });
-        onSave(selectedModules.filter((id) => id !== pendingRole));
+
+        const updatedRoles = selectedRoleIds.filter((id) => id !== pendingRole);
+        onSave(updatedRoles);
       } else {
         await roleRepository.setRole(userId, pendingRole);
         setMessage({ type: 'success', text: 'Rol asignado con éxito' });
-        onSave([...selectedModules, pendingRole]);
+
+        const updatedRoles = [...selectedRoleIds, pendingRole];
+        onSave(updatedRoles);
       }
 
       setTimeout(() => {
         setMessage(null);
+        setPendingRole(null);
       }, 3000);
     } catch (err) {
       setMessage({ type: 'error', text: 'Error al asignar/quitar el rol' });
-    } finally {
-      setPendingRole(null);
+      
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     }
   };
 
@@ -140,7 +158,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
                 >
                   <ListItemText primary={role.name} />
                   <Button variant="outlined" onClick={() => handleRoleToggle(role.id)}>
-                    {pendingRole === role.id || selectedModules.includes(role.id)
+                    {pendingRole === role.id || selectedRoleIds.includes(role.id)
                       ? 'Quitar Rol'
                       : 'Dar Rol'}
                   </Button>
@@ -151,15 +169,18 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
         )}
       </React.Fragment>
     ));
-  }, [modules, roles, selectedModule, loadingRoles, pendingRole, selectedModules]);
+  }, [modules, roles, selectedModule, loadingRoles, pendingRole, selectedRoleIds]);
 
   return (
     <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Módulos</DialogTitle>
       <DialogContent>
         {message && <Alert severity={message.type}>{message.text}</Alert>}
-
-        <List>{memoizedModules}</List>
+        {loadingModules ? (
+          <CircularProgress />
+        ) : (
+          <List>{memoizedModules}</List>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancelar</Button>
