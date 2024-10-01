@@ -2,6 +2,8 @@ import { ApiService } from '../http/ApiService';
 import { IPasswordChange, IPasswordRecovery, ITokens } from '../../core/entities/auth/IAuth';
 import { IUserLogin } from '../../core/entities/auth/IAuth';
 import { IAuthRepository } from '../../core/interfaces/IAuthRepository';
+import { setUser } from '../../store/reducers/slices/userSlice';
+import { dispatch } from '../../store';
 
 export class AuthRepository implements IAuthRepository {
   private readonly _api: ApiService;
@@ -12,11 +14,18 @@ export class AuthRepository implements IAuthRepository {
 
   async signin(credentials: IUserLogin): Promise<ITokens> {
     try {
-      const response = await this._api.post<{ token: string }>(
+      const response = await this._api.post<{ token: string; admUser: {firstName: string, lastName: string} }>(
         '/adm-main/session/signin',
         credentials,
       );
+      
       console.log('Response data: ', response.data);
+
+      dispatch(setUser({
+        firstName: response.data.admUser.firstName,
+        lastName: response.data.admUser.lastName,
+      }));
+
       return { access_token: response.data.token };
     } catch (err) {
       console.log('Signin Error:', err);

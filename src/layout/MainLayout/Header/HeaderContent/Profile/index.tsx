@@ -1,5 +1,8 @@
 import { ReactNode, SyntheticEvent, useRef, useState } from 'react';
 
+import { selectUserFirstName, selectUserLastName } from '../../../../../store/reducers/slices/userSlice';
+import { useSelector } from 'react-redux';
+
 //  material-ui
 import {
   Box,
@@ -64,6 +67,9 @@ const Profile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const firstName = useSelector(selectUserFirstName);
+  const lastName = useSelector(selectUserLastName);
+
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState<boolean>(false);
 
   const handleLogout = () => {
@@ -125,7 +131,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="xs" />
-          <Typography variant="subtitle1">Sección Activa</Typography>
+          <Typography variant="subtitle1">{firstName} {lastName}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
