@@ -89,14 +89,14 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
               <TableRow>
                 <TableCell>*Último acceso</TableCell>
                 <TableCell>{admUser?.lastAccessDate || 'N/A'}</TableCell>
-              </TableRow>
+              </TableRow>                          
     
               {modules.length > 0 && (
                 <>
-                  <TableRow>
-                    <TableCell>Módulos asignados:</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+                <TableRow>
+                  <TableCell>---------*MÓDULOS ASIGNADOS*---------</TableCell>
+                  
+                </TableRow>                
                   {modules.map((module, index) => (
                     <TableRow key={index}>
                       <TableCell>- {module.name}</TableCell>
