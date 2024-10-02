@@ -178,10 +178,7 @@ const Profile = () => {
                               sx={{ width: 32, height: 32 }}
                             />
                             <Stack>
-                              <Typography variant="h6">Sección Activa</Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
-                              </Typography>
+                              <Typography variant="h6">{firstName} {lastName}</Typography>
                             </Stack>
                           </Stack>
                         </Grid>
