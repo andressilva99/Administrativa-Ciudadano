@@ -14,17 +14,21 @@ export class AuthRepository implements IAuthRepository {
 
   async signin(credentials: IUserLogin): Promise<ITokens> {
     try {
-      const response = await this._api.post<{ token: string; admUser: {firstName: string, lastName: string} }>(
-        '/adm-main/session/signin',
-        credentials,
-      );
-      
+      const response = await this._api.post<{
+        token: string;
+        admUser: { firstName: string; lastName: string };
+        moduleList: string[];
+      }>('/adm-main/session/signin', credentials);
+
       console.log('Response data: ', response.data);
 
-      dispatch(setUser({
-        firstName: response.data.admUser.firstName,
-        lastName: response.data.admUser.lastName,
-      }));
+      dispatch(
+        setUser({
+          firstName: response.data.admUser.firstName,
+          lastName: response.data.admUser.lastName,
+          moduleList: response.data.moduleList,
+        }),
+      );
 
       return { access_token: response.data.token };
     } catch (err) {
@@ -56,7 +60,7 @@ export class AuthRepository implements IAuthRepository {
       };
 
       await this._api.post('/adm-main/session/recoverpw', {}, { headers });
-      
+
       console.log('Contraseña de recuperación enviado exitosamente');
     } catch (err) {
       console.error('Error al enviar correo de recuperación', err);
