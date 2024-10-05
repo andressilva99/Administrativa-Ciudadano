@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
-import { selectUserModuleList } from '../store/reducers/slices/userSlice';
+import { selectUserPermissions, selectUserRoot } from '../store/reducers/slices/userSlice';
 
 interface ProtectedRouteProps {
   requiredPermission?: string;
@@ -9,7 +9,8 @@ interface ProtectedRouteProps {
 
 const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ requiredPermission }) => {
   const location = useLocation();
-  const moduleList = useSelector(selectUserModuleList);
+  const moduleList = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
   const isAuthenticated = !!window.localStorage.getItem('access_token');
 
   if (!isAuthenticated && location.pathname !== '/auth/login') {
@@ -20,7 +21,7 @@ const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ requiredPermission }) 
     return <Navigate to="/home" replace />;
   }
 
-  if (requiredPermission && !moduleList.includes(requiredPermission)) {
+  if (requiredPermission && !moduleList.includes(requiredPermission) && !isRoot) {
     return <Navigate to="/home" replace />;
   }
 

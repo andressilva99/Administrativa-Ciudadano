@@ -16,18 +16,27 @@ export class AuthRepository implements IAuthRepository {
     try {
       const response = await this._api.post<{
         token: string;
-        admUser: { firstName: string; lastName: string };
-        moduleList: string[];
+        admUser: { firstName: string; lastName: string, root: boolean };
+        moduleList: {role?: { permissionsList?: {name: string; active: boolean}[]}}[];
       }>('/adm-main/session/signin', credentials);
 
       console.log('Response data: ', response.data);
+
+      const userPermissions = response.data.moduleList
+        .map(module => module.role?.permissionsList || [])
+        .flat()
+        .filter(permission => permission.active)
+        .map(permission => permission.name)
+
+      console.log(userPermissions);
 
       dispatch(
         setUser({
           firstName: response.data.admUser.firstName,
           lastName: response.data.admUser.lastName,
-          moduleList: response.data.moduleList,
-        }),
+          permissions: userPermissions,
+          root: response.data.admUser.root,
+        })
       );
 
       return { access_token: response.data.token };
