@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectUserPermissions, selectUserRoot } from '../store/reducers/slices/userSlice';
 
 interface ProtectedRouteProps {
   requiredPermission?: string;
+  children: ReactNode;
 }
 
-const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ requiredPermission }) => {
+const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ requiredPermission, children }) => {
   const location = useLocation();
   const moduleList = useSelector(selectUserPermissions) || [];
   const isRoot = useSelector(selectUserRoot);
@@ -25,7 +26,7 @@ const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ requiredPermission }) 
     return <Navigate to="/home" replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default ProtectedRoutes;

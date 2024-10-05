@@ -12,33 +12,39 @@ const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
 
 const MainRoutes: RouteObject = {
   path: '/',
-  element: <ProtectedRoutes />,
+  element: <MainLayout />,
   children: [
     {
       path: '/',
-      element: <MainLayout />,
-      children: [
-        {
-          path: '/',
-          element: <Navigate to="/home" />,
-        },
-        {
-          path: '/home',
-          element: <Home />,
-        },
-        {
-          path: 'user',
-          element: <User />,
-        },
-        {
-          path: 'role',
-          element: <Role />,
-        },
-        {
-          path: 'module',
-          element: <Module /> ,
-        },
-      ],
+      element: <Navigate to="/home" />,
+    },
+    {
+      path: '/home',
+      element: <Home />,
+    },
+    {
+      path: 'user',
+      element: (
+        <ProtectedRoutes requiredPermission="ADMUSER_VIEW_N">
+          <User />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'role',
+      element: (
+        <ProtectedRoutes requiredPermission="ADMROLE_VIEW_N">
+          <Role />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'module',
+      element: (
+        <ProtectedRoutes requiredPermission="MODULE_VIEW_N">
+          <Module />
+        </ProtectedRoutes>
+      ),
     },
   ],
 };
