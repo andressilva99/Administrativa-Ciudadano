@@ -3,6 +3,7 @@
 
 // assets
 import { HomeOutlined, UserOutlined, DatabaseOutlined, GoldOutlined } from '@ant-design/icons';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 
 // project import
 import { NavItemType } from '../types/menu';
@@ -13,6 +14,7 @@ const icons = {
   UserOutlined,
   DatabaseOutlined,
   GoldOutlined,
+  DirectionsBikeIcon,
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -72,6 +74,20 @@ const menuItems: { items: NavItemType[] } = {
           icon: icons.GoldOutlined,
           url: '/module',
           permission: 'MODULE_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-bycicle',
+      type: 'group',
+      children: [
+        {
+          id: 'bycicle',
+          type: 'item',
+          title: 'Bicicletas urbanas',
+          icon: icons.DirectionsBikeIcon,
+          url: '/bycicle',
+          permission: 'BICIS_DELIVERY',
         },
       ],
     },
