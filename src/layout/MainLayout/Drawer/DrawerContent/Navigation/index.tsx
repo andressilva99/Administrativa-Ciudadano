@@ -9,21 +9,17 @@ const Navigation = () => {
   const menu = useSelector((state: RootStateProps) => state.menu);
   const { drawerOpen } = menu;
 
-  const userPermissions = useSelector(selectUserPermissions);
+  const userPermissions = useSelector(selectUserPermissions) || [];
   const isRoot = useSelector(selectUserRoot);
 
   const navGroups = menuItem.items.map((item) => {
     if (item.type === 'group' && item.children) {
       
       const filteredChildren = item.children.filter((child) => {
-        const hasPermission = isRoot || !child.permission || userPermissions.includes(child.permission);
+        const hasPermission = isRoot || !child.permission || (Array.isArray(userPermissions) && userPermissions.includes(child.permission));
         console.log(`Checking permission for ${child.title}:`, child.permission, hasPermission);
         return hasPermission;
       });
-      
-      // const filteredChildren = item.children.filter((child) => {
-      //   return !child.permission || userPermissions.includes(child.permission);
-      // })
       
       if (filteredChildren.length > 0) {
         return <NavGroup key={item.id} item={{...item, children: filteredChildren}} />

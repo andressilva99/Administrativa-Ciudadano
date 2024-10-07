@@ -8,17 +8,15 @@ const Login = Loadable(lazy(() => import('../pages/auth/AuthLogin')));
 
 const AuthRoutes: RouteObject = {
   path: '/auth',
-  element: <ProtectedRoutes />,
+  element: (
+    <ProtectedRoutes>
+      <AuthLayout />,
+    </ProtectedRoutes>
+  ),
   children: [
     {
-      path: '',
-      element: <AuthLayout />,
-      children: [
-        {
-          path: 'login',
-          element: <Login />,
-        },
-      ],
+      path: 'login',
+      element: <Login />,
     },
   ],
 };
