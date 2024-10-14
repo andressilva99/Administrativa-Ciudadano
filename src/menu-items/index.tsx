@@ -3,7 +3,8 @@
 
 // assets
 import { HomeOutlined, UserOutlined, DatabaseOutlined, GoldOutlined } from '@ant-design/icons';
-import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import DirectionsBikeOutlinedIcon from '@mui/icons-material/DirectionsBikeOutlined';
 
 // project import
 import { NavItemType } from '../types/menu';
@@ -14,7 +15,8 @@ const icons = {
   UserOutlined,
   DatabaseOutlined,
   GoldOutlined,
-  DirectionsBikeIcon,
+  ReceiptLongOutlinedIcon,
+  DirectionsBikeOutlinedIcon,
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -78,16 +80,30 @@ const menuItems: { items: NavItemType[] } = {
       ],
     },
     {
-      id: 'group-bycicle',
+      id: 'group-penalty',
       type: 'group',
       children: [
         {
-          id: 'bycicle',
+          id: 'penalty',
           type: 'item',
-          title: 'Bicicletas urbanas',
-          icon: icons.DirectionsBikeIcon,
-          url: '/bycicle',
-          permission: 'BICIS_DELIVERY',
+          title: 'Penalizaciones',
+          icon: icons.ReceiptLongOutlinedIcon,
+          url: '/penalty',
+          permission: 'PENALTY_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-bicycle',
+      type: 'group',
+      children: [
+        {
+          id: 'bicis',
+          type: 'item',
+          title: 'Bicicletas',
+          icon: icons.DirectionsBikeOutlinedIcon,
+          url: '/bicis',
+          permission: 'BICIS_VIEW_N',
         },
       ],
     },

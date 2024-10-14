@@ -9,7 +9,8 @@ const Home = Loadable(lazy(() => import('../pages/home')));
 const User = Loadable(lazy(() => import('../pages/user/UserList')));
 const Role = Loadable(lazy(() => import('../pages/role/RoleList')));
 const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
-const Bycicle = Loadable(lazy(() => import('../pages/bycicle')));
+const Penalty = Loadable(lazy(() => import('../pages/penalty')));
+const Bicis = Loadable(lazy(() => import('../pages/bicis')));
 
 const MainRoutes: RouteObject = {
   path: '/',
@@ -48,10 +49,18 @@ const MainRoutes: RouteObject = {
       ),
     },
     {
-      path: 'bycicle',
+      path: 'penalty',
       element: (
-        <ProtectedRoutes requiredPermission="BICIS_DELIVERY">
-          <Bycicle />
+        <ProtectedRoutes requiredPermission="PENALTY_VIEW_N">
+          <Penalty />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'bicis',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_VIEW_N">
+          <Bicis />
         </ProtectedRoutes>
       ),
     },
