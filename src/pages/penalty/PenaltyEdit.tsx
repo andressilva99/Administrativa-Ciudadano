@@ -24,8 +24,8 @@ const PenaltyEdit = () => {
         const penaltyToEdit: IPenaltyEdit = {
           id: fetchedPenaltyData.id,
           idCtzUser: fetchedPenaltyData.idCtzUser,
-          idPenaltyType: fetchedPenaltyData.idPenaltyType || 'N/A',
-          idAdmUser: fetchedPenaltyData.idAdmUser,
+          idPenaltyType: fetchedPenaltyData.idPenaltyType || '-',
+          idAdmUser: fetchedPenaltyData.idAdmUser || 0,
           idBicycleHistory: fetchedPenaltyData.idBicycleHistory,
           description: fetchedPenaltyData.description,
           issuedDate: fetchedPenaltyData.issuedDate,
