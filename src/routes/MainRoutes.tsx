@@ -10,6 +10,8 @@ const User = Loadable(lazy(() => import('../pages/user/UserList')));
 const Role = Loadable(lazy(() => import('../pages/role/RoleList')));
 const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
 const Penalty = Loadable(lazy(() => import('../pages/penalty')));
+const PenaltyNew = Loadable(lazy(() => import('../pages/penalty/PenaltyNew')));
+const PenaltyEdit = Loadable(lazy(() => import('../pages/penalty/PenaltyEdit')));
 const Bicis = Loadable(lazy(() => import('../pages/bicis')));
 
 const MainRoutes: RouteObject = {
@@ -53,6 +55,22 @@ const MainRoutes: RouteObject = {
       element: (
         <ProtectedRoutes requiredPermission="PENALTY_VIEW_N">
           <Penalty />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penalty/new',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_ADD">
+          <PenaltyNew />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penalty/edit/:id',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_EDIT">
+          <PenaltyEdit />
         </ProtectedRoutes>
       ),
     },

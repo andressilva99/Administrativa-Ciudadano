@@ -2,11 +2,15 @@ import {
   DeleteOutline,
   EditOutlined,
   SearchOutlined,
-  VisibilityOutlined
+  VisibilityOutlined,
 } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   InputAdornment,
@@ -23,7 +27,9 @@ import { IPenaltyData } from '../../core/entities/penalty/IPentalty';
 import { getAllPenaltysUseCase } from '../../core/penalty/usecases/getall.penaltys.usecase';
 
 import moment from 'moment';
+import { useNavigate } from 'react-router';
 import BasicTable from '../../components/common/BasicTable';
+import PenaltyData from '../../components/penalty/PenaltyData';
 
 interface Property {
   name: string;
@@ -49,7 +55,25 @@ const PenaltiesPage = () => {
   const [search, setSearch] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [selectedPenaltyId, setSelectedPenaltyId] = useState<number | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+
   const theme = useTheme();
+
+  const navigate = useNavigate();
+
+  const handleEditCLick = (id: number) => {
+    navigate(`/penalty/edit/${id}`);
+  };
+
+  const handleViewClick = (id: number) => {
+    setSelectedPenaltyId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const columns = useMemo(
     () => [
@@ -77,12 +101,12 @@ const PenaltiesPage = () => {
           return (
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
               <Tooltip title="Ver">
-                <IconButton color="secondary">
+                <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
                   <VisibilityOutlined />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Editar">
-                <IconButton color="secondary">
+                <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
                   <EditOutlined sx={{ color: theme.palette.primary.main }} />
                 </IconButton>
               </Tooltip>
@@ -193,12 +217,21 @@ const PenaltiesPage = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Box>
-            <Button variant="contained" sx={{ ml: 2 }}>
+            <Button variant="contained" sx={{ ml: 2 }} onClick={() => navigate('/penalty/new')}>
               Añadir penalidad
             </Button>
           </Box>
         </BasicTable>
       </Grid>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>Datos de la penalización</DialogTitle>
+        <DialogContent>{selectedPenaltyId && <PenaltyData id={selectedPenaltyId} />}</DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
