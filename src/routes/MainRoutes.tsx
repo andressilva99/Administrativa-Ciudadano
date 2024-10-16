@@ -13,6 +13,8 @@ const Penalty = Loadable(lazy(() => import('../pages/penalty')));
 const PenaltyNew = Loadable(lazy(() => import('../pages/penalty/PenaltyNew')));
 const PenaltyEdit = Loadable(lazy(() => import('../pages/penalty/PenaltyEdit')));
 const PenaltyType = Loadable(lazy (() => import('../pages/penaltyType')));
+const PenaltyTypeNew = Loadable(lazy (() => import('../pages/penaltyType/PenaltyTypeNew')));
+const PenaltyTypeEdit = Loadable(lazy (() => import('../pages/penaltyType/PenaltyTypeEdit')));
 const Bicis = Loadable(lazy(() => import('../pages/bicis')));
 const Estacion = Loadable(lazy(() => import('../pages/station')));
 
@@ -81,6 +83,22 @@ const MainRoutes: RouteObject = {
       element: (
         <ProtectedRoutes requiredPermission="PENALTY_TYPE_VIEW_N">
           <PenaltyType />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penaltyType/new',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_TYPE_ADD">
+          <PenaltyTypeNew />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penaltyType/edit/:id',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_TYPE_EDIT">
+          <PenaltyTypeEdit />
         </ProtectedRoutes>
       ),
     },

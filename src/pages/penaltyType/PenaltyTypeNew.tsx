@@ -1,36 +1,34 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useState } from 'react';
-import { PenaltyForm } from '../../components/penalty/PenaltyForm';
-import { IPenaltyAdd } from '../../core/entities/penalty/IPentalty';
+import { PenaltyTypeForm } from '../../components/penaltyType/PenaltyTypeForm'; 
+import { IPenaltyTypeAdd } from '../../core/entities/penaltyType/IPenaltyType'; 
 import { CustomError } from '../../core/errors/CustomError';
-import { addPenaltyUseCase } from '../../core/penalty/usecases/add.penalty.usecase';
+import { addPenaltyTypeUseCase } from '../../core/penaltyType/usecase/add.penaltyType.usecase';
 
-const PenaltyNew = () => {
+const PenaltyTypeNew = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleCreatePenalty = async (newPenaltyData: any) => {
+  const handleCreatePenaltyType = async (newPenaltyTypeData: any) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
-    const penaltyData: IPenaltyAdd = {
-      idCtzuser: newPenaltyData.idCtzUser,
-      idPenaltyType: newPenaltyData.idPenaltyType,
-      idAdmuser: newPenaltyData.idAdmUser,
-      idBicycleHistory: newPenaltyData.idBicycleHistory,
-      description: newPenaltyData.description,
+    const penaltyTypeData: IPenaltyTypeAdd = {
+      name: newPenaltyTypeData.name,
+      code: newPenaltyTypeData.code,
+      description: newPenaltyTypeData.description,
     };
 
     try {
-      await addPenaltyUseCase.execute(penaltyData);
-      setSuccess('Nueva penalización creada con éxito!');
+      await addPenaltyTypeUseCase.execute(penaltyTypeData);
+      setSuccess('Nuevo tipo de penalización creado con éxito!');
     } catch (err: any) {
       if (err instanceof CustomError) {
         setError(err.message);
       } else {
-        setError('Ocurrió un error inesperado al crear la penalización.');
+        setError('Ocurrió un error inesperado al crear el tipo de penalización.');
       }
     } finally {
       setLoading(false);
@@ -47,10 +45,10 @@ const PenaltyNew = () => {
           <Typography variant="h6">Cargando...</Typography>
         </Box>
       ) : (
-        <PenaltyForm initialPenaltyData={null} formType="add" onSubmit={handleCreatePenalty} />
+        <PenaltyTypeForm initialPenaltyTypeData={null} formType="add" onSubmit={handleCreatePenaltyType} />
       )}
     </div>
   );
 };
 
-export default PenaltyNew;
+export default PenaltyTypeNew;

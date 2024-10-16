@@ -11,9 +11,9 @@ interface PenaltyFormProps {
 const formatDateForInput = (isoDate: string | undefined) => {
   if (!isoDate) return '';
   const date = new Date(isoDate);
-  const tzOffset = date.getTimezoneOffset() * 60000; // ajustar la zona horaria
+  const tzOffset = date.getTimezoneOffset() * 60000; 
   const localISODate = new Date(date.getTime() - tzOffset).toISOString();
-  return localISODate.substring(0, 16); // Obtener 'YYYY-MM-DDTHH:MM'
+  return localISODate.substring(0, 16);
 };
 
 export const PenaltyForm: React.FC<PenaltyFormProps> = ({
@@ -22,14 +22,12 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
   formType,
 }) => {
   const [penaltyData, setPenaltyData] = useState<any>({
-    id: '',
+    idPenalty: '',
     idCtzUser: '',
     idPenaltyType: '',
     idAdmUser: '',
     idBicycleHistory: '',
     description: '',
-    issuedDate: '',
-    resolvedDate: '',
   });
 
   const navigate = useNavigate();
@@ -72,8 +70,8 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
       {formType === 'edit' && (
         <TextField
           label="ID"
-          name="id"
-          value={penaltyData.id}
+          name="idPenalty"
+          value={penaltyData.idPenalty}
           onChange={handleInputChange}
           fullWidth
           required
@@ -119,29 +117,7 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
         fullWidth
         required
       />
-      <TextField
-        label="Fecha de Emisión"
-        name="issuedDate"
-        type="datetime-local"
-        value={penaltyData.issuedDate}
-        onChange={handleInputChange}
-        fullWidth
-        required
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        label="Fecha de Cierre (Opcional)"
-        name="resolvedDate"
-        type="datetime-local"
-        value={penaltyData.resolvedDate || ''}
-        onChange={handleInputChange}
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+
 
       <Button type="submit" variant="contained" color="primary">
         {formType === 'edit' ? 'Actualizar Penalización' : 'Crear Penalización'}

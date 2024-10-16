@@ -1,8 +1,7 @@
 import {
-  DeleteOutline,
   EditOutlined,
   SearchOutlined,
-  VisibilityOutlined,
+  VisibilityOutlined
 } from '@mui/icons-material';
 import {
   Box,
@@ -108,11 +107,6 @@ const PenaltiesPage = () => {
               <Tooltip title="Editar">
                 <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
                   <EditOutlined sx={{ color: theme.palette.primary.main }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Eliminar">
-                <IconButton color="secondary" sx={{ color: theme.palette.error.main }}>
-                  <DeleteOutline />
                 </IconButton>
               </Tooltip>
             </Stack>
