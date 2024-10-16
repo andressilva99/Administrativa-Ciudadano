@@ -203,7 +203,7 @@ const ModuleList: React.FC = () => {
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
-          <ListItemText primary="Editar Módulo" />
+          <ListItemText primary="Editar Módulo por ID" />
         </MenuItem>
         {showEditModuleSearch && (
           <Box display="flex" alignItems="center" marginLeft="16px">
