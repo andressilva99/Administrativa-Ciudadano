@@ -20,10 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { IBike } from '../../core/entities/bike/IBike'; // Asegúrate de que la ruta sea correcta
 import { bikeService } from '../../core/bike/service/bike.service';
-import { FindBikesUseCase } from '../../core/bike/usecases/find.bike';
-{/*import EditBike from './EditBike'; // Asegúrate de que la ruta sea correcta
-import CreateBike from './CreateBike'; // Asegúrate de que la ruta sea correcta
-import BikeById from './BikeById'; // Asegúrate de que la ruta sea correcta*/}
+import BikeById from './BikeById'; // Asegúrate de que la ruta sea correcta
 
 interface BikesDetailProps {
   updateTable: boolean; // Prop para controlar la actualización
@@ -35,9 +32,6 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
-  const [editBikeId, setEditBikeId] = useState<number | null>(null);
-  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
-  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
   const [viewBikeId, setViewBikeId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
 
@@ -69,31 +63,6 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
     setPage(0);
   };
 
-  const handleEditClick = (bikeId: number) => {
-    setEditBikeId(bikeId);
-    setOpenEditDialog(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setOpenEditDialog(false);
-    setEditBikeId(null);
-  };
-
-  const handleBikeEditSuccess = () => {
-    getBikes(true); // Refresca la tabla
-    handleCloseEditDialog();
-  };
-
-  const handleBikeCreated = () => {
-    console.log("Bicicleta creada, actualizando la tabla...");
-    getBikes(true); // Refresca la tabla
-    handleCloseCreateDialog();
-  };
-
-  const handleCloseCreateDialog = () => {
-    setOpenCreateDialog(false);
-  };
-
   const handleViewClick = (bikeId: number) => {
     setViewBikeId(bikeId);
     setOpenViewDialog(true);
@@ -117,7 +86,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>CÓDIGO</TableCell>
-                <TableCell>ESTACIÓN ACTUAL</TableCell>
+                <TableCell>ID DE ESTACIÓN ACTUAL</TableCell>
                 <TableCell>COMENTARIOS</TableCell>
                 <TableCell>ACCIONES</TableCell>
               </TableRow>
@@ -133,7 +102,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
                     <IconButton onClick={() => handleViewClick(bike.id)} aria-label="Ver bicicleta">
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
+                    <IconButton aria-label="Editar bicicleta">
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>
@@ -152,32 +121,9 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
         />
       </Paper>
 
-      {/*<Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
-        <DialogTitle>Editar Bicicleta</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          {editBikeId !== null && (
-            <EditBike
-              bikeId={editBikeId}
-              onCancel={handleCloseEditDialog}
-              onSuccess={handleBikeEditSuccess}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} maxWidth="md" fullWidth>
-        <DialogTitle>Crear Bicicleta</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          <CreateBike
-            onBikeCreated={handleBikeCreated}
-            onCancel={handleCloseCreateDialog}
-          />
-        </DialogContent>
-      </Dialog>
-
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles de la Bicicleta</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
+        <DialogContent>
           {viewBikeId && <BikeById id={viewBikeId} />}
         </DialogContent>
         <DialogActions>
@@ -185,7 +131,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
             Salir
           </Button>
         </DialogActions>
-      </Dialog>*/}
+      </Dialog>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { ApiService } from '../../../services/api.service';
-import { BikeResponse } from '../../entities/bike/IBike';
+import { BikeResponse, IBike } from '../../entities/bike/IBike';
 
 export class BikeService extends ApiService {
   private _uri: string = '/adm-bicis/bicycle';
@@ -19,6 +19,27 @@ export class BikeService extends ApiService {
       throw err;
     }
   }
+  public async findById(id: number): Promise<IBike> {
+    try {
+      const response = await this.get<IBike>(`${this._uri}/${id}`);
+
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+  public async findByCode(identificationCode: string): Promise<IBike> {
+    try {
+      const response = await this.get<IBike>(`${this._uri}/code/${identificationCode}`);
+
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
 
   
 
