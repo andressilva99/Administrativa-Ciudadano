@@ -19,20 +19,25 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit'; // Importar el ícono de edición
 import BikesDetail from '../../components/bike/BikesDetail';
 import BikeById from '../../components/bike/BikeById';
-import BikeByCode from '../../components/bike/BikeByCode'; // Importa el nuevo componente para buscar por código
+import BikeByCode from '../../components/bike/BikeByCode';
+import EditBike from '../../components/bike/EditBike'; // Importar el componente de edición
 
 const BikePages: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [bikeId, setBikeId] = useState<number | null>(null);
-  const [bikeCode, setBikeCode] = useState<string | null>(null); // Nuevo estado para buscar por código
+  const [bikeCode, setBikeCode] = useState<string | null>(null);
+  const [editBikeId, setEditBikeId] = useState<number | null>(null); // Nuevo estado para manejar la edición por ID
   const [showBikeById, setShowBikeById] = useState(false);
-  const [showBikeByCode, setShowBikeByCode] = useState(false); // Nuevo estado para mostrar el campo de búsqueda por código
+  const [showBikeByCode, setShowBikeByCode] = useState(false);
+  const [showEditBikeSearch, setShowEditBikeSearch] = useState(false); // Nuevo estado para manejar el campo de edición por ID
   const [openBikeDialog, setOpenBikeDialog] = useState(false);
-  const [openBikeByCodeDialog, setOpenBikeByCodeDialog] = useState(false); // Nuevo estado para manejar el diálogo de búsqueda por código
+  const [openBikeByCodeDialog, setOpenBikeByCodeDialog] = useState(false);
+  const [openEditBikeDialog, setOpenEditBikeDialog] = useState(false); // Nuevo estado para manejar el diálogo de edición
   const [updateTable, setUpdateTable] = useState(false);
-  
+
   const openMenu = Boolean(anchorEl);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,7 +47,8 @@ const BikePages: React.FC = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setShowBikeById(false);
-    setShowBikeByCode(false); // Cerrar el campo de búsqueda por código
+    setShowBikeByCode(false);
+    setShowEditBikeSearch(false);
   };
 
   const handleToggleBikeById = () => {
@@ -52,10 +58,17 @@ const BikePages: React.FC = () => {
     }
   };
 
-  const handleToggleBikeByCode = () => { // Función para alternar la visibilidad del campo de búsqueda por código
+  const handleToggleBikeByCode = () => {
     setShowBikeByCode((prev) => !prev);
     if (showBikeByCode) {
       setBikeCode(null);
+    }
+  };
+
+  const handleToggleEditBikeSearch = () => { // Función para alternar la búsqueda para editar
+    setShowEditBikeSearch((prev) => !prev);
+    if (showEditBikeSearch) {
+      setEditBikeId(null);
     }
   };
 
@@ -65,9 +78,17 @@ const BikePages: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleSearchBikeByCode = () => { // Función para abrir el diálogo de búsqueda por código
+  const handleSearchBikeByCode = () => {
     setOpenBikeByCodeDialog(true);
     setShowBikeByCode(false);
+    handleMenuClose();
+  };
+
+  const handleSearchEditBike = () => { // Función para abrir el diálogo de edición por ID
+    if (editBikeId !== null) {
+      setOpenEditBikeDialog(true);
+    }
+    setShowEditBikeSearch(false);
     handleMenuClose();
   };
 
@@ -76,9 +97,24 @@ const BikePages: React.FC = () => {
     setBikeId(null);
   };
 
-  const handleCloseBikeByCodeDialog = () => { // Función para cerrar el diálogo de búsqueda por código
+  const handleCloseBikeByCodeDialog = () => {
     setOpenBikeByCodeDialog(false);
     setBikeCode(null);
+  };
+
+  const handleCloseEditBikeDialog = () => {
+    setOpenEditBikeDialog(false);
+    setEditBikeId(null);
+  };
+
+  const handleSuccessEdit = () => { // Función para manejar el éxito de la edición
+    handleCloseEditBikeDialog();
+    setUpdateTable(prev => !prev); // Actualizar la tabla después de la edición
+  }; 
+
+  const handleCloseEditDialog = () => {
+    setOpenEditBikeDialog(false);
+    setEditBikeId(null);
   };
 
   return (
@@ -92,7 +128,7 @@ const BikePages: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
-      
+
       <Menu
         anchorEl={anchorEl}
         open={openMenu}
@@ -122,7 +158,6 @@ const BikePages: React.FC = () => {
           </Box>
         )}
 
-        {/* Opción para buscar por código */}
         <MenuItem onClick={handleToggleBikeByCode}>
           <ListItemIcon>
             <SearchIcon />
@@ -142,6 +177,30 @@ const BikePages: React.FC = () => {
               style={{ marginLeft: '8px' }}
             >
               <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        <MenuItem onClick={handleToggleEditBikeSearch}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText primary="Editar Bicicleta por ID" />
+        </MenuItem>
+        {showEditBikeSearch && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese la ID de la bicicleta para editar"
+              type="number"
+              fullWidth
+              onChange={(e) => setEditBikeId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchEditBike}
+              style={{ marginLeft: '8px' }}
+            >
+              <EditIcon />
             </IconButton>
           </Box>
         )}
@@ -167,7 +226,6 @@ const BikePages: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Diálogo para mostrar bicicleta por código */}
       <Dialog open={openBikeByCodeDialog} onClose={handleCloseBikeByCodeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle de la Bicicleta por Código</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
@@ -186,6 +244,16 @@ const BikePages: React.FC = () => {
             Salir
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog open={openEditBikeDialog} onClose={handleCloseEditBikeDialog} fullWidth maxWidth="md">
+        <DialogTitle>Editar Bicicleta</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {editBikeId !== null && (
+            <EditBike idBicycle={editBikeId} onSuccess={handleSuccessEdit} onCancel={handleCloseEditDialog} />
+          )}
+        </DialogContent>
+        
       </Dialog>
 
       <Paper style={{ padding: '16px' }}>

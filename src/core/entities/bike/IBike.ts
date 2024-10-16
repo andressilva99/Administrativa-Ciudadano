@@ -55,3 +55,18 @@ export interface ByCodeBike {
 export interface BikeByCodeProps {
     identificationCode: number;
 }
+
+//EDIT 
+export interface EditBikeProps {
+    idBicycle: number;
+    onCancel: () => void;
+    onSuccess: () => void;
+  }
+  
+  export interface EBike {
+    id: number | null;
+    idBicycle: number | null;
+    identificationCode: string;
+    idCurrentStation: number | null;
+    enabled: boolean;
+  }

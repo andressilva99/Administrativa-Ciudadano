@@ -18,12 +18,13 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { IBike } from '../../core/entities/bike/IBike'; // Asegúrate de que la ruta sea correcta
+import { IBike } from '../../core/entities/bike/IBike';
 import { bikeService } from '../../core/bike/service/bike.service';
-import BikeById from './BikeById'; // Asegúrate de que la ruta sea correcta
+import BikeById from './BikeById';
+import EditBike from './EditBike'; // Asegúrate de que la ruta sea correcta
 
 interface BikesDetailProps {
-  updateTable: boolean; // Prop para controlar la actualización
+  updateTable: boolean;
 }
 
 const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
@@ -34,13 +35,15 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
   const [total, setTotal] = useState<number>(0);
   const [viewBikeId, setViewBikeId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+  const [editBikeId, setEditBikeId] = useState<number | null>(null);
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
 
   const getBikes = async (fetchAll: boolean = false) => {
     setLoading(true);
     try {
       const currentPage = fetchAll ? 0 : page;
       const pageSize = fetchAll ? total : size;
-      const data = await bikeService.getByPage(pageSize, currentPage); // Usa el servicio para obtener bicicletas
+      const data = await bikeService.getByPage(pageSize, currentPage);
       setBikes(data.list);
       setTotal(data.total);
     } catch (error) {
@@ -73,6 +76,21 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
     setViewBikeId(null);
   };
 
+  const handleEditClick = (bikeId: number) => {
+    setEditBikeId(bikeId);
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setEditBikeId(null);
+  };
+
+  const handleBikeEditSuccess = () => {
+    getBikes(true);
+    handleCloseEditDialog();
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -102,7 +120,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
                     <IconButton onClick={() => handleViewClick(bike.id)} aria-label="Ver bicicleta">
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
-                    <IconButton aria-label="Editar bicicleta">
+                    <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>
@@ -131,6 +149,19 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
             Salir
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
+        <DialogTitle>Editar Bicicleta</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {editBikeId !== null && (
+            <EditBike
+              idBicycle={editBikeId}
+              onCancel={handleCloseEditDialog}
+              onSuccess={handleBikeEditSuccess}
+            />
+          )}
+        </DialogContent>
       </Dialog>
     </>
   );
