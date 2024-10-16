@@ -8,13 +8,6 @@ interface PenaltyFormProps {
   formType: 'add' | 'edit';
 }
 
-const formatDateForInput = (isoDate: string | undefined) => {
-  if (!isoDate) return '';
-  const date = new Date(isoDate);
-  const tzOffset = date.getTimezoneOffset() * 60000; 
-  const localISODate = new Date(date.getTime() - tzOffset).toISOString();
-  return localISODate.substring(0, 16);
-};
 
 export const PenaltyForm: React.FC<PenaltyFormProps> = ({
   initialPenaltyData,
@@ -23,9 +16,9 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
 }) => {
   const [penaltyData, setPenaltyData] = useState<any>({
     idPenalty: '',
-    idCtzUser: '',
+    idCtzuser: '',
     idPenaltyType: '',
-    idAdmUser: '',
+    idAdmuser: '',
     idBicycleHistory: '',
     description: '',
   });
@@ -36,8 +29,6 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
     if (initialPenaltyData) {
       setPenaltyData({
         ...initialPenaltyData,
-        issuedDate: formatDateForInput(initialPenaltyData.issuedDate),
-        resolvedDate: formatDateForInput(initialPenaltyData.resolvedDate),
       });
     }
   }, [initialPenaltyData]);
@@ -69,7 +60,7 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
 
       {formType === 'edit' && (
         <TextField
-          label="ID"
+          label="ID Penalización"
           name="idPenalty"
           value={penaltyData.idPenalty}
           onChange={handleInputChange}
@@ -80,8 +71,8 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
       )}
       <TextField
         label="ID Ciudadano"
-        name="idCtzUser"
-        value={penaltyData.idCtzUser}
+        name="idCtzuser"
+        value={penaltyData.idCtzuser}
         onChange={handleInputChange}
         fullWidth
         required
@@ -96,8 +87,8 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
       />
       <TextField
         label="ID Administrador"
-        name="idAdmUser"
-        value={penaltyData.idAdmUser}
+        name="idAdmuser"
+        value={penaltyData.idAdmuser}
         onChange={handleInputChange}
         fullWidth
       />

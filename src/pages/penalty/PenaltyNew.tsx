@@ -16,9 +16,9 @@ const PenaltyNew = () => {
     setSuccess(null);
 
     const penaltyData: IPenaltyAdd = {
-      idCtzuser: newPenaltyData.idCtzUser,
+      idCtzuser: newPenaltyData.idCtzuser,
       idPenaltyType: newPenaltyData.idPenaltyType,
-      idAdmuser: newPenaltyData.idAdmUser,
+      idAdmuser: newPenaltyData.idAdmuser,
       idBicycleHistory: newPenaltyData.idBicycleHistory,
       description: newPenaltyData.description,
     };
