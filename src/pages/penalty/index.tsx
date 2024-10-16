@@ -1,7 +1,8 @@
 import {
   EditOutlined,
   SearchOutlined,
-  VisibilityOutlined
+  VisibilityOutlined,
+  Add,
 } from '@mui/icons-material';
 import {
   Box,
@@ -211,8 +212,13 @@ const PenaltiesPage = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Box>
-            <Button variant="contained" sx={{ ml: 2 }} onClick={() => navigate('/penalty/new')}>
-              Añadir penalidad
+            <Button 
+              variant="contained" 
+              sx={{ ml: 2 }} 
+              onClick={() => navigate('/penalty/new')}
+              startIcon={<Add />}
+            >
+              Agregar
             </Button>
           </Box>
         </BasicTable>

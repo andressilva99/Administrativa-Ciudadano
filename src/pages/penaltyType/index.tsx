@@ -2,7 +2,7 @@ import {
   DeleteOutline,
   EditOutlined,
   VisibilityOutlined,
-  SearchOutlined,
+  Add,
 } from '@mui/icons-material';
 import {
   Box,
@@ -13,39 +13,22 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
   Stack,
-  TextField,
   Tooltip,
-  useTheme,
+  useTheme
 } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { IPenaltyTypeData } from '../../core/entities/penaltyType/IPenaltyType';
-import { getAllPentalyTypeUseCase } from '../../core/penaltyType/usecase/getall.pentalyType.usecase';
 import { deletePenaltyTypeUseCase } from '../../core/penaltyType/usecase/delete.penaltyType.usecase';
+import { getAllPentalyTypeUseCase } from '../../core/penaltyType/usecase/getall.pentalyType.usecase';
 
 import { useNavigate } from 'react-router';
 import BasicTable from '../../components/common/BasicTable';
 import PenaltyTypesData from '../../components/penaltyType/PenaltyTypeData';
 
-interface Property {
-  name: string;
-  value: string;
-}
-
-const properties: Property[] = [
-  { name: 'Nombre', value: 'name' },
-  { name: 'Código', value: 'code' },
-  { name: 'Descripción', value: 'description' },
-];
-
 const PenaltyTypePage = () => {
   const [penaltyTypeData, setPenaltyTypeData] = useState<IPenaltyTypeData[]>([]);
-  const [searchProp, setSearchProp] = useState(properties[0]);
-  const [search, setSearch] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const [totalCount, setTotalCount] = useState(0);
@@ -54,8 +37,8 @@ const PenaltyTypePage = () => {
 
   const [selectedPenaltyTypeId, setSelectedPenaltyTypeId] = useState<number | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  
-  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);  
+
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [penaltyTypeToDelete, setPenaltyTypeToDelete] = useState<number | null>(null);
 
   const theme = useTheme();
@@ -72,8 +55,8 @@ const PenaltyTypePage = () => {
 
   const handleDeleteClick = (id: number) => {
     setPenaltyTypeToDelete(id);
-    setDeleteOpen(true);  
-  }
+    setDeleteOpen(true);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -84,7 +67,7 @@ const PenaltyTypePage = () => {
       try {
         await deletePenaltyTypeUseCase.execute(penaltyTypeToDelete);
         setPenaltyTypeData((prev) => prev.filter((item) => item.id !== penaltyTypeToDelete));
-        setDeleteOpen(false); 
+        setDeleteOpen(false);
       } catch (error) {
         console.error('Error deleting penalty type:', error);
       }
@@ -126,7 +109,11 @@ const PenaltyTypePage = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title="Eliminar">
-              <IconButton color="secondary" sx={{ color: theme.palette.error.main }} onClick={() => handleDeleteClick(row.values.id)}>
+              <IconButton
+                color="secondary"
+                sx={{ color: theme.palette.error.main }}
+                onClick={() => handleDeleteClick(row.values.id)}
+              >
                 <DeleteOutline />
               </IconButton>
             </Tooltip>
@@ -137,12 +124,12 @@ const PenaltyTypePage = () => {
     [],
   );
 
-  const fetchData = useCallback( async (page: number, rowsPerPage: number) => {
+  const fetchData = useCallback(async (page: number, rowsPerPage: number) => {
     try {
       const results = await getAllPentalyTypeUseCase.execute(rowsPerPage, page);
       setPenaltyTypeData(results.list);
       setTotalCount(results.total);
-      
+
       console.log(results);
     } catch (error) {
       console.error('Error fetching penalty types:', error);
@@ -169,7 +156,6 @@ const PenaltyTypePage = () => {
     setPage(0);
   };
 
-
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -185,52 +171,24 @@ const PenaltyTypePage = () => {
         >
           <Box
             sx={{
-              p: 3,
+              p: 2,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
             }}
           >
-            <Box>
-              <TextField
-                select
-                label="Buscar por"
-                sx={{ width: '150px', mr: 2 }}
-                value={searchProp.value}
-                onChange={(e) => {
-                  const property = properties.find((prop) => prop.value === e.target.value);
-                  setSearchProp(property!);
-                }}
-              >
-                {properties.map((prop) => (
-                  <MenuItem key={prop.value} value={prop.value}>
-                    {prop.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <OutlinedInput
-                placeholder={`Buscar por ${searchProp.name}`}
-                sx={{ width: '200px' }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <SearchOutlined />
-                  </InputAdornment>
-                }
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Box>
-            <Button
-              variant="contained"
-              sx={{ ml: 2 }}
+            <Button 
+              variant="contained" 
+              sx={{ ml: 2 }} 
               onClick={() => navigate('/penaltyType/new')}
+              startIcon={<Add />}
             >
-              Añadir tipo de penalidad
+              Agregar 
             </Button>
           </Box>
         </BasicTable>
       </Grid>
-      
+
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Datos del tipo de penalización</DialogTitle>
         <DialogContent>
