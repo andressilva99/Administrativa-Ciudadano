@@ -22,14 +22,12 @@ const PenaltyEdit = () => {
         const fetchedPenaltyData = await findByIdPenaltyUseCase.execute(Number(id));
 
         const penaltyToEdit: IPenaltyEdit = {
-          id: fetchedPenaltyData.id,
-          idCtzUser: fetchedPenaltyData.idCtzUser,
-          idPenaltyType: fetchedPenaltyData.idPenaltyType || 'N/A',
-          idAdmUser: fetchedPenaltyData.idAdmUser,
+          idPenalty: fetchedPenaltyData.id,
+          idCtzuser: fetchedPenaltyData.idCtzUser,
+          idPenaltyType: fetchedPenaltyData.idPenaltyType,
+          idAdmuser: fetchedPenaltyData.idAdmUser,
           idBicycleHistory: fetchedPenaltyData.idBicycleHistory,
           description: fetchedPenaltyData.description,
-          issuedDate: fetchedPenaltyData.issuedDate,
-          resolvedDate: fetchedPenaltyData.resolvedDate || '',
         };
 
         setPenaltyData(penaltyToEdit);

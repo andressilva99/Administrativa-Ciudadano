@@ -1,4 +1,3 @@
-import { throwDeprecation } from 'process';
 import { ApiService } from '../../../services/api.service';
 import {
   IPenaltyAdd,
@@ -43,7 +42,7 @@ export class PenaltyService extends ApiService {
 
   public async addPenalty(penaltyData: IPenaltyAdd): Promise<IPenaltyAdd> {
     try {
-      const response = await this.post<IPenaltyAdd>(`${this._uri}`, penaltyData);
+      const response = await this.post<IPenaltyAdd>(`${this._uri}/`, penaltyData);
 
       return response.data;
     } catch (err) {
@@ -54,7 +53,7 @@ export class PenaltyService extends ApiService {
   
   public async editPenalty(penaltyData: IPenaltyEdit): Promise<IPenaltyEdit> {
     try {
-      const response = await this.put<IPenaltyEdit>(`${this._uri}`, penaltyData);
+      const response = await this.put<IPenaltyEdit>(`${this._uri}/`, penaltyData);
 
       return response.data;
     } catch (err) {

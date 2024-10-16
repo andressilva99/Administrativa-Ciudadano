@@ -87,14 +87,6 @@ const PenaltyData: React.FC<PenaltyDataProps> = ({ id }) => {
               <TableCell>Fecha de Resolución</TableCell>
               <TableCell>{penalty.resolvedDate || 'N/A'}</TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell>TSI</TableCell>
-              <TableCell>{penalty.tsi || 'N/A'}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>TSU</TableCell>
-              <TableCell>{penalty.tsu || 'N/A'}</TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

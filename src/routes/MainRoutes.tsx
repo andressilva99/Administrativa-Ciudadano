@@ -12,7 +12,11 @@ const Module = Loadable(lazy(() => import('../pages/module/ModuleList')));
 const Penalty = Loadable(lazy(() => import('../pages/penalty')));
 const PenaltyNew = Loadable(lazy(() => import('../pages/penalty/PenaltyNew')));
 const PenaltyEdit = Loadable(lazy(() => import('../pages/penalty/PenaltyEdit')));
+const PenaltyType = Loadable(lazy (() => import('../pages/penaltyType')));
+const PenaltyTypeNew = Loadable(lazy (() => import('../pages/penaltyType/PenaltyTypeNew')));
+const PenaltyTypeEdit = Loadable(lazy (() => import('../pages/penaltyType/PenaltyTypeEdit')));
 const Bicis = Loadable(lazy(() => import('../pages/bicis')));
+const Estacion = Loadable(lazy(() => import('../pages/station')));
 
 const MainRoutes: RouteObject = {
   path: '/',
@@ -75,10 +79,42 @@ const MainRoutes: RouteObject = {
       ),
     },
     {
+      path: 'penaltyType',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_TYPE_VIEW_N">
+          <PenaltyType />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penaltyType/new',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_TYPE_ADD">
+          <PenaltyTypeNew />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'penaltyType/edit/:id',
+      element: (
+        <ProtectedRoutes requiredPermission="PENALTY_TYPE_EDIT">
+          <PenaltyTypeEdit />
+        </ProtectedRoutes>
+      ),
+    },
+    {
       path: 'bicis',
       element: (
         <ProtectedRoutes requiredPermission="PENALTY_VIEW_N">
           <Bicis />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'station',
+      element: (
+        <ProtectedRoutes requiredPermission="STATION_VIEW_N">
+          <Estacion />
         </ProtectedRoutes>
       ),
     },

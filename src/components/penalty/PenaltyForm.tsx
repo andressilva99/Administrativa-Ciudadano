@@ -8,13 +8,6 @@ interface PenaltyFormProps {
   formType: 'add' | 'edit';
 }
 
-const formatDateForInput = (isoDate: string | undefined) => {
-  if (!isoDate) return '';
-  const date = new Date(isoDate);
-  const tzOffset = date.getTimezoneOffset() * 60000; // ajustar la zona horaria
-  const localISODate = new Date(date.getTime() - tzOffset).toISOString();
-  return localISODate.substring(0, 16); // Obtener 'YYYY-MM-DDTHH:MM'
-};
 
 export const PenaltyForm: React.FC<PenaltyFormProps> = ({
   initialPenaltyData,
@@ -22,14 +15,12 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
   formType,
 }) => {
   const [penaltyData, setPenaltyData] = useState<any>({
-    id: '',
-    idCtzUser: '',
+    idPenalty: '',
+    idCtzuser: '',
     idPenaltyType: '',
-    idAdmUser: '',
+    idAdmuser: '',
     idBicycleHistory: '',
     description: '',
-    issuedDate: '',
-    resolvedDate: '',
   });
 
   const navigate = useNavigate();
@@ -38,8 +29,6 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
     if (initialPenaltyData) {
       setPenaltyData({
         ...initialPenaltyData,
-        issuedDate: formatDateForInput(initialPenaltyData.issuedDate),
-        resolvedDate: formatDateForInput(initialPenaltyData.resolvedDate),
       });
     }
   }, [initialPenaltyData]);
@@ -71,9 +60,9 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
 
       {formType === 'edit' && (
         <TextField
-          label="ID"
-          name="id"
-          value={penaltyData.id}
+          label="ID Penalización"
+          name="idPenalty"
+          value={penaltyData.idPenalty}
           onChange={handleInputChange}
           fullWidth
           required
@@ -82,8 +71,8 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
       )}
       <TextField
         label="ID Ciudadano"
-        name="idCtzUser"
-        value={penaltyData.idCtzUser}
+        name="idCtzuser"
+        value={penaltyData.idCtzuser}
         onChange={handleInputChange}
         fullWidth
         required
@@ -98,8 +87,8 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
       />
       <TextField
         label="ID Administrador"
-        name="idAdmUser"
-        value={penaltyData.idAdmUser}
+        name="idAdmuser"
+        value={penaltyData.idAdmuser}
         onChange={handleInputChange}
         fullWidth
       />
@@ -119,29 +108,7 @@ export const PenaltyForm: React.FC<PenaltyFormProps> = ({
         fullWidth
         required
       />
-      <TextField
-        label="Fecha de Emisión"
-        name="issuedDate"
-        type="datetime-local"
-        value={penaltyData.issuedDate}
-        onChange={handleInputChange}
-        fullWidth
-        required
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        label="Fecha de Cierre (Opcional)"
-        name="resolvedDate"
-        type="datetime-local"
-        value={penaltyData.resolvedDate || ''}
-        onChange={handleInputChange}
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+
 
       <Button type="submit" variant="contained" color="primary">
         {formType === 'edit' ? 'Actualizar Penalización' : 'Crear Penalización'}

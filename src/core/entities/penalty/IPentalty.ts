@@ -7,8 +7,8 @@ export interface PenaltyResponse {
 export interface IPenaltyData {
   id: number;
   idCtzUser: number;
-  idPenaltyType?: string;
-  idAdmUser?: number;
+  idPenaltyType: number;
+  idAdmUser: number;
   idBicycleHistory: number;
   description: string;
   issuedDate: string;
@@ -18,22 +18,18 @@ export interface IPenaltyData {
 }
 
 export interface IPenaltyAdd {
-  idCtzUser: number;
-  idPenaltyType?: string;
-  idAdmUser?: number;
+  idCtzuser: number;
+  idPenaltyType: number;
+  idAdmuser: number;
   idBicycleHistory: number;
   description: string;
-  issuedDate: string;
-  resolvedDate?: string;
 }
 
 export interface IPenaltyEdit {
-  id: number,
-  idCtzUser: number;
-  idPenaltyType?: string;
-  idAdmUser?: number;
+  idPenalty: number,
+  idCtzuser: number;
+  idPenaltyType: number;
+  idAdmuser: number;
   idBicycleHistory: number;
   description: string;
-  issuedDate: string;
-  resolvedDate?: string;
 }

@@ -1,8 +1,8 @@
 import {
-  DeleteOutline,
   EditOutlined,
   SearchOutlined,
   VisibilityOutlined,
+  Add,
 } from '@mui/icons-material';
 import {
   Box,
@@ -110,11 +110,6 @@ const PenaltiesPage = () => {
                   <EditOutlined sx={{ color: theme.palette.primary.main }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Eliminar">
-                <IconButton color="secondary" sx={{ color: theme.palette.error.main }}>
-                  <DeleteOutline />
-                </IconButton>
-              </Tooltip>
             </Stack>
           );
         },
@@ -217,8 +212,13 @@ const PenaltiesPage = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Box>
-            <Button variant="contained" sx={{ ml: 2 }} onClick={() => navigate('/penalty/new')}>
-              Añadir penalidad
+            <Button 
+              variant="contained" 
+              sx={{ ml: 2 }} 
+              onClick={() => navigate('/penalty/new')}
+              startIcon={<Add />}
+            >
+              Agregar
             </Button>
           </Box>
         </BasicTable>
