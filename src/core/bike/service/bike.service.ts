@@ -59,6 +59,14 @@ export class BikeService extends ApiService {
       throw err;
     }
   }
+  public async deleteBike(id: number): Promise<void> {
+    try {
+      await this.delete<void>(`${this._uri}/${id}`);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 
 }
 export const bikeService = new BikeService();

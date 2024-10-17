@@ -18,13 +18,13 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddIcon from '@mui/icons-material/Add'; // Importar el ícono de agregar
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { IBike } from '../../core/entities/bike/IBike';
 import { bikeService } from '../../core/bike/service/bike.service';
 import BikeById from './BikeById';
-import EditBike from './EditBike'; // Asegúrate de que la ruta sea correcta
-import CreateBike from './CreateBike'; // Importar el componente para crear bicicletas
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditBike from './EditBike';
+import CreateBike from './CreateBike';
+import { deleteBikeUseCase } from '../../core/bike/usecases/delete.bike.usecases';
 
 interface BikesDetailProps {
   updateTable: boolean;
@@ -37,10 +37,12 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [viewBikeId, setViewBikeId] = useState<number | null>(null);
-  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [editBikeId, setEditBikeId] = useState<number | null>(null);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
-  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false); // Estado para el diálogo de creación
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [deleteBikeId, setDeleteBikeId] = useState<number | null>(null);
 
   const getBikes = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -95,9 +97,32 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
     handleCloseEditDialog();
   };
 
+  const handleDeleteClick = (bikeId: number) => {
+    setDeleteBikeId(bikeId);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteBikeId !== null) {
+      try {
+        await deleteBikeUseCase.execute(deleteBikeId);
+        console.log(`Bicicleta con ID ${deleteBikeId} eliminada exitosamente.`);
+        getBikes(true); // Refresh the bike list
+      } catch (error) {
+        console.error('Error eliminando la bicicleta:', error);
+      } finally {
+        handleCloseDeleteDialog();
+      }
+    }
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setDeleteBikeId(null);
+  };
+
   const handleBikeCreated = () => {
-    console.log("Bicicleta creada, actualizando la tabla...");
-    getBikes(true); // Fetch all bikes to refresh the table
+    getBikes(true);
     handleCloseCreateDialog();
   };
 
@@ -111,8 +136,6 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
 
   return (
     <>
-      
-
       <Paper>
         <TableContainer>
           <Table>
@@ -139,7 +162,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
                     <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
+                    <IconButton onClick={() => handleDeleteClick(bike.id)} aria-label="Eliminar bicicleta">
                       <DeleteOutlineIcon sx={{ color: 'error.main' }} />
                     </IconButton>
                   </TableCell>
@@ -158,6 +181,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
         />
       </Paper>
 
+      {/* Dialogs */}
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles de la Bicicleta</DialogTitle>
         <DialogContent>
@@ -174,23 +198,30 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
         <DialogTitle>Editar Bicicleta</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           {editBikeId !== null && (
-            <EditBike
-              idBicycle={editBikeId}
-              onCancel={handleCloseEditDialog}
-              onSuccess={handleBikeEditSuccess}
-            />
+            <EditBike idBicycle={editBikeId} onCancel={handleCloseEditDialog} onSuccess={handleBikeEditSuccess} />
           )}
         </DialogContent>
       </Dialog>
 
       <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} maxWidth="md" fullWidth>
         <DialogTitle>Crear Bicicleta</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          <CreateBike
-            onBikeCreated={handleBikeCreated}
-            onCancel={handleCloseCreateDialog}
-          />
+        <DialogContent>
+          <CreateBike onBikeCreated={handleBikeCreated} onCancel={handleCloseCreateDialog} />
         </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
+        <DialogContent>¿Está seguro de que desea eliminar esta bicicleta?</DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Eliminar
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
