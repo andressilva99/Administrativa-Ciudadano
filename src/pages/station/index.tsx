@@ -19,23 +19,17 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit'; // Importar el ícono de edición
+import AddIcon from '@mui/icons-material/Add'; // Importar ícono para agregar estación
 import StationsDetail from '../../components/station/StationDetail'; // Componente para mostrar la tabla de estaciones
 import StationById from '../../components/station/StationById'; // Componente para buscar estación por ID
-//import StationByCode from '../../components/station/StationByCode'; // Componente para buscar estación por código
-//import EditStation from '../../components/station/EditStation'; // Componente de edición
+import CreateStation from '../../components/station/CreateStation'; // Importar el componente CreateStation
 
 const StationPages: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [stationId, setStationId] = useState<number | null>(null);
-  const [stationCode, setStationCode] = useState<string | null>(null);
-  const [editStationId, setEditStationId] = useState<number | null>(null); // Estado para manejar la edición por ID
   const [showStationById, setShowStationById] = useState(false);
-  const [showStationByCode, setShowStationByCode] = useState(false);
-  const [showEditStationSearch, setShowEditStationSearch] = useState(false); // Nuevo estado para manejar el campo de edición por ID
   const [openStationDialog, setOpenStationDialog] = useState(false);
-  const [openStationByCodeDialog, setOpenStationByCodeDialog] = useState(false);
-  const [openEditStationDialog, setOpenEditStationDialog] = useState(false); // Estado para manejar el diálogo de edición
+  const [openCreateStationDialog, setOpenCreateStationDialog] = useState(false); // Estado para manejar el diálogo de creación
   const [updateTable, setUpdateTable] = useState(false);
 
   const openMenu = Boolean(anchorEl);
@@ -47,8 +41,6 @@ const StationPages: React.FC = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setShowStationById(false);
-    setShowStationByCode(false);
-    setShowEditStationSearch(false);
   };
 
   const handleToggleStationById = () => {
@@ -58,37 +50,14 @@ const StationPages: React.FC = () => {
     }
   };
 
-  const handleToggleStationByCode = () => {
-    setShowStationByCode((prev) => !prev);
-    if (showStationByCode) {
-      setStationCode(null);
-    }
-  };
-
-  const handleToggleEditStationSearch = () => { // Función para alternar la búsqueda para editar
-    setShowEditStationSearch((prev) => !prev);
-    if (showEditStationSearch) {
-      setEditStationId(null);
-    }
-  };
-
   const handleSearchStationById = () => {
     setOpenStationDialog(true);
     setShowStationById(false);
     handleMenuClose();
   };
 
-  const handleSearchStationByCode = () => {
-    setOpenStationByCodeDialog(true);
-    setShowStationByCode(false);
-    handleMenuClose();
-  };
-
-  const handleSearchEditStation = () => { // Función para abrir el diálogo de edición por ID
-    if (editStationId !== null) {
-      setOpenEditStationDialog(true);
-    }
-    setShowEditStationSearch(false);
+  const handleOpenCreateStationDialog = () => {
+    setOpenCreateStationDialog(true);
     handleMenuClose();
   };
 
@@ -97,19 +66,13 @@ const StationPages: React.FC = () => {
     setStationId(null);
   };
 
-  const handleCloseStationByCodeDialog = () => {
-    setOpenStationByCodeDialog(false);
-    setStationCode(null);
+  const handleCloseCreateStationDialog = () => {
+    setOpenCreateStationDialog(false);
   };
 
-  const handleCloseEditStationDialog = () => {
-    setOpenEditStationDialog(false);
-    setEditStationId(null);
-  };
-
-  const handleSuccessEdit = () => { // Función para manejar el éxito de la edición
-    handleCloseEditStationDialog();
-    setUpdateTable((prev) => !prev); // Actualizar la tabla después de la edición
+  const handleSuccessCreate = () => {
+    handleCloseCreateStationDialog();
+    setUpdateTable((prev) => !prev); // Actualizar la tabla después de la creación
   };
 
   return (
@@ -124,11 +87,7 @@ const StationPages: React.FC = () => {
         Acciones
       </Button>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={handleMenuClose}
-      >
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
         <MenuItem onClick={handleToggleStationById}>
           <ListItemIcon>
             <SearchIcon />
@@ -152,32 +111,12 @@ const StationPages: React.FC = () => {
             </IconButton>
           </Box>
         )}
-
-       
-
-        <MenuItem onClick={handleToggleEditStationSearch}>
+        <MenuItem onClick={handleOpenCreateStationDialog}>
           <ListItemIcon>
-            <EditIcon />
+            <AddIcon />
           </ListItemIcon>
-          <ListItemText primary="Editar Estación por ID" />
+          <ListItemText primary="Agregar Estación" />
         </MenuItem>
-        {showEditStationSearch && (
-          <Box display="flex" alignItems="center" marginLeft="16px">
-            <TextField
-              label="Ingrese la ID de la estación para editar"
-              type="number"
-              fullWidth
-              onChange={(e) => setEditStationId(Number(e.target.value))}
-            />
-            <IconButton
-              color="primary"
-              onClick={handleSearchEditStation}
-              style={{ marginLeft: '8px' }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Box>
-        )}
       </Menu>
 
       <Dialog open={openStationDialog} onClose={handleCloseStationDialog} fullWidth maxWidth="md">
@@ -199,15 +138,14 @@ const StationPages: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-     {/*}
-      <Dialog open={openEditStationDialog} onClose={handleCloseEditStationDialog} fullWidth maxWidth="md">
-        <DialogTitle>Editar Estación</DialogTitle>
+
+      <Dialog open={openCreateStationDialog} onClose={handleCloseCreateStationDialog} fullWidth maxWidth="md">
+        <DialogTitle>Agregar Estación</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editStationId !== null && (
-            <EditStation idStation={editStationId} onSuccess={handleSuccessEdit} onCancel={handleCloseEditStationDialog} />
-          )}
+          <CreateStation onStationCreated={handleSuccessCreate} onCancel={handleCloseCreateStationDialog} />
         </DialogContent>
-      </Dialog>*/}
+        
+      </Dialog>
 
       <Paper style={{ padding: '16px' }}>
         <StationsDetail updateTable={updateTable} />

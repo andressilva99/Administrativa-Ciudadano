@@ -81,3 +81,26 @@ export interface EditStationProps {
     onCancel: () => void;
     onSuccess: () => void;
 }
+
+//ADD
+export interface AStation {  
+    name: string;
+    address: string;
+    geolocation: string; // Agregado para capturar la ubicación geográfica
+    horariosFuncionamiento: AHorariosFuncionamiento;
+}
+
+export interface AHorariosFuncionamiento {
+    horariosSemana: ADiaSemana[]; // Arreglo de días de la semana
+}
+
+export interface ADiaSemana {
+    diaSemana: number; // Número del día de la semana (1 = Lunes, 2 = Martes, etc.)
+    horarios: AHorario[]; // Arreglo de horarios para ese día
+}
+
+export interface AHorario {
+    horaInicio: [number, number]; // Hora de inicio como un arreglo [hora, minuto]
+    horaFin: [number, number]; // Hora de fin como un arreglo [hora, minuto]
+}
+

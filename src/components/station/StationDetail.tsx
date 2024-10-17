@@ -19,10 +19,12 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { IStation } from '../../core/entities/station/IStation';
 import { findStationUseCase } from '../../core/station/usecases/find.station.usecase';
+import { deleteStationUseCase } from '../../core/station/usecases/delete.station.usecases';
 import StationById from './StationById';
-import EditStation from './EditStation'; // Importar el componente de edición
+import EditStation from './EditStation';
 
 interface StationsDetailProps {
   updateTable: boolean;
@@ -35,9 +37,11 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [viewStationId, setViewStationId] = useState<number | null>(null);
-  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [editStationId, setEditStationId] = useState<number | null>(null);
+  const [deleteStationId, setDeleteStationId] = useState<number | null>(null);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
   const getStations = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -92,6 +96,30 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
     handleCloseEditDialog();
   };
 
+  const handleDeleteClick = (stationId: number) => {
+    setDeleteStationId(stationId);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteStationId !== null) {
+      try {
+        await deleteStationUseCase.execute(deleteStationId);
+        console.log(`Estación con ID ${deleteStationId} eliminada exitosamente.`);
+        getStations(true); // Refresh the station list
+      } catch (error) {
+        console.error('Error eliminando la estación:', error);
+      } finally {
+        handleCloseDeleteDialog();
+      }
+    }
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setDeleteStationId(null);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -125,6 +153,9 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
                     </IconButton>
                     <IconButton onClick={() => handleEditClick(station.id)} aria-label="Editar estación">
                       <EditIcon sx={{ color: 'primary.main' }} />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(station.id)} aria-label="Eliminar estación">
+                      <DeleteOutlineIcon sx={{ color: 'error.main' }} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -162,7 +193,7 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
       {/* Dialog for Editing */}
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Estación</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {editStationId !== null ? (
             <EditStation
               idStation={editStationId}
@@ -173,9 +204,20 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
             <Typography>No se pudo cargar la estación para editar.</Typography>
           )}
         </DialogContent>
+      </Dialog>
+
+      {/* Dialog for Deleting */}
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Eliminar Estación</DialogTitle>
+        <DialogContent>
+          <Typography>¿Estás seguro de que deseas eliminar esta estación?</Typography>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditDialog} color="secondary">
-            Salir
+          <Button onClick={handleCloseDeleteDialog} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Eliminar
           </Button>
         </DialogActions>
       </Dialog>

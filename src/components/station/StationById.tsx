@@ -40,6 +40,25 @@ const StationById: React.FC<StationByIdProps> = ({ id }) => {
     fetchStation();
   }, [id]);
 
+  const renderHorariosFuncionamiento = () => {
+    if (!station?.configuration?.horariosFuncionamiento) return null;
+
+    return station.configuration.horariosFuncionamiento.horariosSemana.map((dia, index) => (
+      <TableRow key={index}>
+        <TableCell>*Día Semana:</TableCell>
+        <TableCell>{dia.diaSemana}</TableCell>
+        <TableCell>Horarios:</TableCell>
+        <TableCell>
+          {dia.horarios.map((horario, idx) => (
+            <div key={idx}>
+              {`De ${horario.horaInicio.join(':')} a ${horario.horaFin.join(':')}`}
+            </div>
+          ))}
+        </TableCell>
+      </TableRow>
+    ));
+  };
+
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
   if (!station) return <Typography>No station found</Typography>;
@@ -83,13 +102,20 @@ const StationById: React.FC<StationByIdProps> = ({ id }) => {
             <TableCell>{station.horarioString}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>*Timestamp de Creación:</TableCell>
+            <TableCell>*TSI:</TableCell>
             <TableCell>{station.tsi}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>*Timestamp de Última Actualización:</TableCell>
+            <TableCell>*TSU:</TableCell>
             <TableCell>{station.tsu}</TableCell>
           </TableRow>
+          {/* Render horariosFuncionamiento */}
+          <TableRow>
+            <TableCell colSpan={2}>
+              <Typography variant="h6">Horarios de Funcionamiento:</Typography>
+            </TableCell>
+          </TableRow>
+          {renderHorariosFuncionamiento()}
         </TableBody>
       </Table>
     </TableContainer>
