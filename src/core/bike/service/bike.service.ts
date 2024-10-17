@@ -1,5 +1,5 @@
 import { ApiService } from '../../../services/api.service';
-import { BikeResponse, IBike, EBike } from '../../entities/bike/IBike';
+import { BikeResponse, IBike, EBike, ABike } from '../../entities/bike/IBike';
 
 export class BikeService extends ApiService {
   private _uri: string = '/adm-bicis/bicycle';
@@ -49,6 +49,16 @@ export class BikeService extends ApiService {
       throw err;
     }
   } 
+  public async addBike(bikeData: ABike): Promise<ABike> {
+    try {
+      const response = await this.post<ABike>(`${this._uri}/`, bikeData);
+
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 
 }
 export const bikeService = new BikeService();

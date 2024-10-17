@@ -299,7 +299,7 @@ const ModuleList: React.FC = () => {
         
       </Dialog>
 
-      <ModulesDetail updateTable={updateTable} /> {/* Pasa updateTable a RoleTable */}
+      <ModulesDetail updateTable={updateTable} /> 
     </div>
   );
 };

@@ -18,10 +18,13 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddIcon from '@mui/icons-material/Add'; // Importar el ícono de agregar
 import { IBike } from '../../core/entities/bike/IBike';
 import { bikeService } from '../../core/bike/service/bike.service';
 import BikeById from './BikeById';
 import EditBike from './EditBike'; // Asegúrate de que la ruta sea correcta
+import CreateBike from './CreateBike'; // Importar el componente para crear bicicletas
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 interface BikesDetailProps {
   updateTable: boolean;
@@ -37,6 +40,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [editBikeId, setEditBikeId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false); // Estado para el diálogo de creación
 
   const getBikes = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -91,12 +95,24 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
     handleCloseEditDialog();
   };
 
+  const handleBikeCreated = () => {
+    console.log("Bicicleta creada, actualizando la tabla...");
+    getBikes(true); // Fetch all bikes to refresh the table
+    handleCloseCreateDialog();
+  };
+
+  const handleCloseCreateDialog = () => {
+    setOpenCreateDialog(false);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
 
   return (
     <>
+      
+
       <Paper>
         <TableContainer>
           <Table>
@@ -122,6 +138,9 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
                     </IconButton>
                     <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
                       <EditIcon sx={{ color: 'primary.main' }} />
+                    </IconButton>
+                    <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
+                      <DeleteOutlineIcon sx={{ color: 'error.main' }} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -161,6 +180,16 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
               onSuccess={handleBikeEditSuccess}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} maxWidth="md" fullWidth>
+        <DialogTitle>Crear Bicicleta</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          <CreateBike
+            onBikeCreated={handleBikeCreated}
+            onCancel={handleCloseCreateDialog}
+          />
         </DialogContent>
       </Dialog>
     </>

@@ -61,12 +61,19 @@ export interface EditBikeProps {
     idBicycle: number;
     onCancel: () => void;
     onSuccess: () => void;
-  }
+}
   
-  export interface EBike {
+export interface EBike {
     id: number | null;
     idBicycle: number | null;
     identificationCode: string;
     idCurrentStation: number | null;
     enabled: boolean;
-  }
+}
+
+//ADD
+export interface ABike {
+    identificationCode: string;
+    idCurrentStation: number;
+    idGpsDeviceCurrent: number;
+}
