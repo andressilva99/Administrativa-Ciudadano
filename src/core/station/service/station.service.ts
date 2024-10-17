@@ -1,16 +1,14 @@
 import { ApiService } from '../../../services/api.service';
-import { StationResponse } from '../../entities/station/IStation';
+import { StationResponse, ByIdStation, EStation } from '../../entities/station/IStation';
 
 export class StationService extends ApiService {
   private _uri: string = '/adm-bicis/station';
 
-  public async getByPage(
-    size: number,
-    page: number,
+  public async getByPage(    
   ): Promise<StationResponse> {
     try {
       const response = await this.get<StationResponse>(
-        `${this._uri}/find?size=${size}&page=${page}`,
+        `${this._uri}/`,
       );
 
       return response.data;
@@ -19,36 +17,27 @@ export class StationService extends ApiService {
       throw err;
     }
   }
-  /* public async findById(id: number): Promise<IBike> {
+   public async findById(id: number): Promise<ByIdStation> {
     try {
-      const response = await this.get<IBike>(`${this._uri}/${id}`);
+      const response = await this.get<ByIdStation>(`${this._uri}/${id}`);
 
       return response.data;
     } catch (err) {
       console.error(err);
       throw err;
     }
-  }
-  public async findByCode(identificationCode: string): Promise<IBike> {
+  }  
+  
+  public async editStation(stationData: EStation): Promise<EStation> {
     try {
-      const response = await this.get<IBike>(`${this._uri}/code/${identificationCode}`);
+      const response = await this.put<EStation>(`${this._uri}/`, stationData);
 
       return response.data;
     } catch (err) {
       console.error(err);
       throw err;
     }
-  }
-  public async editBike(bikeData: EBike): Promise<EBike> {
-    try {
-      const response = await this.put<EBike>(`${this._uri}/`, bikeData);
-
-      return response.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  } */
+  } 
 
 }
 export const stationService = new StationService();

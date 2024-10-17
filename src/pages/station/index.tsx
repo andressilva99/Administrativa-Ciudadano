@@ -21,7 +21,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit'; // Importar el ícono de edición
 import StationsDetail from '../../components/station/StationDetail'; // Componente para mostrar la tabla de estaciones
-//import StationById from '../../components/station/StationById'; // Componente para buscar estación por ID
+import StationById from '../../components/station/StationById'; // Componente para buscar estación por ID
 //import StationByCode from '../../components/station/StationByCode'; // Componente para buscar estación por código
 //import EditStation from '../../components/station/EditStation'; // Componente de edición
 
@@ -153,28 +153,7 @@ const StationPages: React.FC = () => {
           </Box>
         )}
 
-        <MenuItem onClick={handleToggleStationByCode}>
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar por Código" />
-        </MenuItem>
-        {showStationByCode && (
-          <Box display="flex" alignItems="center" marginLeft="16px">
-            <TextField
-              label="Ingrese el Código de la estación"
-              fullWidth
-              onChange={(e) => setStationCode(e.target.value)}
-            />
-            <IconButton
-              color="primary"
-              onClick={handleSearchStationByCode}
-              style={{ marginLeft: '8px' }}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Box>
-        )}
+       
 
         <MenuItem onClick={handleToggleEditStationSearch}>
           <ListItemIcon>
@@ -201,7 +180,7 @@ const StationPages: React.FC = () => {
         )}
       </Menu>
 
-      {/*<Dialog open={openStationDialog} onClose={handleCloseStationDialog} fullWidth maxWidth="md">
+      <Dialog open={openStationDialog} onClose={handleCloseStationDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle de la Estación por ID</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           {stationId !== null && (
@@ -220,27 +199,7 @@ const StationPages: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Dialog open={openStationByCodeDialog} onClose={handleCloseStationByCodeDialog} fullWidth maxWidth="md">
-        <DialogTitle>Detalle de la Estación por Código</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          {stationCode && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <StationByCode identificationCode={stationCode} />
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseStationByCodeDialog} color="secondary">
-            Salir
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+     {/*}
       <Dialog open={openEditStationDialog} onClose={handleCloseEditStationDialog} fullWidth maxWidth="md">
         <DialogTitle>Editar Estación</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
@@ -258,4 +217,3 @@ const StationPages: React.FC = () => {
 };
 
 export default StationPages;
-``

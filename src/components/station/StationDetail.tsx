@@ -15,13 +15,14 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { IStation } from '../../core/entities/station/IStation'; // Asegúrate de que la ruta sea correcta
-import { findStationUseCase } from '../../core/station/usecases/find.station.usecase'; // Asegúrate de que la ruta sea correcta
-//import StationById from './StationById'; // Componente para ver detalles de la estación
-//import EditStation from './EditStation'; // Componente para editar la estación
+import { IStation } from '../../core/entities/station/IStation';
+import { findStationUseCase } from '../../core/station/usecases/find.station.usecase';
+import StationById from './StationById';
+import EditStation from './EditStation'; // Importar el componente de edición
 
 interface StationsDetailProps {
   updateTable: boolean;
@@ -33,9 +34,9 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
-  const [viewStationId, setViewStationId] = useState<string | null>(null);
+  const [viewStationId, setViewStationId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
-  const [editStationId, setEditStationId] = useState<string | null>(null);
+  const [editStationId, setEditStationId] = useState<number | null>(null);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
 
   const getStations = async (fetchAll: boolean = false) => {
@@ -66,7 +67,7 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
     setPage(0);
   };
 
-  const handleViewClick = (stationId: string) => {
+  const handleViewClick = (stationId: number) => {
     setViewStationId(stationId);
     setOpenViewDialog(true);
   };
@@ -76,7 +77,7 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
     setViewStationId(null);
   };
 
-  const handleEditClick = (stationId: string) => {
+  const handleEditClick = (stationId: number) => {
     setEditStationId(stationId);
     setOpenEditDialog(true);
   };
@@ -107,26 +108,22 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
                 <TableCell>Dirección</TableCell>
                 <TableCell>Habilitada</TableCell>
                 <TableCell>Horario</TableCell>
-                <TableCell>Tsi</TableCell>
-                <TableCell>Tsu</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {stations.map((station) => (
                 <TableRow key={station.id}>
-                  <TableCell>{station.id}</TableCell>  
+                  <TableCell>{station.id}</TableCell>
                   <TableCell>{station.name}</TableCell>
                   <TableCell>{station.address}</TableCell>
                   <TableCell>{station.enabled ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{station.horarioString}</TableCell>
-                  <TableCell>{station.tsi}</TableCell>
-                  <TableCell>{station.tsu}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleViewClick(station.tsi)} aria-label="Ver estación">
+                    <IconButton onClick={() => handleViewClick(station.id)} aria-label="Ver estación">
                       <VisibilityIcon sx={{ color: 'secondary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleEditClick(station.tsi)} aria-label="Editar estación">
+                    <IconButton onClick={() => handleEditClick(station.id)} aria-label="Editar estación">
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                   </TableCell>
@@ -145,10 +142,15 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
         />
       </Paper>
 
-      {/*<Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
+      {/* Dialog for Viewing */}
+      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles de la Estación</DialogTitle>
         <DialogContent>
-          {viewStationId && <StationById id={viewStationId} />}
+          {viewStationId !== null ? (
+            <StationById id={viewStationId} />
+          ) : (
+            <Typography>No se pudo cargar la estación.</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseViewDialog} color="secondary">
@@ -157,18 +159,26 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog for Editing */}
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Estación</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
-          {editStationId !== null && (
+        <DialogContent>
+          {editStationId !== null ? (
             <EditStation
               idStation={editStationId}
               onCancel={handleCloseEditDialog}
               onSuccess={handleStationEditSuccess}
             />
+          ) : (
+            <Typography>No se pudo cargar la estación para editar.</Typography>
           )}
         </DialogContent>
-      </Dialog>*/}
+        <DialogActions>
+          <Button onClick={handleCloseEditDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
