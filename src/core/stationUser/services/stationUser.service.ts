@@ -6,7 +6,7 @@ export class StationUserService extends ApiService {
 
     public async getAll(size: number, page: number): Promise<IStationUserResponse> {
         try {
-            const response = await this.get<IStationUserResponse>(`${this._uri}`);
+            const response = await this.get<IStationUserResponse>(`${this._uri}/`);
             return response.data;
         } catch (err) {
             console.error(err);
