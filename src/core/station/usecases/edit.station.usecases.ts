@@ -1,7 +1,7 @@
 import { stationService, StationService } from '../service/station.service';
-import { EStation } from '../../entities/station/IStation';
+import { EStation } from '../../entities/station/IStation'; 
 
-export class EditBikeUseCase {
+export class EditStationUseCase {
   private _service: StationService;
 
   constructor() {
@@ -20,4 +20,4 @@ export class EditBikeUseCase {
   }
 }
 
-export const editBikeUseCase = new EditBikeUseCase();
+export const editStationUseCase = new EditStationUseCase();

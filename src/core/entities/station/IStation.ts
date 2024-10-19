@@ -26,7 +26,6 @@ export interface ByIdStation {
     horarioString: string; // Representación del horario en string
     tsi: string; // Timestamp de creación
     tsu: string; // Timestamp de última actualización
-    horariosFuncionamiento: EHorariosFuncionamiento ;
 }
 
 export interface IConfiguration {
@@ -59,7 +58,11 @@ export interface EStation {
     name: string;
     address: string;
     geolocation: string; // Agregado para capturar la ubicación geográfica
-    horariosFuncionamiento: EHorariosFuncionamiento;
+    configuration: EConfiguration; // Agregado para la configuración
+
+}
+export interface EConfiguration {
+    horariosFuncionamiento: EHorariosFuncionamiento; // Agregado para horarios
 }
 
 export interface EHorariosFuncionamiento {

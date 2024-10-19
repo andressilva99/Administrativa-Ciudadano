@@ -7,7 +7,6 @@ import {
   CircularProgress,
   Typography,
   Grid,
-  Dialog,
 } from '@mui/material';
 import { EditStationProps, EStation } from '../../core/entities/station/IStation';
 import { stationService } from '../../core/station/service/station.service';
@@ -41,8 +40,7 @@ const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSucces
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (station) {
       const { name, value } = e.target;
-
-      setStation(prevStation => ({
+      setStation((prevStation) => ({
         ...prevStation!,
         [name]: value,
       }));
@@ -52,24 +50,44 @@ const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSucces
   const handleHorarioChange = (
     dayIndex: number,
     horarioIndex: number,
-    field: string,
+    field: 'horaInicio' | 'horaFin',
     value: string
   ) => {
     if (station) {
-      const updatedHorarios = [...station.horariosFuncionamiento.horariosSemana];
-      updatedHorarios[dayIndex].horarios[horarioIndex] = {
-        ...updatedHorarios[dayIndex].horarios[horarioIndex],
-        [field]: value,
-      };
-
-      setStation(prevStation => ({
-        ...prevStation!,
-        horariosFuncionamiento: {
-          ...prevStation!.horariosFuncionamiento,
-          horariosSemana: updatedHorarios,
-        },
-      }));
+      const updatedHorarios = [...station.configuration.horariosFuncionamiento.horariosSemana];
+      const [hours, minutes] = value.split(':').map(Number);
+  
+      // Validar si hours y minutes son números y están dentro del rango válido
+      if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+        const newHorarioValue: [number, number] = [hours, minutes]; // Convertir a [number, number]
+  
+        if (field === 'horaInicio') {
+          updatedHorarios[dayIndex].horarios[horarioIndex].horaInicio = newHorarioValue; // Mantener como [number, number]
+        } else if (field === 'horaFin') {
+          updatedHorarios[dayIndex].horarios[horarioIndex].horaFin = newHorarioValue; // Mantener como [number, number]
+        }
+        setStation((prevStation) => ({
+          ...prevStation!,
+          configuration: {
+            ...prevStation!.configuration,
+            horariosFuncionamiento: {
+              horariosSemana: updatedHorarios,
+            },
+          },
+        }));
+      } else {
+        setError("Por favor, ingrese un formato de hora válido (HH:MM).");
+      }
     }
+  };
+  const diaSemanaMap: { [key: number]: string } = {
+    1: 'Lunes',
+    2: 'Martes',
+    3: 'Miércoles',
+    4: 'Jueves',
+    5: 'Viernes',
+    6: 'Sábado',
+    7: 'Domingo',
   };
 
   const handleSubmit = async () => {
@@ -84,11 +102,22 @@ const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSucces
           name: station.name,
           address: station.address,
           geolocation: station.geolocation,
-          horariosFuncionamiento: station.horariosFuncionamiento,
+          configuration: {
+            ...station.configuration,
+            horariosFuncionamiento: {
+              horariosSemana: station.configuration.horariosFuncionamiento.horariosSemana.map(dia => ({
+                diaSemana: dia.diaSemana,
+                horarios: dia.horarios.map(horario => ({
+                  horaInicio: horario.horaInicio, // Debería estar en formato "HH:MM:SS"
+                  horaFin: horario.horaFin,       // Debería estar en formato "HH:MM:SS"
+                })),
+              })),
+            },
+          },
         };
-
+  
         console.log('Cuerpo de la solicitud:', payload);
-
+  
         await stationService.editStation(payload);
         setSuccess(true);
         onSuccess();
@@ -141,48 +170,55 @@ const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSucces
               fullWidth
               margin="normal"
             />
-           {/*} {station.horariosFuncionamiento.horariosSemana.map((dia, dayIndex) => (
-              <div key={dayIndex}>
-                <Typography variant="subtitle1">Día de la semana: {dia.diaSemana}</Typography>
-                {dia.horarios.map((horario, horarioIndex) => (
-                  <Grid container spacing={2} key={horarioIndex}>
-                    <Grid item xs={6}>
-                      <TextField
-                        label="Hora Inicio"
-                        value={horario.horaInicio}
-                        onChange={(e) => handleHorarioChange(dayIndex, horarioIndex, 'horaInicio', e.target.value)}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        label="Hora Fin"
-                        value={horario.horaFin}
-                        onChange={(e) => handleHorarioChange(dayIndex, horarioIndex, 'horaFin', e.target.value)}
-                        fullWidth
-                      />
-                    </Grid>
-                  </Grid>
-                ))}
-              </div>
-            ))}*/}
-            <Grid container spacing={2} justifyContent="flex-end" mb={2}>
+
+{station.configuration.horariosFuncionamiento.horariosSemana.map((dia, dayIndex) => (
+  <div key={dayIndex}>
+     <Typography variant="subtitle1">Día de la semana: {diaSemanaMap[dia.diaSemana] || dia.diaSemana}</Typography>
+    <div style={{ marginBottom: '16px' }} /> 
+    
+    {dia.horarios.map((horario, horarioIndex) => (
+      <Grid container spacing={2} key={horarioIndex}>
+        <Grid item xs={6}>
+          <TextField
+            label="Hora Inicio (HH:MM)"
+            type="time"
+            value={`${String(horario.horaInicio[0]).padStart(2, '0')}:${String(horario.horaInicio[1]).padStart(2, '0')}`} // Asegurando el formato HH:MM
+            onChange={(e) => {
+              handleHorarioChange(dayIndex, horarioIndex, 'horaInicio', e.target.value); // No agregar ":00", ya que el input tipo time lo maneja
+            }}
+            fullWidth
+            inputProps={{
+              step: 300, // 5 minutos
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Hora Fin (HH:MM)"
+            type="time"
+            value={`${String(horario.horaFin[0]).padStart(2, '0')}:${String(horario.horaFin[1]).padStart(2, '0')}`} // Asegurando el formato HH:MM
+            onChange={(e) => {
+              handleHorarioChange(dayIndex, horarioIndex, 'horaFin', e.target.value); // No agregar ":00"
+            }}
+            fullWidth
+            inputProps={{
+              step: 300, // 5 minutos
+            }}
+          />
+        </Grid>
+      </Grid>
+    ))}
+  </div>
+))}
+
+            <Grid container spacing={2} justifyContent="flex-end" mb={2} mt={1}>
               <Grid item>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={onCancel}
-                >
+                <Button variant="outlined" color="secondary" onClick={onCancel}>
                   Salir
                 </Button>
               </Grid>
               <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                >
+                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>
                   {loading ? <CircularProgress size={24} /> : 'Actualizar Estación'}
                 </Button>
               </Grid>
