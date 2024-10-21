@@ -87,7 +87,7 @@ const StationUserEdit = () => {
               initialStationUserData={stationUserData}
               formType="edit"
               userId={editingUser.idAdmUser}
-              onSubmit={(updatedStationUserData) => handleUpdateStationUser(updatedStationUserData, editingUser.idAdmUser)} // Actualizar solo el usuario en edición
+              onSubmit={(updatedStationUserData) => handleUpdateStationUser(updatedStationUserData)} // Actualizar solo el usuario en edición
             />
           )}
         </Box>
