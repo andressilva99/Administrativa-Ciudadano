@@ -32,14 +32,25 @@ const StationUserEdit = () => {
 
     fetchStationUserData();
   }, [id]);
+  
+  const handleEditClick = (user: IUserStationData) => {
+    setEditingUser(user); 
+  };
+  
 
-  const handleUpdateStationUser = async (updatedStationUserData: IStationUserData, userId: number ) => {
+  const handleUpdateStationUser = async (updatedStationUserData: IStationUserData) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
+    if (!editingUser || editingUser.idAdmUser === undefined) {
+      setError('No se puede actualizar: El usuario seleccionado es inválido.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await editStationUserUseCase.execute(updatedStationUserData.id, userId);
+      await editStationUserUseCase.execute(updatedStationUserData.id, editingUser.idAdmUser);
       setSuccess('Usuario por estación actualizado con éxito');
     } catch (err) {
       console.error('Error al actualizar el usuario por estación', err);
@@ -49,9 +60,6 @@ const StationUserEdit = () => {
     }
   };
 
-  const handleEditClick = (user: IUserStationData) => {
-    setEditingUser(user); 
-  };
   return (
     <>
       {error && <Typography color="error.main">{error}</Typography>}

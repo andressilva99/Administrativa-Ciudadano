@@ -31,8 +31,6 @@ const StationUserPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   
-  const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
   
   const theme = useTheme();
   const navigate = useNavigate();
@@ -44,14 +42,6 @@ const StationUserPage = () => {
     navigate(`/stationUser/add/${id}`);
   };
 
-  const handleViewClick = (id: number) => {
-    setSelectedStationId(id);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const columns = useMemo(
     () => [
@@ -80,11 +70,6 @@ const StationUserPage = () => {
         disableSortBy: true,
         Cell: ({ row }: any) => (
           <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-            <Tooltip title="Ver">
-              <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
-                <VisibilityOutlined />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Editar">
               <IconButton color="secondary" onClick={() => handleEditClick(row.values.id)}>
                 <EditOutlined sx={{ color: theme.palette.primary.main }} />
@@ -164,18 +149,6 @@ const StationUserPage = () => {
           </Box>
         </BasicTable>
       </Grid>
-
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>Datos de la Estación</DialogTitle>
-        <DialogContent>
-          {/* Aquí podrías cargar datos adicionales de la estación seleccionada */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Grid>
   );
 };
