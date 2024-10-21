@@ -5,24 +5,27 @@ import { IStationUserData } from '../../core/entities/stationUser/IStationuser';
 
 interface StationUserFormProps {
   initialStationUserData?: IStationUserData | null;
-  onSubmit: (data: IStationUserData) => void;
   formType: 'add' | 'edit';
+  userId: number;
+  onSubmit: (data: IStationUserData, userId: number) => void;
 }
 
 export const StationUserForm: React.FC<StationUserFormProps> = ({
   initialStationUserData,
   onSubmit,
   formType,
+  userId,
 }) => {
+  const [currentUserId, setCurrentUserId] = useState<number>(userId);
   const [stationUserData, setStationUserData] = useState<IStationUserData>({
-    id: initialStationUserData?.id || 0, 
-    name: initialStationUserData?.name || '',
-    address: initialStationUserData?.address || '',
-    enabled: initialStationUserData?.enabled || true,
-    horarioString: initialStationUserData?.horarioString || '',
-    usersInStation: initialStationUserData?.usersInStation || [],
-    tsi: initialStationUserData?.tsi || '',
-    tsu: initialStationUserData?.tsu || '',
+    id: 0,
+    name: '',
+    address: '',
+    enabled: true,
+    horarioString: '',
+    usersInStation: [],
+    tsi: '',
+    tsu: '',
   });
 
   const navigate = useNavigate();
@@ -42,9 +45,13 @@ export const StationUserForm: React.FC<StationUserFormProps> = ({
     }));
   };
 
+  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentUserId(Number(e.target.value));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(stationUserData);
+    onSubmit(stationUserData, currentUserId);
   };
 
   const handleGoBack = () => {
@@ -77,30 +84,23 @@ export const StationUserForm: React.FC<StationUserFormProps> = ({
         fullWidth
         disabled
       />
-      <Box>
-        {stationUserData.usersInStation.length > 0 ? (
-          stationUserData.usersInStation.map((user, index) => (
-            <Box key={index} sx={{ marginBottom: 2 }}>
-              <TextField
-                label="ID de Usuario"
-                name={`idAdmUser-${index}`}
-                value={user.idAdmUser}
-                fullWidth
-                disabled
-              />
-              <TextField
-                label="Nombre de Usuario"
-                name={`infoAdmuserName-${index}`}
-                value={user.infoAdmuserName}
-                fullWidth
-                disabled
-              />
-            </Box>
-          ))
-        ) : (
-          <p>No hay usuarios asignados a esta estación.</p>
-        )}
-      </Box>
+      {formType === 'add' ? (
+        // TextField editable solo para agregar un nuevo usuario
+        <TextField
+          label="ID de Usuario (Nuevo)"
+          value={currentUserId}
+          onChange={handleUserChange}
+          fullWidth
+        />
+      ) : (
+        // Mostrar solo el ID de usuario cuando se edita, no editable
+        <TextField 
+          label="ID de Usuario (Asignado)" 
+          value={currentUserId} 
+          fullWidth 
+          onChange={handleUserChange}
+        />
+      )}
 
       <Button type="submit" variant="contained" color="primary">
         {formType === 'edit' ? 'Actualizar' : 'Agregar'}

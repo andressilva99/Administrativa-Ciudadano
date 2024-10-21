@@ -1,17 +1,19 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { StationUserForm } from '../../components/stationUser/StationUserForm';
 import { editStationUserUseCase } from '../../core/stationUser/usecase/edit.stationUser.usecase';
 import { findByIdStationUserUseCase } from '../../core/stationUser/usecase/findId.stationUser.usecase';
-import { IStationUserData } from '../../core/entities/stationUser/IStationuser';
+import { IStationUserData, IUserStationData } from '../../core/entities/stationUser/IStationuser';
 
 const StationUserEdit = () => {
-  const { id } = useParams<{ id: string }>(); // Usamos el id de la URL
+  const { id } = useParams<{ id: string }>(); 
   const [stationUserData, setStationUserData] = useState<IStationUserData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<IUserStationData | null>(null);
 
   useEffect(() => {
     const fetchStationUserData = async () => {
@@ -19,27 +21,8 @@ const StationUserEdit = () => {
       setError(null);
     
       try {
-        const fetchedStationUserData = await findByIdStationUserUseCase.execute(Number(id)); 
-    
-        // Verificar si existe al menos un usuario en la estación
-        const firstUserInStation = fetchedStationUserData.usersInStation?.[0] || {
-          idAdmUser: '',  // Asignar valores predeterminados si no hay usuario
-          infoAdmuserName: '',
-        };
-    
-        // Crear un objeto con todas las propiedades requeridas
-        const stationUserToEdit: IStationUserData = {
-          id: fetchedStationUserData.id,
-          name: fetchedStationUserData.name,
-          address: fetchedStationUserData.address || '', 
-          enabled: fetchedStationUserData.enabled || false,
-          horarioString: fetchedStationUserData.horarioString || '',
-          usersInStation: fetchedStationUserData.usersInStation || [], 
-          idAdmUser: firstUserInStation.idAdmUser,
-          infoAdmuserName: firstUserInStation.infoAdmuserName,
-        };
-    
-        setStationUserData(stationUserToEdit);  // Ahora stationUserToEdit tiene todas las propiedades
+        const fetchedStationUserData = await findByIdStationUserUseCase.execute(Number(id));  
+        setStationUserData(fetchedStationUserData); 
       } catch (err) {
         setError('Error al cargar los datos del usuario por estación');
       } finally {
@@ -50,13 +33,13 @@ const StationUserEdit = () => {
     fetchStationUserData();
   }, [id]);
 
-  const handleUpdateStationUser = async (updatedStationUserData: any) => {
+  const handleUpdateStationUser = async (updatedStationUserData: IStationUserData, userId: number ) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      await editStationUserUseCase.execute(updatedStationUserData.id, updatedStationUserData.idAdmUser);
+      await editStationUserUseCase.execute(updatedStationUserData.id, userId);
       setSuccess('Usuario por estación actualizado con éxito');
     } catch (err) {
       console.error('Error al actualizar el usuario por estación', err);
@@ -66,6 +49,9 @@ const StationUserEdit = () => {
     }
   };
 
+  const handleEditClick = (user: IUserStationData) => {
+    setEditingUser(user); 
+  };
   return (
     <>
       {error && <Typography color="error.main">{error}</Typography>}
@@ -78,7 +64,24 @@ const StationUserEdit = () => {
         </Box>
       ) : stationUserData ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%', maxWidth: 400 }}>
-          <StationUserForm initialStationUserData={stationUserData} formType="edit" onSubmit={handleUpdateStationUser} />
+          <Typography variant="h6">Usuarios en la estación</Typography>
+          {stationUserData.usersInStation.map((user, index) => (
+            <Box key={user.idAdmUser} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography>{user.infoAdmuserName}</Typography>
+              <IconButton onClick={() => handleEditClick(user)}>
+                <EditIcon />
+              </IconButton>
+            </Box>
+          ))}
+
+          {editingUser && (
+            <StationUserForm
+              initialStationUserData={stationUserData}
+              formType="edit"
+              userId={editingUser.idAdmUser}
+              onSubmit={(updatedStationUserData) => handleUpdateStationUser(updatedStationUserData, editingUser.idAdmUser)} // Actualizar solo el usuario en edición
+            />
+          )}
         </Box>
       ) : (
         <p>No se encontraron datos del usuario por estación.</p>
