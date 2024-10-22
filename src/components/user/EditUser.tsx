@@ -15,16 +15,18 @@ import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { CustomError } from '../../core/errors/CustomError';
 import SelectModulesModal from './SelectedModulesModal';
+import Swal from 'sweetalert2';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
 
 interface EditUserProps {
   userId: number;
+  onSuccess: () => void;
   onCancel: () => void;
 }
 
-const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
+const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
   const [user, setUser] = useState<EUser | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,12 +89,25 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         await userRepository.editUser(user.admUser);
         setSuccess(true);
         setSuccessMessage('Usuario actualizado de manera exitosa!');
-      } catch (err) {
-        if (err instanceof CustomError) {
-          setError(err.message);
-        } else {
-          setError('Error desconocido al editar el usuario');
-        }
+        
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'El Usuario ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      onSuccess();
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar el Usuario', err);
+        const errorMessage = err || 'Hubo un problema al editar el Usuario.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

@@ -39,11 +39,20 @@ export class RoleRepository implements IRoleRepository {
   async registerRole(role: IRoleAdd): Promise<void> {
     try {
       await this._api.post('/adm-main/role/create', role);
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al registrar el rol');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al crear el Rol.");
+        
+      } else {
+        // Error no específico
+        console.error('Error al crear el Rol.', error);
+      }
+      throw new Error('Error al crear el Rol.');
     }
   }
+
 
   async editRole(role : ERole): Promise<void> {
     try {

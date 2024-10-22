@@ -5,6 +5,7 @@ import { UserRepository } from "../../infrastructure/repository/UserRepository";
 import { IUserAdd } from "../../core/entities/user/IUser";
 import { RegisterUser } from "../../core/use-cases/user/RegisterUser";
 import { CustomError } from "../../core/errors/CustomError";
+import Swal from 'sweetalert2';
 
 interface AddUserProps {
     onUserAdded: () => void;
@@ -53,12 +54,23 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded, onCancel}) => {
                 enabled: true,
                 password: "",
             });
-        } catch (err) {
-            if (err instanceof CustomError) {
-              setError(err.message);
-            } else {
-              setError('Error desconocido para buscar el usuario');
-            }
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'El Usuario ha sido creado exitosamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });;
+        } catch (err: any) {
+            onCancel();
+            console.error('Error al crear el Usuario', err);
+            const errorMessage = err || 'Hubo un problema al crear el Usuario.';
+        
+            Swal.fire({
+              title: 'Error',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+          });
         } finally {
             setLoading(false);
         }

@@ -55,8 +55,16 @@ export class UserRepository implements IUserRepository {
     try {
       await this._api.put(`/adm-main/admuser/edit`, updatedUser);
     } catch (error: any) {
-      const message = error.response?.data?.message || "Error al editar el usario";
-      throw new CustomError(message, error.response?.status);
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al editar el usuario");
+        
+      } else {
+        // Error no específico
+        console.error('Error editar usuario', error);
+      }
+      throw new Error('Error al editar el usuario');
     }
   }
 

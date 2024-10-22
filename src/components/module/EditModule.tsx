@@ -13,6 +13,7 @@ import {
 import { EditModuleProps, EModule } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import Swal from 'sweetalert2';
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -106,9 +107,23 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess }
         await moduleRepository.editModule(payload);
         setSuccess(true);
         onSuccess();
-      } catch (err) {
-        console.error('Error updating module', err);
-        setError(typeof err === "string" ? err : 'Unknown error occurred');
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'El Módulo ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar el Módulo', err);
+        const errorMessage = err || 'Hubo un problema al editar el Módulo.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

@@ -15,6 +15,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { AuthRepository } from '../../infrastructure/repository/AuthRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { CustomError } from '../../core/errors/CustomError';
+import Swal from 'sweetalert2';
 
 interface ChangePasswordModalProps {
     open: boolean,
@@ -56,7 +57,13 @@ const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
                 oldPassword,
                 newPassword,
             });
-            setSuccessMessage('Constraseñna cambiada con exito');
+            setSuccessMessage('Constraseña cambiada con exito');
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'La contraseña se cambio exitosamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
 
             setTimeout(() => {
                 onClose();
@@ -78,7 +85,7 @@ const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
                         setErrorMessage(err.message || 'Error al cambiar la contraseña.');
                 }
             } else {
-                setErrorMessage('Error desconocido. Inténtelo nuevamente.');
+                setErrorMessage('Error la contraseña actual no es la correcta.');
             }
         }
     };
