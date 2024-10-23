@@ -1,47 +1,33 @@
-import { 
-  EditOutlined, 
-  PersonAddAltOutlined, 
-  Add,
-  VisibilityOutlined, 
-} from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  useTheme,
-} from '@mui/material';
+import { Add, EditOutlined, PersonAddAltOutlined } from '@mui/icons-material';
+import { Box, Button, Grid, IconButton, Stack, Tooltip, useTheme } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import BasicTable from '../../components/common/BasicTable';
 import { IStationUserData } from '../../core/entities/stationUser/IStationuser';
 import { getAllStationUserUseCase } from '../../core/stationUser/usecase/getAll.stationUser.usecase';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const StationUserPage = () => {
   const [stationUserData, setStationUserData] = useState<IStationUserData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  
-  
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
+
   const theme = useTheme();
   const navigate = useNavigate();
-  
+
   const handleEditClick = (id: number) => {
     navigate(`/stationUser/edit/${id}`);
   };
   const handleAddUserClick = (id: number) => {
     navigate(`/stationUser/add/${id}`);
   };
-
 
   const columns = useMemo(
     () => [
@@ -70,21 +56,25 @@ const StationUserPage = () => {
         disableSortBy: true,
         Cell: ({ row }: any) => (
           <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-            <Tooltip title="Editar">
-              <IconButton color="secondary" onClick={() => handleEditClick(row.values.id)}>
-                <EditOutlined sx={{ color: theme.palette.primary.main }} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Añadir Usuario">
-              <IconButton color="success" onClick={() => handleAddUserClick(row.values.id)}>
-                <PersonAddAltOutlined />
-              </IconButton>
-            </Tooltip>
+            {isRoot || userPermissions.includes('ADMUSER_STATION_ASSIGN') ? (
+              <Tooltip title="Editar">
+                <IconButton color="secondary" onClick={() => handleEditClick(row.values.id)}>
+                  <EditOutlined sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {isRoot || userPermissions.includes('ADMUSER_STATION_ASSIGN') ? (
+              <Tooltip title="Añadir Usuario">
+                <IconButton color="success" onClick={() => handleAddUserClick(row.values.id)}>
+                  <PersonAddAltOutlined />
+                </IconButton>
+              </Tooltip>
+            ) : null}
           </Stack>
         ),
       },
     ],
-    []
+    [],
   );
 
   const fetchData = useCallback(async (page: number, rowsPerPage: number) => {
@@ -130,23 +120,25 @@ const StationUserPage = () => {
           onRowsPerPageChange={handleRowsPerPageChange}
           loading={loading}
         >
-          <Box
-            sx={{
-              p: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button
-              variant="contained"
-              sx={{ ml: 2 }}
-              onClick={() => navigate('/station')}
-              startIcon={<Add />}
+          {isRoot || userPermissions.includes('STATION_ADD') ? (
+            <Box
+              sx={{
+                p: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
             >
-              Agregar Estación
-            </Button>
-          </Box>
+              <Button
+                variant="contained"
+                sx={{ ml: 2 }}
+                onClick={() => navigate('/station')}
+                startIcon={<Add />}
+              >
+                Agregar Estación
+              </Button>
+            </Box>
+          ) : null}
         </BasicTable>
       </Grid>
     </Grid>
@@ -154,4 +146,3 @@ const StationUserPage = () => {
 };
 
 export default StationUserPage;
-

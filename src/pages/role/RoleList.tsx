@@ -1,8 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Button, TextField, Box, Menu, MenuItem,
-  ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent,
-  DialogTitle, IconButton
+  Button,
+  TextField,
+  Box,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -10,6 +19,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import RoleTable from '../../components/role/RoleDetail';
 import RoleById from '../../components/role/RoleById';
 import AddRole from '../../components/role/AddRole';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const RoleList: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -19,6 +30,9 @@ const RoleList: React.FC = () => {
   const [showRoleDetails, setShowRoleDetails] = useState(false);
   const [updateTable, setUpdateTable] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +44,7 @@ const RoleList: React.FC = () => {
   };
 
   const handleSearchById = () => {
-    setShowSearchById(prev => !prev);  // Alterna el estado
+    setShowSearchById((prev) => !prev); // Alterna el estado
     setShowAddRole(false);
     setShowRoleDetails(false);
   };
@@ -51,7 +65,7 @@ const RoleList: React.FC = () => {
 
   const handleRoleAdded = () => {
     // Lógica adicional después de agregar un rol
-    setUpdateTable(prev => !prev);
+    setUpdateTable((prev) => !prev);
     setShowAddRole(false);
   };
 
@@ -91,66 +105,57 @@ const RoleList: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
-
-      <Menu
-        id="action-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        ref={menuRef} // Referencia al menú
-      >
-        <MenuItem onClick={handleSearchById}>
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar por ID" />
-        </MenuItem>
-        {showSearchById && (
-          <Box display="flex" alignItems="center" marginLeft="16px">
-            <TextField
-              label="Ingrese la ID del módulo"
-              type="number"
-              fullWidth
-              onChange={(e) => setRoleId(Number(e.target.value))}
-            />
-            <IconButton
-              color="primary"
-              onClick={handleSearchRole}
-              style={{ marginLeft: '8px' }}
-            >
+      {isRoot || userPermissions.includes('ADMROLE_VIEW_N') ? (
+        <Menu
+          id="action-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          ref={menuRef} // Referencia al menú
+        >
+          <MenuItem onClick={handleSearchById}>
+            <ListItemIcon>
               <SearchIcon />
-            </IconButton>
-          </Box>
-        )}
-        <MenuItem onClick={handleAddRole}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Agregar Rol" />
-        </MenuItem>
-      </Menu>
-
+            </ListItemIcon>
+            <ListItemText primary="Buscar por ID" />
+          </MenuItem>
+          {showSearchById && (
+            <Box display="flex" alignItems="center" marginLeft="16px">
+              <TextField
+                label="Ingrese la ID del módulo"
+                type="number"
+                fullWidth
+                onChange={(e) => setRoleId(Number(e.target.value))}
+              />
+              <IconButton color="primary" onClick={handleSearchRole} style={{ marginLeft: '8px' }}>
+                <SearchIcon />
+              </IconButton>
+            </Box>
+          )}
+          <MenuItem onClick={handleAddRole}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Agregar Rol" />
+          </MenuItem>
+        </Menu>
+      ) : null}
       <Dialog open={showRoleDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Rol</DialogTitle>
-        <DialogContent>
-          {roleId !== null && <RoleById id={roleId} />}
-        </DialogContent>
+        <DialogContent>{roleId !== null && <RoleById id={roleId} />}</DialogContent>
         <DialogActions>
           <Button onClick={handleCancel} color="secondary">
             Salir
           </Button>
         </DialogActions>
       </Dialog>
-
       <Dialog open={showAddRole} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Agregar Rol</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           <AddRole onRoleAdded={handleRoleAdded} onCancel={handleCancel} />
         </DialogContent>
       </Dialog>
-
-      
       <RoleTable updateTable={updateTable} /> {/* Pasa updateTable a RoleTable */}
     </div>
   );
