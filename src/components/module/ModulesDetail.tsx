@@ -199,7 +199,7 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ({ updateTable }) => {
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Módulo</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {viewModuleId && <ModuleById id={viewModuleId} />}
+          {viewModuleId && <ModuleById id={viewModuleId} onCancel={handleCloseViewDialog} />}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseViewDialog} color="secondary">

@@ -76,10 +76,6 @@ const ModuleList: React.FC = () => {
   const handleCloseModuleDialog = () => {
     setOpenModuleDialog(false);
     setModuleId(null);
-    setAnchorEl(null);
-    setShowModuleById(false);
-    setShowModuleByCode(false);
-    setShowEditModuleSearch(false);
   };
 
   const handleToggleModuleByCode = () => {
@@ -111,13 +107,13 @@ const ModuleList: React.FC = () => {
   //   }
   // };
 
-  const handleSearchEditModule = () => {
-    if (editModuleId !== null) {
-      setOpenEditDialog(true);
-    }
-    setShowEditModuleSearch(false);
-    handleMenuClose();
-  };
+  // const handleSearchEditModule = () => {
+  //   if (editModuleId !== null) {
+  //     setOpenEditDialog(true);
+  //   }
+  //   setShowEditModuleSearch(false);
+  //   handleMenuClose();
+  // };
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
@@ -134,12 +130,12 @@ const ModuleList: React.FC = () => {
   };
 
   const handleModuleAdded = () => {
-    
+    // Lógica adicional después de agregar un rol
     setUpdateTable((prev) => !prev);
     setOpenCreateDialog(false);
   };
   const handleSuccess = () => {
-   
+    // Lógica después de la actualización exitosa
     handleCloseEditDialog();
   };
 
@@ -205,7 +201,7 @@ const ModuleList: React.FC = () => {
           </Box>
         )}
 
-        {isRoot || userPermissions.includes('MODULE_EDIT') ? (
+        {/* {isRoot || userPermissions.includes('MODULE_EDIT') ? (
           <MenuItem onClick={handleToggleEditModuleSearch}>
             <ListItemIcon>
               <EditIcon />
@@ -229,7 +225,7 @@ const ModuleList: React.FC = () => {
               <SearchIcon />
             </IconButton>
           </Box>
-        )}
+        )} */}
 
         {isRoot || userPermissions.includes('MODULE_ADD') ? (
           <MenuItem onClick={handleOpenCreateDialog}>
@@ -271,7 +267,7 @@ const ModuleList: React.FC = () => {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <ModuleByCode code={idModule} onCancell={handleCloseModuleByCodeDialog} />
+                  <ModuleByCode code={idModule} onCancell={handleCloseModuleByCodeDialog}/>
                 </TableBody>
               </Table>
             </TableContainer>

@@ -23,9 +23,10 @@ const userRepository = new UserRepository(apiService);
 interface EditUserProps {
   userId: number;
   onCancel: () => void;
+  onSuccess: () => void;
 }
 
-const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
+const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
   const [user, setUser] = useState<EUser | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +87,8 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
         await userRepository.editUser(user.admUser);
         setSuccess(true);
         setSuccessMessage('Usuario actualizado de manera exitosa!');
+        onSuccess();
+        setIsModalOpen(false);
 
         Swal.fire({
           title: '¡Éxito!',

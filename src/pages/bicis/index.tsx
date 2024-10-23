@@ -92,13 +92,13 @@ const BikePages: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleSearchEditBike = () => {
-    if (editBikeId !== null) {
-      setOpenEditBikeDialog(true);
-    }
-    setShowEditBikeSearch(false);
-    handleMenuClose();
-  };
+  // const handleSearchEditBike = () => {
+  //   if (editBikeId !== null) {
+  //     setOpenEditBikeDialog(true);
+  //   }
+  //   setShowEditBikeSearch(false);
+  //   handleMenuClose();
+  // };
 
   const handleCreateBike = () => {
     setOpenCreateBikeDialog(true);
@@ -108,19 +108,11 @@ const BikePages: React.FC = () => {
   const handleCloseBikeDialog = () => {
     setOpenBikeDialog(false);
     setBikeId(null);
-    setAnchorEl(null);
-    setShowBikeById(false);
-    setShowBikeByCode(false);
-    setShowEditBikeSearch(false);
   };
 
   const handleCloseBikeByCodeDialog = () => {
     setOpenBikeByCodeDialog(false);
     setBikeCode(null);
-    setAnchorEl(null);
-    setShowBikeById(false);
-    setShowBikeByCode(false);
-    setShowEditBikeSearch(false);
   };
 
   const handleCloseEditBikeDialog = () => {
@@ -206,7 +198,7 @@ const BikePages: React.FC = () => {
           </Box>
         )}
 
-        {isRoot || userPermissions.includes('BICIS_EDIT') ? (
+        {/* {isRoot || userPermissions.includes('BICIS_EDIT') ? (
           <MenuItem onClick={handleToggleEditBikeSearch}>
             <ListItemIcon>
               <EditIcon />
@@ -230,7 +222,7 @@ const BikePages: React.FC = () => {
               <EditIcon />
             </IconButton>
           </Box>
-        )}
+        )} */}
 
         {isRoot || userPermissions.includes('BICIS_ADD') ? (
           <MenuItem onClick={handleCreateBike}>
@@ -256,12 +248,12 @@ const BikePages: React.FC = () => {
 
       <Dialog open={openBikeDialog} onClose={handleCloseBikeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle de la Bicicleta por ID</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
+        <DialogContent>
           {bikeId !== null && (
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <BikeById id={bikeId} onCancel={handleCloseBikeDialog}/>
+                  <BikeById id={bikeId} onCancel={handleCloseBikeDialog} />
                 </TableBody>
               </Table>
             </TableContainer>
@@ -281,7 +273,7 @@ const BikePages: React.FC = () => {
         maxWidth="md"
       >
         <DialogTitle>Detalle de la Bicicleta por Código</DialogTitle>
-        <DialogContent style={{ paddingBottom: 0 }}>
+        <DialogContent>
           {bikeCode && (
             <TableContainer component={Paper}>
               <Table>

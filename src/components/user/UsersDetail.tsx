@@ -183,7 +183,7 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {viewUserId && <UserById id={viewUserId} />}
+          {viewUserId && <UserById id={viewUserId} onCancel={handleCloseViewDialog}/>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseViewDialog} color="secondary">
@@ -195,7 +195,7 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} />}
+          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} onSuccess={handleEditSuccess} />}
         </DialogContent>
       </Dialog>
 

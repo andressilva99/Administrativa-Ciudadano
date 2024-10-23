@@ -18,8 +18,8 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import RoleTable from '../../components/Role/RoleDetail';
-import AddRole from '../../components/role/AddRole';
-import RoleById from '../../components/role/RoleById';
+import AddRole from '../../components/Role/AddRole';
+import RoleById from '../../components/Role/RoleById';
 import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const RoleList: React.FC = () => {
