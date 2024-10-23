@@ -17,6 +17,9 @@ const PenaltyTypeNew = Loadable(lazy (() => import('../pages/penaltyType/Penalty
 const PenaltyTypeEdit = Loadable(lazy (() => import('../pages/penaltyType/PenaltyTypeEdit')));
 const Bicis = Loadable(lazy(() => import('../pages/bicis')));
 const Estacion = Loadable(lazy(() => import('../pages/station')));
+const EstacionUsuario = Loadable(lazy(() => import('../pages/stationUser')));
+const EstacionUsuarioAdd = Loadable(lazy(() => import('../pages/stationUser/UserStationAdd')));
+const EstacionUsuarioEdit = Loadable(lazy(() => import('../pages/stationUser/UserStationEdit')));
 
 const MainRoutes: RouteObject = {
   path: '/',
@@ -115,6 +118,30 @@ const MainRoutes: RouteObject = {
       element: (
         <ProtectedRoutes requiredPermission="STATION_VIEW_N">
           <Estacion />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'stationUser',
+      element: (
+        <ProtectedRoutes requiredPermission="STATION_VIEW_N">
+          <EstacionUsuario />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'stationUser/add/:id',
+      element: (
+        <ProtectedRoutes requiredPermission="ADMUSER_STATION_ASSIGN">
+          <EstacionUsuarioAdd />
+        </ProtectedRoutes>
+      ),
+    },
+    {
+      path: 'stationUser/edit/:id',
+      element: (
+        <ProtectedRoutes requiredPermission="ADMUSER_STATION_ASSIGN">
+          <EstacionUsuarioEdit />
         </ProtectedRoutes>
       ),
     },
