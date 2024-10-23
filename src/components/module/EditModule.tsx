@@ -13,11 +13,12 @@ import {
 import { EditModuleProps, EModule } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import Swal from 'sweetalert2';
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
 
-const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  }) => {
+const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess }) => {
   const [module, setModule] = useState<EModule | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
@@ -27,7 +28,6 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  
     const fetchModule = async () => {
       setLoading(true);
       try {
-        // Verifica que el endpoint y el método sean correctos
         const data = await moduleRepository.findModulesById(moduleId);
         setModule({
           ...data,
@@ -48,15 +48,27 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (module) {
       const { name, type, value, checked } = e.target;
-
-      // Handling for checkbox inputs
       const updatedValue = type === 'checkbox' ? checked : type === 'number' ? (value === '' ? 0 : parseInt(value, 10)) : value;
 
-      // Update state depending on the name of the field
-      setModule(prevModule => ({
-        ...prevModule!,
-        [name]: updatedValue
-      }));
+      // Handle nested fields
+      const keys = name.split('.');
+      setModule(prevModule => {
+        if (!prevModule) return prevModule;
+        
+        const updatedModule = { ...prevModule };
+        let currentLevel = updatedModule as any;
+
+        // Traverse to the appropriate level and set the value
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!currentLevel[keys[i]]) {
+            currentLevel[keys[i]] = {};
+          }
+          currentLevel = currentLevel[keys[i]];
+        }
+
+        currentLevel[keys[keys.length - 1]] = updatedValue;
+        return updatedModule;
+      });
     }
   };
 
@@ -67,8 +79,8 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  
       setSuccess(false);
       try {
         const payload = {
+          id: null,
           moduleId: module.id,
-          id: null, // Asegúrate de usar 'id' en lugar de 'moduleId' si es necesario
           enabledNp: module.enabledNp,
           enabledLp: module.enabledLp,
           minNpLevel: module.minNpLevel ?? null,
@@ -89,22 +101,29 @@ const EditModule: React.FC<EditModuleProps> = ({ moduleId, onCancel, onSuccess  
             linkToExternalBrowser: module.configuraciones.linkToExternalBrowser
           }
         };
-  
+
         console.log('Cuerpo de la solicitud:', payload);
-  
+
         await moduleRepository.editModule(payload);
         setSuccess(true);
         onSuccess();
-      } catch (err) {
-        if (typeof err === "string") {
-          // Maneja el error si es una instancia de Error
-          console.error('Error updating module', err);
-          setError(err);
-        } else {
-          // Maneja otros casos si el error no es una instancia de Error
-          console.error('Unknown error updating module', err);
-          setError('Unknown error occurred');
-        }
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'El Módulo ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar el Módulo', err);
+        const errorMessage = err || 'Hubo un problema al editar el Módulo.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

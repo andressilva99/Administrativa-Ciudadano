@@ -7,7 +7,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import RoleTable from '../../components/role/RoleDetail';
+import RoleTable from '../../components/Role/RoleDetail';
 import RoleById from '../../components/role/RoleById';
 import AddRole from '../../components/role/AddRole';
 

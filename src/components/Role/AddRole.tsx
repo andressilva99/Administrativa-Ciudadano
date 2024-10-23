@@ -15,6 +15,7 @@ import { RegisterRole } from '../../core/use-cases/role/RegisterRole';
 import { Permission } from '../../core/entities/role/Permission';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { AddRoleProps } from '../../core/entities/role/IRole';
+import Swal from 'sweetalert2';
 
 const defaultPermissions: APermissionItem[] = [
   { name: Permission.ADMUSER_VIEW_N, active: false, description: 'Usuarios - listado' },
@@ -116,9 +117,23 @@ const AddRole: React.FC<AddRoleProps> = ({ onRoleAdded, onCancel, roleToCopy }) 
       setSuccess(true);
       onRoleAdded();
       onCancel();
-    } catch (err) {
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'El Rol ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });
+    } catch (err : any) {
+      onCancel();
       console.error('Error al agregar el rol', err);
+      const errorMessage = err || 'Hubo un problema al crear el Rol.';
       setError('Error al agregar el rol');
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

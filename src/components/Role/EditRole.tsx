@@ -15,6 +15,7 @@ import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { Permission } from '../../core/entities/role/Permission';
 import { EditRoleProps } from '../../core/entities/role/IRole';
+import Swal from 'sweetalert2';
 
 const apiService = new ApiService();
 const roleRepository = new RoleRepository(apiService);
@@ -131,9 +132,23 @@ const EditRole: React.FC<EditRoleProps> = ({ roleId, onCancel, onEditSuccess }) 
         await roleRepository.editRole(payload);
         setSuccess(true);
         onEditSuccess(); 
-      } catch (err) {
-        console.error('Error al actualizar el rol', err);
-        setError('Error al actualizar el rol');
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'El Rol ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar el Rol', err);
+        const errorMessage = err || 'Hubo un problema al editar el Rol.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

@@ -4,6 +4,8 @@ import { ApiService } from "../../infrastructure/http/ApiService";
 import { ModuleRepository } from "../../infrastructure/repository/ModuleRepository";
 import { RegisterModule } from "../../core/use-cases/module/RegisterModule";
 import { AModule } from "../../core/entities/module/IModule";
+import Swal from 'sweetalert2';
+
 
 interface CreateModuleProps {
   onModuleCreated: () => void;
@@ -135,15 +137,24 @@ const CreateModule: React.FC<CreateModuleProps> = ({ onModuleCreated, onCancel }
             path: null,
           },
         },
-      });
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error creating module', err.message);
-        setError(err.message);
-      } else {
-        console.error('Unknown error creating module', err);
-        setError('Unknown error occurred');
-      }
+      })
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'El Módulo ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });;
+    } catch (err: any) {
+      onCancel();
+      console.error('Error al crear el Módulo', err);
+      const errorMessage = err || 'Hubo un problema al crear el Módulo.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+//import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
@@ -79,10 +79,10 @@ const UsersDetail: React.FC = () => {
     setEditUserId(userId);
     setOpenEditDialog(true);
   };
-  const handleDeleteClick = (userId: number) => {
+  {/*const handleDeleteClick = (userId: number) => {
     setDeleteUserId(userId);
     setOpenDeleteDialog(true);
-  };
+  };*/}
   const handleViewClick = (userId: number) => {
     setViewUserId(userId);
     setOpenViewDialog(true);
@@ -101,6 +101,10 @@ const UsersDetail: React.FC = () => {
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
     setViewUserId(null);
+  };
+  const handleEditSuccess = () => {
+    getUsers(); // Fetch all modules to refresh the table
+    handleCloseEditDialog();
   };
 
   if (loading) {
@@ -143,9 +147,9 @@ const UsersDetail: React.FC = () => {
                     <IconButton onClick={() => handleEditClick(user.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(user.id)}>
+                   {/* <IconButton onClick={() => handleDeleteClick(user.id)}>
                       <DeleteIcon sx={{ color: 'error.main' }} />
-                    </IconButton>
+                    </IconButton>*/}
                   </TableCell>
                 </TableRow>
               ))}
@@ -177,7 +181,7 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} />}
+          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} onSuccess={handleEditSuccess} />}
         </DialogContent>
       </Dialog>
 

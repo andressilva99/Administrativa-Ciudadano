@@ -120,8 +120,7 @@ const SelectModulesModal: React.FC<SelectModulesProps> = ({
         setPendingRole(null);
       }, 3000);
     } catch (err) {
-      setMessage({ type: 'error', text: 'Error al asignar/quitar el rol' });
-      
+      setMessage({ type: 'error', text: 'Error al asignar Rol, solo se puede asignar un Rol por usuario!.' });      
       setTimeout(() => {
         setMessage(null);
       }, 3000);
