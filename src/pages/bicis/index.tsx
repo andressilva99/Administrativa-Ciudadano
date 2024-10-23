@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import AddIcon from '@mui/icons-material/Add'; // Importar ícono para agregar bicicleta
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
@@ -15,17 +18,16 @@ import {
   Table,
   TableBody,
   TableContainer,
-  TextField
+  TextField,
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add'; // Importar ícono para agregar bicicleta
-import BikesDetail from '../../components/bike/BikesDetail';
-import BikeById from '../../components/bike/BikeById';
+import React, { useState } from 'react';
 import BikeByCode from '../../components/bike/BikeByCode';
-import EditBike from '../../components/bike/EditBike';
+import BikeById from '../../components/bike/BikeById';
+import BikesDetail from '../../components/bike/BikesDetail';
 import CreateBike from '../../components/bike/CreateBike'; // Importar el componente CreateBike
+import EditBike from '../../components/bike/EditBike';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const BikePages: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -42,6 +44,9 @@ const BikePages: React.FC = () => {
   const [openCreateBikeDialog, setOpenCreateBikeDialog] = useState(false); // Nuevo estado para crear bicicleta
 
   const openMenu = Boolean(anchorEl);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -150,12 +155,14 @@ const BikePages: React.FC = () => {
       </Button>
 
       <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
-        <MenuItem onClick={handleToggleBikeById}>
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar por ID" />
-        </MenuItem>
+        {isRoot || userPermissions.includes('BICIS_VIEW_N') ? (
+          <MenuItem onClick={handleToggleBikeById}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Buscar por ID" />
+          </MenuItem>
+        ) : null}
         {showBikeById && (
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
@@ -164,18 +171,24 @@ const BikePages: React.FC = () => {
               fullWidth
               onChange={(e) => setBikeId(Number(e.target.value))}
             />
-            <IconButton color="primary" onClick={handleSearchBikeById} style={{ marginLeft: '8px' }}>
+            <IconButton
+              color="primary"
+              onClick={handleSearchBikeById}
+              style={{ marginLeft: '8px' }}
+            >
               <SearchIcon />
             </IconButton>
           </Box>
         )}
 
-        <MenuItem onClick={handleToggleBikeByCode}>
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar por Código" />
-        </MenuItem>
+        {isRoot || userPermissions.includes('BICIS_VIEW_N') ? (
+          <MenuItem onClick={handleToggleBikeByCode}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Buscar por Código" />
+          </MenuItem>
+        ) : null}
         {showBikeByCode && (
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
@@ -183,18 +196,24 @@ const BikePages: React.FC = () => {
               fullWidth
               onChange={(e) => setBikeCode(e.target.value)}
             />
-            <IconButton color="primary" onClick={handleSearchBikeByCode} style={{ marginLeft: '8px' }}>
+            <IconButton
+              color="primary"
+              onClick={handleSearchBikeByCode}
+              style={{ marginLeft: '8px' }}
+            >
               <SearchIcon />
             </IconButton>
           </Box>
         )}
 
-        {/* <MenuItem onClick={handleToggleEditBikeSearch}>
-          <ListItemIcon>
-            <EditIcon />
-          </ListItemIcon>
-          <ListItemText primary="Editar Bicicleta por ID" />
-        </MenuItem> */}
+        {isRoot || userPermissions.includes('BICIS_EDIT') ? (
+          <MenuItem onClick={handleToggleEditBikeSearch}>
+            <ListItemIcon>
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText primary="Editar Bicicleta por ID" />
+          </MenuItem>
+        ) : null}
         {showEditBikeSearch && (
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
@@ -203,21 +222,32 @@ const BikePages: React.FC = () => {
               fullWidth
               onChange={(e) => setEditBikeId(Number(e.target.value))}
             />
-            <IconButton color="primary" onClick={handleSearchEditBike} style={{ marginLeft: '8px' }}>
+            <IconButton
+              color="primary"
+              onClick={handleSearchEditBike}
+              style={{ marginLeft: '8px' }}
+            >
               <EditIcon />
             </IconButton>
           </Box>
         )}
 
-        <MenuItem onClick={handleCreateBike}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Crear Bicicleta" />
-        </MenuItem>
+        {isRoot || userPermissions.includes('BICIS_ADD') ? (
+          <MenuItem onClick={handleCreateBike}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Crear Bicicleta" />
+          </MenuItem>
+        ) : null}
       </Menu>
 
-      <Dialog open={openCreateBikeDialog} onClose={handleCloseCreateBikeDialog} fullWidth maxWidth="sm">
+      <Dialog
+        open={openCreateBikeDialog}
+        onClose={handleCloseCreateBikeDialog}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Crear Bicicleta</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           <CreateBike onBikeCreated={handleBikeCreated} onCancel={handleCloseCreateBikeDialog} />
@@ -244,7 +274,12 @@ const BikePages: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openBikeByCodeDialog} onClose={handleCloseBikeByCodeDialog} fullWidth maxWidth="md">
+      <Dialog
+        open={openBikeByCodeDialog}
+        onClose={handleCloseBikeByCodeDialog}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Detalle de la Bicicleta por Código</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           {bikeCode && (
@@ -265,22 +300,22 @@ const BikePages: React.FC = () => {
       </Dialog>
 
       <Dialog open={openEditBikeDialog} onClose={handleCloseEditBikeDialog} fullWidth maxWidth="md">
-  <DialogTitle>Editar Bicicleta</DialogTitle>
-  <DialogContent style={{ paddingBottom: 0 }}>
-    {editBikeId !== null && (
-      <EditBike
-        idBicycle={editBikeId}
-        onSuccess={handleSuccessEdit}
-        onCancel={handleCloseEditBikeDialog} // Agregar esta línea
-      />
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseEditBikeDialog} color="secondary">
-      Salir
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Editar Bicicleta</DialogTitle>
+        <DialogContent>
+          {editBikeId !== null && (
+            <EditBike
+              idBicycle={editBikeId}
+              onSuccess={handleSuccessEdit}
+              onCancel={handleCloseEditBikeDialog} // Agregar esta línea
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditBikeDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <BikesDetail updateTable={updateTable} />
     </div>

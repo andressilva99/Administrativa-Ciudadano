@@ -25,6 +25,8 @@ import BikeById from './BikeById';
 import EditBike from './EditBike';
 import CreateBike from './CreateBike';
 import { deleteBikeUseCase } from '../../core/bike/usecases/delete.bike.usecases';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 interface BikesDetailProps {
   updateTable: boolean;
@@ -43,6 +45,9 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
   const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [deleteBikeId, setDeleteBikeId] = useState<number | null>(null);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const getBikes = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -156,15 +161,30 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
                   <TableCell>{bike.idCurrentStation}</TableCell>
                   <TableCell>{bike.comments || 'Sin comentarios'}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleViewClick(bike.id)} aria-label="Ver bicicleta">
-                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
-                    </IconButton>
-                    <IconButton onClick={() => handleEditClick(bike.id)} aria-label="Editar bicicleta">
-                      <EditIcon sx={{ color: 'primary.main' }} />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(bike.id)} aria-label="Eliminar bicicleta">
-                      <DeleteOutlineIcon sx={{ color: 'error.main' }} />
-                    </IconButton>
+                    {isRoot || userPermissions.includes('BICIS_VIEW_N') ? (
+                      <IconButton
+                        onClick={() => handleViewClick(bike.id)}
+                        aria-label="Ver bicicleta"
+                      >
+                        <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('BICIS_EDIT') ? (
+                      <IconButton
+                        onClick={() => handleEditClick(bike.id)}
+                        aria-label="Editar bicicleta"
+                      >
+                        <EditIcon sx={{ color: 'primary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('BICIS_DELETE') ? (
+                      <IconButton
+                        onClick={() => handleDeleteClick(bike.id)}
+                        aria-label="Eliminar bicicleta"
+                      >
+                        <DeleteOutlineIcon sx={{ color: 'error.main' }} />
+                      </IconButton>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               ))}
@@ -184,9 +204,7 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
       {/* Dialogs */}
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
         <DialogTitle>Detalles de la Bicicleta</DialogTitle>
-        <DialogContent>
-          {viewBikeId && <BikeById id={viewBikeId} />}
-        </DialogContent>
+        <DialogContent>{viewBikeId && <BikeById id={viewBikeId} />}</DialogContent>
         <DialogActions>
           <Button onClick={handleCloseViewDialog} color="secondary">
             Salir
@@ -198,7 +216,11 @@ const BikesDetail: React.FC<BikesDetailProps> = ({ updateTable }) => {
         <DialogTitle>Editar Bicicleta</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
           {editBikeId !== null && (
-            <EditBike idBicycle={editBikeId} onCancel={handleCloseEditDialog} onSuccess={handleBikeEditSuccess} />
+            <EditBike
+              idBicycle={editBikeId}
+              onCancel={handleCloseEditDialog}
+              onSuccess={handleBikeEditSuccess}
+            />
           )}
         </DialogContent>
       </Dialog>

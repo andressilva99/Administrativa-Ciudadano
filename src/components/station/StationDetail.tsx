@@ -25,6 +25,8 @@ import { findStationUseCase } from '../../core/station/usecases/find.station.use
 import { deleteStationUseCase } from '../../core/station/usecases/delete.station.usecases';
 import StationById from './StationById';
 import EditStation from './EditStation';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 interface StationsDetailProps {
   updateTable: boolean;
@@ -42,6 +44,9 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const getStations = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -148,15 +153,30 @@ const StationsDetail: React.FC<StationsDetailProps> = ({ updateTable }) => {
                   <TableCell>{station.enabled ? 'Sí' : 'No'}</TableCell>
                   <TableCell>{station.horarioString}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleViewClick(station.id)} aria-label="Ver estación">
-                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
-                    </IconButton>
-                    <IconButton onClick={() => handleEditClick(station.id)} aria-label="Editar estación">
-                      <EditIcon sx={{ color: 'primary.main' }} />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(station.id)} aria-label="Eliminar estación">
-                      <DeleteOutlineIcon sx={{ color: 'error.main' }} />
-                    </IconButton>
+                    {isRoot || userPermissions.includes('STATION_VIEW_N') ? (
+                      <IconButton
+                        onClick={() => handleViewClick(station.id)}
+                        aria-label="Ver estación"
+                      >
+                        <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('STATION_EDIT') ? (
+                      <IconButton
+                        onClick={() => handleEditClick(station.id)}
+                        aria-label="Editar estación"
+                      >
+                        <EditIcon sx={{ color: 'primary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('STATION_DELETE') ? (
+                      <IconButton
+                        onClick={() => handleDeleteClick(station.id)}
+                        aria-label="Eliminar estación"
+                      >
+                        <DeleteOutlineIcon sx={{ color: 'error.main' }} />
+                      </IconButton>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               ))}

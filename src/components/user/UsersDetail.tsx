@@ -195,7 +195,7 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} onSuccess={handleEditSuccess} />}
+          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} />}
         </DialogContent>
       </Dialog>
 
