@@ -23,6 +23,8 @@ import AddIcon from '@mui/icons-material/Add'; // Importar ícono para agregar e
 import StationsDetail from '../../components/station/StationDetail'; // Componente para mostrar la tabla de estaciones
 import StationById from '../../components/station/StationById'; // Componente para buscar estación por ID
 import CreateStation from '../../components/station/CreateStation'; // Importar el componente CreateStation
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const StationPages: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -33,6 +35,9 @@ const StationPages: React.FC = () => {
   const [updateTable, setUpdateTable] = useState(false);
 
   const openMenu = Boolean(anchorEl);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -88,12 +93,14 @@ const StationPages: React.FC = () => {
       </Button>
 
       <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
-        <MenuItem onClick={handleToggleStationById}>
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar por ID" />
-        </MenuItem>
+        {isRoot || userPermissions.includes('STATION_VIEW_N') ? (
+          <MenuItem onClick={handleToggleStationById}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Buscar por ID" />
+          </MenuItem>
+        ) : null}
         {showStationById && (
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
@@ -111,12 +118,14 @@ const StationPages: React.FC = () => {
             </IconButton>
           </Box>
         )}
-        <MenuItem onClick={handleOpenCreateStationDialog}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Agregar Estación" />
-        </MenuItem>
+        {isRoot || userPermissions.includes('STATION_ADD') ? (
+          <MenuItem onClick={handleOpenCreateStationDialog}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Agregar Estación" />
+          </MenuItem>
+        ) : null}
       </Menu>
 
       <Dialog open={openStationDialog} onClose={handleCloseStationDialog} fullWidth maxWidth="md">
@@ -139,12 +148,19 @@ const StationPages: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openCreateStationDialog} onClose={handleCloseCreateStationDialog} fullWidth maxWidth="md">
+      <Dialog
+        open={openCreateStationDialog}
+        onClose={handleCloseCreateStationDialog}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Agregar Estación</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          <CreateStation onStationCreated={handleSuccessCreate} onCancel={handleCloseCreateStationDialog} />
+          <CreateStation
+            onStationCreated={handleSuccessCreate}
+            onCancel={handleCloseCreateStationDialog}
+          />
         </DialogContent>
-        
       </Dialog>
 
       <Paper style={{ padding: '16px' }}>

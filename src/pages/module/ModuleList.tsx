@@ -150,84 +150,92 @@ const ModuleList: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
-      {isRoot || userPermissions.includes('MODULE_VIEW_N') ? (
-        <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+        {isRoot || userPermissions.includes('MODULE_VIEW_N') ? (
           <MenuItem onClick={handleToggleModuleById}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Buscar por ID" />
           </MenuItem>
-          {showModuleById && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese la ID del módulo"
-                type="number"
-                fullWidth
-                onChange={(e) => setModuleId(Number(e.target.value))}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSearchModuleById}
-                style={{ marginLeft: '8px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        ) : null}
+        {showModuleById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese la ID del módulo"
+              type="number"
+              fullWidth
+              onChange={(e) => setModuleId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchModuleById}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+        {isRoot || userPermissions.includes('MODULE_VIEW_N') ? (
           <MenuItem onClick={handleToggleModuleByCode}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Buscar por Código" />
           </MenuItem>
-          {showModuleByCode && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese el código del módulo"
-                fullWidth
-                onChange={(e) => setidModule(e.target.value)}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSearchModuleByCode}
-                style={{ marginLeft: '8px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        ) : null}
+        {showModuleByCode && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese el código del módulo"
+              fullWidth
+              onChange={(e) => setidModule(e.target.value)}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchModuleByCode}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        {isRoot || userPermissions.includes('MODULE_EDIT') ? (
           <MenuItem onClick={handleToggleEditModuleSearch}>
             <ListItemIcon>
               <EditIcon />
             </ListItemIcon>
             <ListItemText primary="Editar Módulo" />
           </MenuItem>
-          {showEditModuleSearch && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese el ID del módulo para editar"
-                type="number"
-                fullWidth
-                onChange={(e) => setEditModuleId(Number(e.target.value))}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSearchEditModule}
-                style={{ marginLeft: '8px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        ) : null}
+        {showEditModuleSearch && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese el ID del módulo para editar"
+              type="number"
+              fullWidth
+              onChange={(e) => setEditModuleId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchEditModule}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        {isRoot || userPermissions.includes('MODULE_ADD') ? (
           <MenuItem onClick={handleOpenCreateDialog}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="Crear Módulo" />
           </MenuItem>
-        </Menu>
-      ) : null}
+        ) : null}
+      </Menu>
       <Dialog open={openModuleDialog} onClose={handleCloseModuleDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle del Módulo</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>

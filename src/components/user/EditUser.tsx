@@ -22,11 +22,10 @@ const userRepository = new UserRepository(apiService);
 
 interface EditUserProps {
   userId: number;
-  onSuccess: () => void;
   onCancel: () => void;
 }
 
-const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
+const EditUser: React.FC<EditUserProps> = ({ userId, onCancel }) => {
   const [user, setUser] = useState<EUser | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +42,9 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
         if (data && data.admUser) {
           setUser(data);
           console.log(data);
-          
+
           // Extraer los IDs de los roles de moduleList
-          const roleIds = data.moduleList.map((mod: { role: { id: any; }; }) => mod.role.id);
+          const roleIds = data.moduleList.map((mod: { role: { id: any } }) => mod.role.id);
           setSelectedModules(roleIds);
         } else {
           setError('Usuario no encontrado');
@@ -60,10 +59,9 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
         setLoading(false);
       }
     };
-  
+
     fetchUser();
   }, [userId]);
-  
 
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, value, checked } = e.target;
@@ -80,8 +78,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
 
   const handleSubmit = async () => {
     if (user && user.admUser) {
-      setLoading(true), 
-      setError(null);
+      setLoading(true), setError(null);
       setSuccess(false);
       setSuccessMessage(null);
 
@@ -89,25 +86,24 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
         await userRepository.editUser(user.admUser);
         setSuccess(true);
         setSuccessMessage('Usuario actualizado de manera exitosa!');
-        
+
         Swal.fire({
           title: '¡Éxito!',
           text: 'El Usuario ha sido editado exitosamente.',
           icon: 'success',
-          confirmButtonText: 'Aceptar'
-      });
-      onSuccess();
+          confirmButtonText: 'Aceptar',
+        });
       } catch (err: any) {
         onCancel();
         console.error('Error al actualizar el Usuario', err);
         const errorMessage = err || 'Hubo un problema al editar el Usuario.';
-    
+
         Swal.fire({
           title: 'Error',
           text: errorMessage,
           icon: 'error',
-          confirmButtonText: 'Aceptar'
-      });
+          confirmButtonText: 'Aceptar',
+        });
       } finally {
         setLoading(false);
       }
@@ -122,7 +118,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
     return <Typography variant="body1">No se pudo cargar el usuario.</Typography>;
   }
 
-  const admUser = {...user.admUser};
+  const admUser = { ...user.admUser };
   return (
     <Card>
       <CardContent style={{ paddingBottom: 0 }}>
@@ -191,11 +187,7 @@ const EditUser: React.FC<EditUserProps> = ({ userId, onCancel, onSuccess }) => {
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              onClick={() => setIsModalOpen(true)}
-              color="primary"
-            >
+            <Button variant="contained" onClick={() => setIsModalOpen(true)} color="primary">
               Gestionar Módulos
             </Button>
           </Grid>

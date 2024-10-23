@@ -159,11 +159,11 @@ const UsersDetail: React.FC = () => {
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                     ) : null} 
-                    {isRoot || userPermissions.includes('ADMUSER_DELETE') ? (
+                    {/* {isRoot || userPermissions.includes('ADMUSER_DELETE') ? (
                     <IconButton onClick={() => handleDeleteClick(user.id)}>
                       <DeleteIcon sx={{ color: 'error.main' }} />
                     </IconButton>
-                  ) : null}
+                  ) : null} */}
                   </TableCell>
                 </TableRow>
               ))}
@@ -195,7 +195,7 @@ const UsersDetail: React.FC = () => {
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} onSuccess={handleEditSuccess} />}
+          {editUserId && <EditUser userId={editUserId} onCancel={handleCloseEditDialog} />}
         </DialogContent>
       </Dialog>
 

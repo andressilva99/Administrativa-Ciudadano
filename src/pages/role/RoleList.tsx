@@ -1,25 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SearchIcon from '@mui/icons-material/Search';
 import {
-  Button,
-  TextField,
   Box,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
-import RoleTable from '../../components/Role/RoleDetail';
-import RoleById from '../../components/role/RoleById';
-import AddRole from '../../components/role/AddRole';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import RoleTable from '../../components/Role/RoleDetail';
+import AddRole from '../../components/role/AddRole';
+import RoleById from '../../components/role/RoleById';
 import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const RoleList: React.FC = () => {
@@ -105,42 +105,45 @@ const RoleList: React.FC = () => {
         <MoreVertIcon style={{ marginRight: '8px' }} />
         Acciones
       </Button>
-      {isRoot || userPermissions.includes('ADMROLE_VIEW_N') ? (
-        <Menu
-          id="action-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          ref={menuRef} // Referencia al menú
-        >
+      <Menu
+        id="action-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        ref={menuRef} // Referencia al menú
+      >
+        {isRoot || userPermissions.includes('ADMROLE_VIEW_N') ? (
           <MenuItem onClick={handleSearchById}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Buscar por ID" />
           </MenuItem>
-          {showSearchById && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese la ID del módulo"
-                type="number"
-                fullWidth
-                onChange={(e) => setRoleId(Number(e.target.value))}
-              />
-              <IconButton color="primary" onClick={handleSearchRole} style={{ marginLeft: '8px' }}>
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        ) : null}
+        {showSearchById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese la ID del módulo"
+              type="number"
+              fullWidth
+              onChange={(e) => setRoleId(Number(e.target.value))}
+            />
+            <IconButton color="primary" onClick={handleSearchRole} style={{ marginLeft: '8px' }}>
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        {isRoot || userPermissions.includes('ADMROLE_ADD') ? (
           <MenuItem onClick={handleAddRole}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="Agregar Rol" />
           </MenuItem>
-        </Menu>
-      ) : null}
+        ) : null}
+      </Menu>
       <Dialog open={showRoleDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Rol</DialogTitle>
         <DialogContent>{roleId !== null && <RoleById id={roleId} />}</DialogContent>

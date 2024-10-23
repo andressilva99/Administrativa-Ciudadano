@@ -140,73 +140,77 @@ const UsersList: React.FC = () => {
         Acciones
       </Button>
 
-      {isRoot || userPermissions.includes('ADMUSER_VIEW_N') ? (
-        <Menu
-          id="action-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          ref={menuRef}
-        >
+      <Menu
+        id="action-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        ref={menuRef}
+      >
+        {isRoot || userPermissions.includes('ADMUSER_VIEW_N') ? (
           <MenuItem onClick={handleSearchById}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Buscar por ID" />
           </MenuItem>
+        ) : null}
 
-          {showSearchById && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese la ID del usuario"
-                type="number"
-                fullWidth
-                onChange={(e) => setUserId(Number(e.target.value))}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSearchUserById}
-                style={{ marginLeft: '8px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        {showSearchById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese la ID del usuario"
+              type="number"
+              fullWidth
+              onChange={(e) => setUserId(Number(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchUserById}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
 
+        {isRoot || userPermissions.includes('ADMUSER_VIEW_N') ? (
           <MenuItem onClick={handleSearchByDni}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Buscar por DNI" />
           </MenuItem>
+        ) : null}
 
-          {showSearchByDni && (
-            <Box display="flex" alignItems="center" marginLeft="16px">
-              <TextField
-                label="Ingrese el DNI del usuario"
-                type="text"
-                fullWidth
-                onChange={(e) => setDni(e.target.value)}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSearchUserByDni}
-                style={{ marginLeft: '8px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
+        {showSearchById && (
+          <Box display="flex" alignItems="center" marginLeft="16px">
+            <TextField
+              label="Ingrese el DNI del usuario"
+              type="text"
+              fullWidth
+              onChange={(e) => setDni(e.target.value)}
+            />
+            <IconButton
+              color="primary"
+              onClick={handleSearchUserByDni}
+              style={{ marginLeft: '8px' }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
 
+        {isRoot || userPermissions.includes('ADMUSER_ADD') ? (
           <MenuItem onClick={handleAddUser}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="Agregar Usuario" />
           </MenuItem>
-        </Menu>
-      ) : null}
+        ) : null}
+      </Menu>
 
       <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Usuario</DialogTitle>
