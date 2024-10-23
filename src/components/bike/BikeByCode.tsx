@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import { IBike } from '../../core/entities/bike/IBike';
 import { findByCodeBikeUseCase } from '../../core/bike/usecases/findCode.bike.usecases';
+import Swal from 'sweetalert2';
+import { BikeByCodeProps } from '../../core/entities/bike/IBike';
 
-interface BikeByCodeProps {
-  identificationCode: string;
-}
 
-const BikeByCode: React.FC<BikeByCodeProps> = ({ identificationCode }) => {
+
+const BikeByCode: React.FC<BikeByCodeProps> = ({ identificationCode, onCancel }) => {
   const [bike, setBike] = useState<IBike | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,10 +29,14 @@ const BikeByCode: React.FC<BikeByCodeProps> = ({ identificationCode }) => {
       } catch (error) {
         console.error('Error fetching bike:', error);
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('Unknown error occurred');
-        }
+          Swal.fire({
+            title: 'Bici no encontrada',
+            text: 'No se encontró la bici con el CÓDIGO proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancel();
+        } 
       } finally {
         setLoading(false);
       }

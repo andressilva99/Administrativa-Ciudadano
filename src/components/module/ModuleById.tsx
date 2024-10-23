@@ -7,6 +7,7 @@ import { Typography, CircularProgress,Table,
 import { ByIdModule, ModuleByIdProps } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository';
 import { ApiService } from '../../infrastructure/http/ApiService';
+import Swal from 'sweetalert2'; 
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -21,7 +22,7 @@ const fetchModulesById = async (id: number): Promise<ByIdModule> => {
   }
 };
 
-const ModuleById: React.FC<ModuleByIdProps> = ({ id }) => {
+const ModuleById: React.FC<ModuleByIdProps> = ({ id, onCancel }) => {
   const [module, setModule] = useState<ByIdModule | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +34,14 @@ const ModuleById: React.FC<ModuleByIdProps> = ({ id }) => {
         setModule(data);
       } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unknown error occurred');
-        }
+          Swal.fire({
+            title: 'Módulo no encontrado',
+            text: 'No se encontró el módulo con el ID proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancel();
+        } 
       } finally {
         setLoading(false);
       }

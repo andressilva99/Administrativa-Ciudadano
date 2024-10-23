@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Typography, CircularProgress, Table, TableBody, TableRow, TableCell, TableContainer, TableHead } from '@mui/material';
 import { findByIdBikeUseCase } from '../../core/bike/usecases/findId.bike.usecases';
 import { ByIdBike, BikeByIdProps } from '../../core/entities/bike/IBike';
+import Swal from 'sweetalert2';
 
-const BikeById: React.FC<BikeByIdProps> = ({ id }) => {
+const BikeById: React.FC<BikeByIdProps> = ({ id, onCancel}) => {
   const [bike, setBike] = useState<ByIdBike | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,9 +16,13 @@ const BikeById: React.FC<BikeByIdProps> = ({ id }) => {
         setBike(data);
       } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unknown error occurred');
+          Swal.fire({
+            title: 'Bici no encontrada',
+            text: 'No se encontró la bici con el ID proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancel();
         }
       } finally {
         setLoading(false);

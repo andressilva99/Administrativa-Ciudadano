@@ -6,6 +6,7 @@ import { StationUserForm } from '../../components/stationUser/StationUserForm';
 import { editStationUserUseCase } from '../../core/stationUser/usecase/edit.stationUser.usecase';
 import { findByIdStationUserUseCase } from '../../core/stationUser/usecase/findId.stationUser.usecase';
 import { IStationUserData, IUserStationData } from '../../core/entities/stationUser/IStationuser';
+import Swal from 'sweetalert2';
 
 const StationUserEdit = () => {
   const { id } = useParams<{ id: string }>(); 
@@ -52,9 +53,23 @@ const StationUserEdit = () => {
     try {
       await editStationUserUseCase.execute(updatedStationUserData.id, editingUser.idAdmUser);
       setSuccess('Usuario por estación actualizado con éxito');
-    } catch (err) {
-      console.error('Error al actualizar el usuario por estación', err);
-      setError('Ocurrió un error al actualizar el usuario por estación');
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Usuario por estación ha sido actualizado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });
+    } catch (err: any) {
+      
+      console.error('Error al actualizar el Usuario por Estación', err);
+      const errorMessage = err || 'Error al actualizar el Usuario por Estación.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

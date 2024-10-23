@@ -11,6 +11,7 @@ import {
 import { addStationUseCase } from "../../core/station/usecases/add.station.usecases";
 import { AStation } from "../../core/entities/station/IStation";
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 interface CreateStationProps {
   onStationCreated: () => void;
@@ -126,14 +127,23 @@ const CreateStation: React.FC<CreateStationProps> = ({ onStationCreated, onCance
           horariosSemana: [],
         },
       });
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error creando estación', err.message);
-        setError(err.message);
-      } else {
-        console.error('Error desconocido al crear estación', err);
-        setError('Ocurrió un error desconocido');
-      }
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Estación ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });;
+    } catch (err : any) {
+      onCancel();
+      console.error('Error al crear la Estación', err);
+      const errorMessage = err || 'Hubo un problema al crear la Estación.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

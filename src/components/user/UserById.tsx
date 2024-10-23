@@ -5,12 +5,14 @@ import { FindUsersById } from '../../core/use-cases/user/FindUserById';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import { CustomError } from '../../core/errors/CustomError';
+import Swal from 'sweetalert2';
 
 interface UserByIdProps {
     id: number,
+    onCancel: () => void;
 }
 
-const UserById: React.FC<UserByIdProps> = ({ id }) => {
+const UserById: React.FC<UserByIdProps> = ({ id, onCancel}) => {
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState<boolean>(true); 
     const [error, setError] = useState<string | null>(null);
@@ -23,13 +25,25 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
             try {
                 const findById = new FindUsersById(userRepository);
                 const data = await findById.findUsersById(id);
-                setUser(data);
-            } catch (err) {
-                if (err instanceof CustomError) {
-                    setError(err.message);
-                } else {
-                    setError('Error desconocido para encontrar el usuario');
-                }
+                if (!data || !data.admUser) {
+                  onCancel();
+                  Swal.fire({
+                      title: 'Usuario no encontrado',
+                      text: 'No se encontró un usuario con ese ID.',
+                      icon: 'warning',
+                      confirmButtonText: 'Aceptar'
+                  });
+              } else {
+                  setUser(data);
+              }
+          } catch (err) {              
+              onCancel();
+              Swal.fire({
+                  title: 'Usuario no encontrado',
+                  text: 'No se encontró un usuario con ese ID.',
+                  icon: 'warning',
+                  confirmButtonText: 'Aceptar'
+              });
             } finally {
                 setLoading(false);
             }
@@ -43,11 +57,11 @@ const UserById: React.FC<UserByIdProps> = ({ id }) => {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div> {error}</div>;
     }
 
     if(!user || !user.admUser) {
-        return <div>No se encontro un usario con ese ID</div>;
+        return <div>No se encontro un usuario con ese ID</div>;
     }
     
     const admUser = user.admUser;

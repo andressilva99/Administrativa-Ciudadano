@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { addBikeUseCase } from "../../core/bike/usecases/add.bike.usecases";
 import { ABike } from "../../core/entities/bike/IBike";
+import Swal from "sweetalert2";
 
 interface CreateBikeProps {
   onBikeCreated: () => void;
@@ -49,14 +50,23 @@ const CreateBike: React.FC<CreateBikeProps> = ({ onBikeCreated, onCancel }) => {
         idCurrentStation: 0,
         idGpsDeviceCurrent: 0,
       });
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error creando bicicleta', err.message);
-        setError(err.message);
-      } else {
-        console.error('Error desconocido al crear bicicleta', err);
-        setError('Ocurrió un error desconocido');
-      }
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Bici ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });;
+    } catch (err : any) {
+      onCancel();
+      console.error('Error al crear la Bici', err);
+      const errorMessage = err || 'Hubo un problema al crear la Bici.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

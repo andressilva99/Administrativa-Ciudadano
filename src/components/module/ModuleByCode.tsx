@@ -6,6 +6,7 @@ import { Typography, CircularProgress, TableBody,
 import { ByCodeModule, ModuleDetailProps } from '../../core/entities/module/IModule';
 import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository'; // Asegúrate de importar la clase implementada del repositorio
 import { ApiService } from '../../infrastructure/http/ApiService';
+import Swal from 'sweetalert2'; 
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -19,7 +20,7 @@ const fetchModulesByCode = async (code: string) => {
   }
 };
 
-const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
+const ModuleByCode: React.FC<ModuleDetailProps> = ({ code, onCancell }) => {
   const [module, setModule] = useState<ByCodeModule | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,9 +33,13 @@ const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
       } catch (error) {
         console.error('Error fetching module:', error);
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('Unknown error occurred');
+          Swal.fire({
+            title: 'Módulo no encontrado',
+            text: 'No se encontró el módulo con el CÓDIGO proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancell();
         }
       } finally {
         setLoading(false);

@@ -17,8 +17,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import RoleTable from '../../components/Role/RoleDetail';
-import RoleById from '../../components/role/RoleById';
-import AddRole from '../../components/role/AddRole';
+import RoleById from '../../components/Role/RoleById';
+import AddRole from '../../components/Role/AddRole';
 import { useSelector } from 'react-redux';
 import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
@@ -61,6 +61,8 @@ const RoleList: React.FC = () => {
     setShowAddRole(false);
     setShowRoleDetails(false);
     setRoleId(null);
+    setAnchorEl(null);
+    setShowSearchById(false);    
   };
 
   const handleRoleAdded = () => {
@@ -74,6 +76,10 @@ const RoleList: React.FC = () => {
       setShowRoleDetails(true);
     }
   };
+
+  
+
+  
 
   // Manejo de clic fuera del menú
   useEffect(() => {
@@ -143,7 +149,7 @@ const RoleList: React.FC = () => {
       ) : null}
       <Dialog open={showRoleDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Rol</DialogTitle>
-        <DialogContent>{roleId !== null && <RoleById id={roleId} />}</DialogContent>
+        <DialogContent>{roleId !== null && <RoleById id={roleId} onCancel={handleCancel}/>}</DialogContent>
         <DialogActions>
           <Button onClick={handleCancel} color="secondary">
             Salir

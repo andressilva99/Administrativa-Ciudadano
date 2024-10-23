@@ -4,7 +4,6 @@ import { ApiService } from "../../infrastructure/http/ApiService";
 import { UserRepository } from "../../infrastructure/repository/UserRepository";
 import { IUserAdd } from "../../core/entities/user/IUser";
 import { RegisterUser } from "../../core/use-cases/user/RegisterUser";
-import { CustomError } from "../../core/errors/CustomError";
 import Swal from 'sweetalert2';
 
 interface AddUserProps {

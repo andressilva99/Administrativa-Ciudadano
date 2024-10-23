@@ -5,6 +5,7 @@ import { PenaltyForm } from '../../components/penalty/PenaltyForm';
 import { IPenaltyEdit } from '../../core/entities/penalty/IPentalty';
 import { editPenaltyUseCase } from '../../core/penalty/usecases/edit.penalty.usecase';
 import { findByIdPenaltyUseCase } from '../../core/penalty/usecases/findId.penaltys.usecase';
+import Swal from 'sweetalert2';
 
 const PenaltyEdit = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,8 +32,11 @@ const PenaltyEdit = () => {
         };
 
         setPenaltyData(penaltyToEdit);
-      } catch (err) {
-        setError('Error al cargar los datos de la penalización');
+        
+      } catch (err: any) {
+       
+        console.error('Error al actualizar La Penalización', err);
+        
       } finally {
         setLoading(false);
       }
@@ -49,9 +53,23 @@ const PenaltyEdit = () => {
     try {
       await editPenaltyUseCase.execute(updatedPenaltyData);
       setSuccess('Penalización actualizada con éxito');
-    } catch (err) {
-      console.error('Error al actualizar la penalización', err);
-      setError('Ocurrió un error al actualizar la penalización');
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Penalización ha sido editado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+    } catch (err: any) {
+       
+      console.error('Error al actualizar La Penalización', err);
+      const errorMessage = err || 'Hubo un problema al editar La Penalización.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

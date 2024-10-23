@@ -15,8 +15,7 @@ import {
   Table,
   TableBody,
   TableContainer,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
@@ -69,12 +68,12 @@ const BikePages: React.FC = () => {
     }
   };
 
-  const handleToggleEditBikeSearch = () => {
-    setShowEditBikeSearch((prev) => !prev);
-    if (showEditBikeSearch) {
-      setEditBikeId(null);
-    }
-  };
+  // const handleToggleEditBikeSearch = () => {
+  //   setShowEditBikeSearch((prev) => !prev);
+  //   if (showEditBikeSearch) {
+  //     setEditBikeId(null);
+  //   }
+  // };
 
   const handleSearchBikeById = () => {
     setOpenBikeDialog(true);
@@ -104,11 +103,19 @@ const BikePages: React.FC = () => {
   const handleCloseBikeDialog = () => {
     setOpenBikeDialog(false);
     setBikeId(null);
+    setAnchorEl(null);
+    setShowBikeById(false);
+    setShowBikeByCode(false);
+    setShowEditBikeSearch(false);
   };
 
   const handleCloseBikeByCodeDialog = () => {
     setOpenBikeByCodeDialog(false);
     setBikeCode(null);
+    setAnchorEl(null);
+    setShowBikeById(false);
+    setShowBikeByCode(false);
+    setShowEditBikeSearch(false);
   };
 
   const handleCloseEditBikeDialog = () => {
@@ -182,12 +189,12 @@ const BikePages: React.FC = () => {
           </Box>
         )}
 
-        <MenuItem onClick={handleToggleEditBikeSearch}>
+        {/* <MenuItem onClick={handleToggleEditBikeSearch}>
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
           <ListItemText primary="Editar Bicicleta por ID" />
-        </MenuItem>
+        </MenuItem> */}
         {showEditBikeSearch && (
           <Box display="flex" alignItems="center" marginLeft="16px">
             <TextField
@@ -219,12 +226,12 @@ const BikePages: React.FC = () => {
 
       <Dialog open={openBikeDialog} onClose={handleCloseBikeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle de la Bicicleta por ID</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {bikeId !== null && (
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <BikeById id={bikeId} />
+                  <BikeById id={bikeId} onCancel={handleCloseBikeDialog}/>
                 </TableBody>
               </Table>
             </TableContainer>
@@ -239,12 +246,12 @@ const BikePages: React.FC = () => {
 
       <Dialog open={openBikeByCodeDialog} onClose={handleCloseBikeByCodeDialog} fullWidth maxWidth="md">
         <DialogTitle>Detalle de la Bicicleta por Código</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ paddingBottom: 0 }}>
           {bikeCode && (
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <BikeByCode identificationCode={bikeCode} />
+                  <BikeByCode identificationCode={bikeCode} onCancel={handleCloseBikeByCodeDialog}/>
                 </TableBody>
               </Table>
             </TableContainer>
@@ -259,7 +266,7 @@ const BikePages: React.FC = () => {
 
       <Dialog open={openEditBikeDialog} onClose={handleCloseEditBikeDialog} fullWidth maxWidth="md">
   <DialogTitle>Editar Bicicleta</DialogTitle>
-  <DialogContent>
+  <DialogContent style={{ paddingBottom: 0 }}>
     {editBikeId !== null && (
       <EditBike
         idBicycle={editBikeId}

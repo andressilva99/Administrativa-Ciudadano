@@ -20,9 +20,17 @@ export class RoleRepository implements IRoleRepository {
         `/adm-main/role/find?module_code=${idModule}&page=${page}&size=${size}`,
       );
       return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al obtener roles');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el rol");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el rol', error);
+      }
+      throw new Error('Error al buscar el rol');
     }
   }
 
@@ -30,9 +38,17 @@ export class RoleRepository implements IRoleRepository {
     try {
       const response = await this._api.get(`/adm-main/role/${id}`);
       return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al obtener rol por id');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el rol");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el rol', error);
+      }
+      throw new Error('Error al buscar el rol');
     }
   }
 

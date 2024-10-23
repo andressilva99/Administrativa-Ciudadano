@@ -159,11 +159,11 @@ const UsersDetail: React.FC = () => {
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
                     ) : null} 
-                    {isRoot || userPermissions.includes('ADMUSER_DELETE') ? (
+                    {/* {isRoot || userPermissions.includes('ADMUSER_DELETE') ? (
                     <IconButton onClick={() => handleDeleteClick(user.id)}>
                       <DeleteIcon sx={{ color: 'error.main' }} />
                     </IconButton>
-                  ) : null}
+                  ) : null} */}
                   </TableCell>
                 </TableRow>
               ))}

@@ -17,8 +17,16 @@ export class UserRepository implements IUserRepository {
       );
       return response.data;
     } catch (error: any) {
-      console.log(error);
-      throw new CustomError('Error al obtener los usuarios', error.response?.status);
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el usuario");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el usuario', error);
+      }
+      throw new Error('Error al buscar el usuario');
     }
   }
 
@@ -27,8 +35,16 @@ export class UserRepository implements IUserRepository {
       const response = await this._api.get(`/adm-main/admuser/${id}`);
       return response.data;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Este ID no corresponde a ningún usuario o no es válido'; 
-      throw new CustomError(message, error.response?.status);
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el usuario");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el usuario', error);
+      }
+      throw new Error('Error al buscar el usuario');
     }
   }
   
@@ -36,18 +52,34 @@ export class UserRepository implements IUserRepository {
     try {
       const response = await this._api.get(`/adm-main/admuser/find?dni=${dni}`);
       return response.data;
-    } catch (error : any) {
-      const message = error.response?.data?.message || "Error al encontrar el usario";
-      throw new CustomError(message, error.response?.status);
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el usuario");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el usuario', error);
+      }
+      throw new Error('Error al buscar el usuario');
     }
   }
 
   async registerUser(user: IUserAdd): Promise<void> {
     try {
       await this._api.post('/adm-main/admuser/register', user);
-    } catch (error : any) {
-      const message = error.response?.data?.message || "Error al registrar el usario";
-      throw new CustomError(message, error.response?.status);
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al registrar el usuario");
+        
+      } else {
+        // Error no específico
+        console.error('Error al registrar el usuario', error);
+      }
+      throw new Error('Error al registrar el usuario');
     }
   }
 

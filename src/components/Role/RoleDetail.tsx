@@ -173,7 +173,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ updateTable }) => {
                         <EditIcon sx={{ color: 'primary.main' }} />
                       </IconButton>
                     ) : null}
-                    {isRoot || userPermissions.includes('ADMROLE_DELETE') ? (
+                    {isRoot || userPermissions.includes('ADMROLE_ADD') ? (
                       <IconButton onClick={() => handleCopyClick(role)}>
                         <FileCopyIcon sx={{ color: 'primary.main' }} />
                       </IconButton>

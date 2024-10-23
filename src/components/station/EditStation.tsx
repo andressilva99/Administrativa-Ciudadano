@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { EditStationProps, EStation } from '../../core/entities/station/IStation';
 import { stationService } from '../../core/station/service/station.service';
+import Swal from 'sweetalert2';
 
 const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSuccess }) => {
   const [station, setStation] = useState<EStation | null>(null);
@@ -121,9 +122,23 @@ const EditStation: React.FC<EditStationProps> = ({ idStation, onCancel, onSucces
         await stationService.editStation(payload);
         setSuccess(true);
         onSuccess();
-      } catch (err) {
-        console.error('Error updating station', err);
-        setError('Error updating station');
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'La Estación ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar la Estación', err);
+        const errorMessage = err || 'Hubo un problema al editar la Estación.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

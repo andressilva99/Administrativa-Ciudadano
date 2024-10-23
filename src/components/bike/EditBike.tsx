@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { EditBikeProps, EBike } from '../../core/entities/bike/IBike';
 import { BikeService } from '../../core/bike/service/bike.service';
+import Swal from 'sweetalert2';
 
 const bikeService = new BikeService();
 
@@ -74,14 +75,23 @@ const EditBike: React.FC<EditBikeProps> = ({ idBicycle, onCancel, onSuccess }) =
         await bikeService.editBike(payload);
         setSuccess(true);
         onSuccess();
-      } catch (err) {
-        if (typeof err === "string") {
-          console.error('Error updating bike', err);
-          setError(err);
-        } else {
-          console.error('Unknown error updating bike', err);
-          setError('Unknown error occurred');
-        }
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'La Bici ha sido editado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+      });
+      } catch (err: any) {
+        onCancel();
+        console.error('Error al actualizar el Módulo', err);
+        const errorMessage = err || 'Hubo un problema al editar el Módulo.';
+    
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+      });
       } finally {
         setLoading(false);
       }

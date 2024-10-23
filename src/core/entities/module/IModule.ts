@@ -63,7 +63,8 @@ export interface ByIdModule {
   };
 }
 export interface ModuleByIdProps {
-    id: number;
+    id: number,
+    onCancel: () => void;
 }
 //ByCode
 export interface ByCodeModule {
@@ -80,7 +81,8 @@ export interface ByCodeModule {
     };
 }
 export interface ModuleDetailProps {
-    code: string;
+    code: string, 
+    onCancell: () => void;
 }
 //ADD 
 export interface AModule {

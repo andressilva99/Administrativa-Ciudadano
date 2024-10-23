@@ -23,9 +23,17 @@ export class PenaltyService extends ApiService {
       );
 
       return response.data;
-    } catch (err: any) {
-      console.error(err);
-      throw err;
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar la penalización");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar la penalización', error);
+      }
+      throw new Error('Error al buscar la penalización');
     }
   }
 
@@ -34,9 +42,17 @@ export class PenaltyService extends ApiService {
       const response = await this.get<IPenaltyData>(`${this._uri}/${id}`);
 
       return response.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar la penalización");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar la penalización', error);
+      }
+      throw new Error('Error al buscar la penalización');
     }
   }
 
@@ -45,9 +61,17 @@ export class PenaltyService extends ApiService {
       const response = await this.post<IPenaltyAdd>(`${this._uri}/`, penaltyData);
 
       return response.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al registrar la penalización");
+        
+      } else {
+        // Error no específico
+        console.error('Error al registrar la penalización', error);
+      }
+      throw new Error('Error al registrar la penalización');
     }
   }
   
@@ -56,9 +80,17 @@ export class PenaltyService extends ApiService {
       const response = await this.put<IPenaltyEdit>(`${this._uri}/`, penaltyData);
 
       return response.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al editar la penalización");
+        
+      } else {
+        // Error no específico
+        console.error('Error al editar la penalización', error);
+      }
+      throw new Error('Error al editar la penalización');
     }
   }
 }

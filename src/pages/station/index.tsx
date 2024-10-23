@@ -64,6 +64,10 @@ const StationPages: React.FC = () => {
   const handleCloseStationDialog = () => {
     setOpenStationDialog(false);
     setStationId(null);
+    setShowStationById((prev) => !prev);
+    if (showStationById) {
+      setStationId(null);
+    }
   };
 
   const handleCloseCreateStationDialog = () => {
@@ -126,7 +130,7 @@ const StationPages: React.FC = () => {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <StationById id={stationId} />
+                  <StationById id={stationId} onCancel={handleCloseStationDialog} />
                 </TableBody>
               </Table>
             </TableContainer>

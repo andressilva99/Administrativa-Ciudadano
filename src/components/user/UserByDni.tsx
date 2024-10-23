@@ -4,13 +4,15 @@ import { IUser } from '../../core/entities/user/IUser';
 import { FindUsersByDni } from '../../core/use-cases/user/FindUserByDni';
 import { ApiService } from '../../infrastructure/http/ApiService';
 import { UserRepository } from '../../infrastructure/repository/UserRepository';
-import { CustomError } from '../../core/errors/CustomError';
+import Swal from 'sweetalert2';
+
 
 interface UserByDniProps {
     dni: string,
+    onCancel: () => void;
 }
 
-const UserByDni: React.FC<UserByDniProps> = ({ dni }) => {
+const UserByDni: React.FC<UserByDniProps> = ({ dni, onCancel }) => {
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -23,13 +25,26 @@ const UserByDni: React.FC<UserByDniProps> = ({ dni }) => {
             try {
                 const findByDni = new FindUsersByDni(userRepository);
                 const data = await findByDni.findUsersByDni(dni);
-                setUser(data);
-            } catch (err) {
-                if (err instanceof CustomError) {
-                    setError(err.message);
-                } else {
-                    setError('Error desconocido para encontrar el usuario');
-                }
+                if (!data || !data.list || data.list.length === 0) {
+                  onCancel();
+                  Swal.fire({
+                      title: 'No encontrado',
+                      text: 'No se encontró un usuario con ese DNI.',
+                      icon: 'warning',
+                      confirmButtonText: 'Aceptar'
+                  });
+              } else {
+                  setUser(data);
+              }
+          } catch (err) {
+              console.error('Error al buscar el Usuario', err);
+              onCancel();
+              Swal.fire({
+                  title: 'Error',
+                  text: 'Hubo un problema al buscar el Usuario.',
+                  icon: 'error',
+                  confirmButtonText: 'Aceptar'
+              });
             } finally {
                 setLoading(false);
             }

@@ -84,6 +84,9 @@ const UsersList: React.FC = () => {
     setUserId(null);
     setDni('');
     setSearchType(null);
+    setAnchorEl(null);
+    setShowSearchById(false);
+    setShowSearchByDni(false);
   };
 
   const handleUserAdded = () => {
@@ -94,6 +97,7 @@ const UsersList: React.FC = () => {
     if (userId !== null) {
       setShowUserDetails(true);
     }
+    
   };
 
   const handleSearchUserByDni = () => {
@@ -211,8 +215,8 @@ const UsersList: React.FC = () => {
       <Dialog open={showUserDetails} onClose={handleCancel} maxWidth="md" fullWidth>
         <DialogTitle>Detalles del Usuario</DialogTitle>
         <DialogContent>
-          {searchType === 'id' && userId !== null && <UserById id={userId} />}
-          {searchType === 'dni' && dni && <UserByDni dni={dni} />}
+          {searchType === 'id' && userId !== null && <UserById id={userId} onCancel={handleCancel} />}
+          {searchType === 'dni' && dni && <UserByDni dni={dni} onCancel={handleCancel}/>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel} color="secondary">
@@ -237,7 +241,7 @@ const UsersList: React.FC = () => {
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent>
           {searchType === 'id' && userId !== null && (
-            <EditUser userId={userId} onCancel={handleCloseEditUserModal} />
+            <EditUser userId={userId} onCancel={handleCloseEditUserModal} onSuccess={handleCloseEditUserModal}/>
           )}
         </DialogContent>
       </Dialog>

@@ -4,6 +4,7 @@ import { PenaltyForm } from '../../components/penalty/PenaltyForm';
 import { IPenaltyAdd } from '../../core/entities/penalty/IPentalty';
 import { CustomError } from '../../core/errors/CustomError';
 import { addPenaltyUseCase } from '../../core/penalty/usecases/add.penalty.usecase';
+import Swal from 'sweetalert2';
 
 const PenaltyNew = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,13 +26,23 @@ const PenaltyNew = () => {
 
     try {
       await addPenaltyUseCase.execute(penaltyData);
-      setSuccess('Nueva penalización creada con éxito!');
+      setSuccess('');
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Penalización ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'})
     } catch (err: any) {
-      if (err instanceof CustomError) {
-        setError(err.message);
-      } else {
-        setError('Ocurrió un error inesperado al crear la penalización.');
-      }
+      
+      console.error('Error al crear la Penalización', err);
+      const errorMessage = err || 'Hubo un problema al crear la Penalización.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

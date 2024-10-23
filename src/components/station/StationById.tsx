@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import { findByIdStationUseCase } from '../../core/station/usecases/findId.station.usecase';
 import { ByIdStation } from '../../core/entities/station/IStation';
+import Swal from 'sweetalert2';
 
 interface StationByIdProps {
-  id: number; // Propiedad que recibirá el ID de la estación
+  id: number,
+  onCancel: () => void;
 }
 
-const StationById: React.FC<StationByIdProps> = ({ id }) => {
+const StationById: React.FC<StationByIdProps> = ({ id, onCancel }) => {
   const [station, setStation] = useState<ByIdStation | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,10 +30,14 @@ const StationById: React.FC<StationByIdProps> = ({ id }) => {
         setStation(data);
       } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unknown error occurred');
-        }
+          Swal.fire({
+            title: 'Estación no encontrada',
+            text: 'No se encontró la estación con el ID proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancel();
+        } 
       } finally {
         setLoading(false);
       }

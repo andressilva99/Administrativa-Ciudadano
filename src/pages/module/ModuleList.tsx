@@ -76,6 +76,10 @@ const ModuleList: React.FC = () => {
   const handleCloseModuleDialog = () => {
     setOpenModuleDialog(false);
     setModuleId(null);
+    setAnchorEl(null);
+    setShowModuleById(false);
+    setShowModuleByCode(false);
+    setShowEditModuleSearch(false);
   };
 
   const handleToggleModuleByCode = () => {
@@ -98,14 +102,14 @@ const ModuleList: React.FC = () => {
     setidModule('');
   };
 
-  const handleToggleEditModuleSearch = () => {
-    setShowEditModuleSearch((prev) => !prev);
-    setShowModuleById(false);
-    setShowModuleByCode(false);
-    if (showEditModuleSearch) {
-      setEditModuleId(null);
-    }
-  };
+  // const handleToggleEditModuleSearch = () => {
+  //   setShowEditModuleSearch((prev) => !prev);
+  //   setShowModuleById(false);
+  //   setShowModuleByCode(false);
+  //   if (showEditModuleSearch) {
+  //     setEditModuleId(null);
+  //   }
+  // };
 
   const handleSearchEditModule = () => {
     if (editModuleId !== null) {
@@ -130,12 +134,12 @@ const ModuleList: React.FC = () => {
   };
 
   const handleModuleAdded = () => {
-    // Lógica adicional después de agregar un rol
+    
     setUpdateTable((prev) => !prev);
     setOpenCreateDialog(false);
   };
   const handleSuccess = () => {
-    // Lógica después de la actualización exitosa
+   
     handleCloseEditDialog();
   };
 
@@ -197,12 +201,12 @@ const ModuleList: React.FC = () => {
               </IconButton>
             </Box>
           )}
-          <MenuItem onClick={handleToggleEditModuleSearch}>
+          {/* <MenuItem onClick={handleToggleEditModuleSearch}>
             <ListItemIcon>
               <EditIcon />
             </ListItemIcon>
             <ListItemText primary="Editar Módulo" />
-          </MenuItem>
+          </MenuItem> */}
           {showEditModuleSearch && (
             <Box display="flex" alignItems="center" marginLeft="16px">
               <TextField
@@ -235,7 +239,7 @@ const ModuleList: React.FC = () => {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <ModuleById id={moduleId} />
+                  <ModuleById id={moduleId} onCancel={handleCloseModuleDialog} />
                 </TableBody>
               </Table>
             </TableContainer>
@@ -259,7 +263,7 @@ const ModuleList: React.FC = () => {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <ModuleByCode code={idModule} />
+                  <ModuleByCode code={idModule} onCancell={handleCloseModuleByCodeDialog} />
                 </TableBody>
               </Table>
             </TableContainer>

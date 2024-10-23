@@ -15,9 +15,17 @@ export class ModuleRepository implements IModuleRepository {
     try {
       const response = await this._api.get(`/adm-main/module/find?page=${page}&size=${size}`);
       return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al obtener modulos');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el módulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el módule', error);
+      }
+      throw new Error('Error al buscar el módulo');
     }
   }
 
@@ -25,9 +33,17 @@ export class ModuleRepository implements IModuleRepository {
     try {
       const response = await this._api.get(`/adm-main/module/code/${code}`);
       return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al obtener buscar modulo');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el módulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el módule', error);
+      }
+      throw new Error('Error al buscar el módulo');
     }
   }
 
@@ -35,9 +51,17 @@ export class ModuleRepository implements IModuleRepository {
     try {
       const response = await this._api.get(`/adm-main/module/${id}`);
       return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error('Error al obtener modulo por id');
+    } catch (error: any) {
+      if (error) {
+        // Error específico de Axios
+        console.log(error.response.data);
+        throw( error.response.data.message ? error.response.data.message : "Error al buscar el módulo");
+        
+      } else {
+        // Error no específico
+        console.error('Error al buscar el módule', error);
+      }
+      throw new Error('Error al buscar el módulo');
     }
   }
   async editModule(module: EModule): Promise<void> {
@@ -51,7 +75,7 @@ export class ModuleRepository implements IModuleRepository {
         
       } else {
         // Error no específico
-        console.error('Error editing module', error);
+        console.error('Error editar module', error);
       }
       throw new Error('Error al editar el módulo');
     }

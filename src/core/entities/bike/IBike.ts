@@ -34,7 +34,8 @@ export interface ByIdBike {
     tsu: string; 
 }
 export interface BikeByIdProps {
-    id: number;
+    id: number,
+    onCancel: () => void;
 }
 
 //BY CODE
@@ -53,7 +54,8 @@ export interface ByCodeBike {
     tsu: string; 
 }
 export interface BikeByCodeProps {
-    identificationCode: number;
+    identificationCode: string,
+    onCancel: () => void;
 }
 
 //EDIT 

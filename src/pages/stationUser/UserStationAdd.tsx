@@ -6,6 +6,7 @@ import { CustomError } from '../../core/errors/CustomError';
 import { IStationUserData } from '../../core/entities/stationUser/IStationuser';
 import { findByIdStationUserUseCase } from '../../core/stationUser/usecase/findId.stationUser.usecase';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const StationUserAdd = () => {
   const { id } = useParams<{ id: string }>(); 
@@ -44,13 +45,24 @@ const StationUserAdd = () => {
 
     try {
       await addStationUserUseCase.execute(stationUserData.idStation, stationUserData.idAdmUser);
-      setSuccess('Usuario agregado a la estación con éxito!');
-    } catch (err: any) {
-      if (err instanceof CustomError) {
-        setError(err.message);
-      } else {
-        setError('Ocurrió un error inesperado al agregar el usuario.');
-      }
+      setSuccess('');
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'La Estación ha sido creado exitosamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+    });;
+    } catch (err : any) {
+    
+      console.error('Error al crear la Estación', err);
+      const errorMessage = err || 'Hubo un problema al crear la Estación.';
+  
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+    });
     } finally {
       setLoading(false);
     }

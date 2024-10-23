@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {  CircularProgress, Typography,Table,
+import {
+  CircularProgress,
+  Typography,
+  Table,
   TableBody,
   TableRow,
   TableCell,
-  TableContainer, TableHead } from '@mui/material';
+  TableContainer,
+  TableHead,
+} from '@mui/material';
+import Swal from 'sweetalert2'; 
 import { IRole } from '../../core/entities/role/IRole';
 import { FindRoleById } from '../../core/use-cases/role/FindRoleById';
 import { ApiService } from '../../infrastructure/http/ApiService';
@@ -11,6 +17,7 @@ import { RoleRepository } from '../../infrastructure/repository/RoleRepository';
 
 interface RolesByIdProps {
   id: number;
+  onCancel: () => void;
 }
 
 const useRoleById = (id: number) => {
@@ -27,7 +34,7 @@ const useRoleById = (id: number) => {
       try {
         const data = await findById.findRoleById(id);
         setRole(data);
-        console.log('Fetched role:', data); 
+        console.log('Fetched role:', data);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -45,19 +52,35 @@ const useRoleById = (id: number) => {
   return { role, loading, error };
 };
 
-const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
+const RoleById: React.FC<RolesByIdProps> = ({ id, onCancel }) => {
   const { role, loading, error } = useRoleById(id);
 
+  useEffect(() => {
+    if (!loading && !role) {
+      // Si el rol no se encontró, muestra la alerta y cierra el diálogo
+      Swal.fire({
+        title: 'Rol no encontrado',
+        text: 'No se encontró un rol con el ID proporcionado.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+      })
+      onCancel();
+    }
+  }, [loading, role, onCancel]);
+
+  // Si está cargando, muestra el indicador de progreso
   if (loading) {
     return <CircularProgress />;
   }
 
+  // Si hay un error, muéstralo
   if (error) {
     return <div>Error: {error}</div>;
   }
 
+  // Si no hay rol, no renderizamos nada porque el efecto ya maneja el cierre
   if (!role) {
-    return <div>No role found</div>;
+    return null; // Esto ya se maneja en el useEffect
   }
 
   const activePermissions = role.permissionsList.filter(permission => permission.active);
@@ -95,7 +118,7 @@ const RoleById: React.FC<RolesByIdProps> = ({ id }) => {
           <TableRow>
             <TableCell>*DESHABILITADO:</TableCell>
             <TableCell>{role.deleted ? 'Yes' : 'No'}</TableCell>
-          </TableRow>      
+          </TableRow>
           <TableRow>
             <TableCell>*PERMISOS ACTIVOS:</TableCell>
             <TableCell>
