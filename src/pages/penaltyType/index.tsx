@@ -1,9 +1,4 @@
-import {
-  DeleteOutline,
-  EditOutlined,
-  VisibilityOutlined,
-  Add,
-} from '@mui/icons-material';
+import { DeleteOutline, EditOutlined, VisibilityOutlined, Add } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -15,7 +10,7 @@ import {
   IconButton,
   Stack,
   Tooltip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -26,6 +21,8 @@ import { getAllPentalyTypeUseCase } from '../../core/penaltyType/usecase/getall.
 import { useNavigate } from 'react-router';
 import BasicTable from '../../components/common/BasicTable';
 import PenaltyTypesData from '../../components/penaltyType/PenaltyTypeData';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const PenaltyTypePage = () => {
   const [penaltyTypeData, setPenaltyTypeData] = useState<IPenaltyTypeData[]>([]);
@@ -42,6 +39,10 @@ const PenaltyTypePage = () => {
   const [penaltyTypeToDelete, setPenaltyTypeToDelete] = useState<number | null>(null);
 
   const theme = useTheme();
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
+
   const navigate = useNavigate();
 
   const handleEditCLick = (id: number) => {
@@ -98,25 +99,31 @@ const PenaltyTypePage = () => {
         disableSortBy: true,
         Cell: ({ row }: any) => (
           <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-            <Tooltip title="Ver">
-              <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
-                <VisibilityOutlined />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Editar">
-              <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
-                <EditOutlined sx={{ color: theme.palette.primary.main }} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Eliminar">
-              <IconButton
-                color="secondary"
-                sx={{ color: theme.palette.error.main }}
-                onClick={() => handleDeleteClick(row.values.id)}
-              >
-                <DeleteOutline />
-              </IconButton>
-            </Tooltip>
+            {isRoot || userPermissions.includes('PENALTY_TYPE_VIEW_N') ? (
+              <Tooltip title="Ver">
+                <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
+                  <VisibilityOutlined />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {isRoot || userPermissions.includes('PENALTY_TYPE_EDIT') ? (
+              <Tooltip title="Editar">
+                <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
+                  <EditOutlined sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {isRoot || userPermissions.includes('PENALTY_TYPE_DELETE') ? (
+              <Tooltip title="Eliminar">
+                <IconButton
+                  color="secondary"
+                  sx={{ color: theme.palette.error.main }}
+                  onClick={() => handleDeleteClick(row.values.id)}
+                >
+                  <DeleteOutline />
+                </IconButton>
+              </Tooltip>
+            ) : null}
           </Stack>
         ),
       },
@@ -169,23 +176,25 @@ const PenaltyTypePage = () => {
           onRowsPerPageChange={handleRowsPerPageChange}
           loading={loading}
         >
-          <Box
-            sx={{
-              p: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button 
-              variant="contained" 
-              sx={{ ml: 2 }} 
-              onClick={() => navigate('/penaltyType/new')}
-              startIcon={<Add />}
+          {isRoot || userPermissions.includes('PENALTY_TYPE_ADD') ? (
+            <Box
+              sx={{
+                p: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
             >
-              Agregar 
-            </Button>
-          </Box>
+              <Button
+                variant="contained"
+                sx={{ ml: 2 }}
+                onClick={() => navigate('/penaltyType/new')}
+                startIcon={<Add />}
+              >
+                Agregar
+              </Button>
+            </Box>
+          ) : null}
         </BasicTable>
       </Grid>
 

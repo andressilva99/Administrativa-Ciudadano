@@ -1,9 +1,4 @@
-import {
-  EditOutlined,
-  SearchOutlined,
-  VisibilityOutlined,
-  Add,
-} from '@mui/icons-material';
+import { EditOutlined, SearchOutlined, VisibilityOutlined, Add } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -30,6 +25,8 @@ import moment from 'moment';
 import { useNavigate } from 'react-router';
 import BasicTable from '../../components/common/BasicTable';
 import PenaltyData from '../../components/penalty/PenaltyData';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 interface Property {
   name: string;
@@ -59,6 +56,9 @@ const PenaltiesPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const theme = useTheme();
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const navigate = useNavigate();
 
@@ -100,16 +100,20 @@ const PenaltiesPage = () => {
         Cell: ({ row }: any) => {
           return (
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="Ver">
-                <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
-                  <VisibilityOutlined />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Editar">
-                <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
-                  <EditOutlined sx={{ color: theme.palette.primary.main }} />
-                </IconButton>
-              </Tooltip>
+              {isRoot || userPermissions.includes('PENALTY_VIEW_N') ? (
+                <Tooltip title="Ver">
+                  <IconButton color="secondary" onClick={() => handleViewClick(row.values.id)}>
+                    <VisibilityOutlined />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+              {isRoot || userPermissions.includes('PENALTY_EDIT') ? (
+                <Tooltip title="Editar">
+                  <IconButton color="secondary" onClick={() => handleEditCLick(row.values.id)}>
+                    <EditOutlined sx={{ color: theme.palette.primary.main }} />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
             </Stack>
           );
         },
@@ -174,53 +178,57 @@ const PenaltiesPage = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
           loading={loading}
         >
-          <Box
-            sx={{
-              p: 3,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box>
-              <TextField
-                select
-                label="Buscar por"
-                defaultValue=""
-                sx={{ width: '150px', mr: 2 }}
-                value={searchProp.value}
-                onChange={(e) => {
-                  const property = properties.find((prop) => prop.value === e.target.value);
-                  setSearchProp(property!);
-                }}
-              >
-                {properties.map((prop) => (
-                  <MenuItem key={prop.value} value={prop.value}>
-                    {prop.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <OutlinedInput
-                placeholder={`Buscar por ${searchProp.name}`}
-                sx={{ width: '200px' }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <SearchOutlined />
-                  </InputAdornment>
-                }
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Box>
-            <Button 
-              variant="contained" 
-              sx={{ ml: 2 }} 
-              onClick={() => navigate('/penalty/new')}
-              startIcon={<Add />}
+          {isRoot || userPermissions.includes('PENALTY_VIEW_N') ? (
+            <Box
+              sx={{
+                p: 3,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
             >
-              Agregar
-            </Button>
-          </Box>
+              <Box>
+                <TextField
+                  select
+                  label="Buscar por"
+                  defaultValue=""
+                  sx={{ width: '150px', mr: 2 }}
+                  value={searchProp.value}
+                  onChange={(e) => {
+                    const property = properties.find((prop) => prop.value === e.target.value);
+                    setSearchProp(property!);
+                  }}
+                >
+                  {properties.map((prop) => (
+                    <MenuItem key={prop.value} value={prop.value}>
+                      {prop.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <OutlinedInput
+                  placeholder={`Buscar por ${searchProp.name}`}
+                  sx={{ width: '200px' }}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <SearchOutlined />
+                    </InputAdornment>
+                  }
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </Box>
+              {isRoot || userPermissions.includes('PENALTY_ADD') ? (
+                <Button
+                  variant="contained"
+                  sx={{ ml: 2 }}
+                  onClick={() => navigate('/penalty/new')}
+                  startIcon={<Add />}
+                >
+                  Agregar
+                </Button>
+              ) : null}
+            </Box>
+          ) : null}
         </BasicTable>
       </Grid>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

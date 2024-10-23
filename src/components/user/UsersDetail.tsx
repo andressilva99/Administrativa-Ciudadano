@@ -14,8 +14,9 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
-  TableRow,DialogActions,
-  Button
+  TableRow,
+  DialogActions,
+  Button,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { IUser, UserResponse } from '../../core/entities/user/IUser';
@@ -25,6 +26,10 @@ import { UserRepository } from '../../infrastructure/repository/UserRepository';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
 import UserById from './UserById';
+
+//permisos
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const apiService = new ApiService();
 const userRepository = new UserRepository(apiService);
@@ -43,6 +48,9 @@ const UsersDetail: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const getUsers = async () => {
     setLoading(true);
@@ -137,15 +145,21 @@ const UsersDetail: React.FC = () => {
                   <TableCell>{user.dni}</TableCell>
                   <TableCell>{user.phoneNumber}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleViewClick(user.id)}>
-                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
-                    </IconButton>
+                    {isRoot || userPermissions.includes('ADMUSER_VIEW_1') ? (
+                      <IconButton onClick={() => handleViewClick(user.id)}>
+                        <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('ADMUSER_EDIT') ? (
                     <IconButton onClick={() => handleEditClick(user.id)}>
                       <EditIcon sx={{ color: 'primary.main' }} />
                     </IconButton>
+                    ) : null} 
+                    {isRoot || userPermissions.includes('ADMUSER_DELETE') ? (
                     <IconButton onClick={() => handleDeleteClick(user.id)}>
                       <DeleteIcon sx={{ color: 'error.main' }} />
                     </IconButton>
+                  ) : null}
                   </TableCell>
                 </TableRow>
               ))}
@@ -168,10 +182,10 @@ const UsersDetail: React.FC = () => {
           {viewUserId && <UserById id={viewUserId} />}
         </DialogContent>
         <DialogActions>
-    <Button onClick={handleCloseViewDialog} color="secondary">
-      Salir
-    </Button>
-  </DialogActions>
+          <Button onClick={handleCloseViewDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>

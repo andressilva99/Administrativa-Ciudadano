@@ -7,6 +7,7 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import DirectionsBikeOutlinedIcon from '@mui/icons-material/DirectionsBikeOutlined';
 import GavelOutlinedIcon from '@mui/icons-material/GavelOutlined';
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
 
 // project import
@@ -22,6 +23,7 @@ const icons = {
   DirectionsBikeOutlinedIcon,
   GavelOutlinedIcon,
   RoomOutlinedIcon,
+  PersonAddAltOutlinedIcon,
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -136,6 +138,20 @@ const menuItems: { items: NavItemType[] } = {
           title: 'Estaciones',
           icon: icons.RoomOutlinedIcon,
           url: '/station',
+          permission: 'STATION_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-stationUser',
+      type: 'group',
+      children: [
+        {
+          id: 'stationUser',
+          type: 'item',
+          title: 'Usuarios por Estación',
+          icon: icons.PersonAddAltOutlinedIcon,
+          url: '/stationUser',
           permission: 'STATION_VIEW_N',
         },
       ],

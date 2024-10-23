@@ -15,7 +15,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -25,6 +24,8 @@ import { ApiService } from '../../infrastructure/http/ApiService';
 import EditModule from './EditModule';
 import CreateModule from './CreateModule';
 import ModuleById from './ModuleById';
+import { useSelector } from 'react-redux';
+import { selectUserPermissions, selectUserRoot } from '../../store/reducers/slices/userSlice';
 
 const apiService = new ApiService();
 const moduleRepository = new ModuleRepository(apiService);
@@ -33,7 +34,7 @@ interface ModuleDetailProps {
   updateTable: boolean; // Prop para controlar la actualización
 }
 
-const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
+const ModulesDetail: React.FC<ModuleDetailProps> = ({ updateTable }) => {
   const [modules, setModules] = useState<IModule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
@@ -45,6 +46,8 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
   const [viewModuleId, setViewModuleId] = useState<number | null>(null);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
 
+  const userPermissions = useSelector(selectUserPermissions) || [];
+  const isRoot = useSelector(selectUserRoot);
 
   const getModules = async (fetchAll: boolean = false) => {
     setLoading(true);
@@ -90,7 +93,7 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
   };
 
   const handleModuleCreated = () => {
-    console.log("Módulo creado, actualizando la tabla...");
+    console.log('Módulo creado, actualizando la tabla...');
     getModules(true); // Fetch all modules to refresh the table
     handleCloseCreateDialog();
   };
@@ -107,12 +110,12 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
     setViewModuleId(null);
-  }; 
+  };
 
   if (loading) {
     return <CircularProgress />;
   }
-  
+
   return (
     <>
       <Paper>
@@ -125,7 +128,7 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>NP ACTIVO</TableCell>
                 <TableCell>LP ACTIVO</TableCell>
-               {/* <TableCell>MIN NIVEL NP</TableCell>
+                {/* <TableCell>MIN NIVEL NP</TableCell>
                 <TableCell>MIN NIVEL LP</TableCell>*/}
                 <TableCell>ACCIONES</TableCell>
               </TableRow>
@@ -141,12 +144,22 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
                   {/*<TableCell>{module.minNpLevel}</TableCell>
                   <TableCell>{module.minLpLevel}</TableCell>*/}
                   <TableCell>
-                  <IconButton onClick={() => handleViewClick(module.id)} aria-label="Ver módulo">
-                      <VisibilityIcon sx={{ color: 'secondary.main' }} />
-                    </IconButton>
-                    <IconButton onClick={() => handleEditClick(module.id)} aria-label="Editar módulo">
-                      <EditIcon sx={{ color: 'primary.main' }} />
-                    </IconButton>
+                    {isRoot || userPermissions.includes('MODULE_VIEW_1') ? (
+                      <IconButton
+                        onClick={() => handleViewClick(module.id)}
+                        aria-label="Ver módulo"
+                      >
+                        <VisibilityIcon sx={{ color: 'secondary.main' }} />
+                      </IconButton>
+                    ) : null}
+                    {isRoot || userPermissions.includes('MODULE_EDIT') ? (
+                      <IconButton
+                        onClick={() => handleEditClick(module.id)}
+                        aria-label="Editar módulo"
+                      >
+                        <EditIcon sx={{ color: 'primary.main' }} />
+                      </IconButton>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               ))}
@@ -179,24 +192,21 @@ const ModulesDetail: React.FC<ModuleDetailProps> = ( {updateTable} ) => {
       <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog} maxWidth="md" fullWidth>
         <DialogTitle>Crear Módulo</DialogTitle>
         <DialogContent style={{ paddingBottom: 0 }}>
-          <CreateModule
-            onModuleCreated={handleModuleCreated}
-            onCancel={handleCloseCreateDialog}
-          />
+          <CreateModule onModuleCreated={handleModuleCreated} onCancel={handleCloseCreateDialog} />
         </DialogContent>
       </Dialog>
 
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} maxWidth="md" fullWidth>
-  <DialogTitle>Detalles del Módulo</DialogTitle>
-  <DialogContent style={{ paddingBottom: 0 }}>
-    {viewModuleId && <ModuleById id={viewModuleId} />}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseViewDialog} color="secondary">
-      Salir
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Detalles del Módulo</DialogTitle>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          {viewModuleId && <ModuleById id={viewModuleId} />}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewDialog} color="secondary">
+            Salir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
