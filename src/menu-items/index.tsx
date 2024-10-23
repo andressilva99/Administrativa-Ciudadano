@@ -1,8 +1,14 @@
 // third-party
-import { FormattedMessage } from 'react-intl';
+//import { FormattedMessage } from 'react-intl';
 
 // assets
 import { HomeOutlined, UserOutlined, DatabaseOutlined, GoldOutlined } from '@ant-design/icons';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import DirectionsBikeOutlinedIcon from '@mui/icons-material/DirectionsBikeOutlined';
+import GavelOutlinedIcon from '@mui/icons-material/GavelOutlined';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+
 
 // project import
 import { NavItemType } from '../types/menu';
@@ -13,6 +19,11 @@ const icons = {
   UserOutlined,
   DatabaseOutlined,
   GoldOutlined,
+  ReceiptLongOutlinedIcon,
+  DirectionsBikeOutlinedIcon,
+  GavelOutlinedIcon,
+  RoomOutlinedIcon,
+  PersonAddAltOutlinedIcon,
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -43,6 +54,7 @@ const menuItems: { items: NavItemType[] } = {
           title: 'Usuarios',
           icon: icons.UserOutlined,
           url: '/user',
+          permission: 'ADMUSER_VIEW_N',
         },
       ],
     },
@@ -56,6 +68,7 @@ const menuItems: { items: NavItemType[] } = {
           title: 'Roles',
           icon: icons.DatabaseOutlined,
           url: '/role',
+          permission: 'ADMROLE_VIEW_N',
         },
       ],
     },
@@ -69,6 +82,77 @@ const menuItems: { items: NavItemType[] } = {
           title: 'Módulos',
           icon: icons.GoldOutlined,
           url: '/module',
+          permission: 'MODULE_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-penalty',
+      type: 'group',
+      children: [
+        {
+          id: 'penalty',
+          type: 'item',
+          title: 'Penalizaciones',
+          icon: icons.ReceiptLongOutlinedIcon,
+          url: '/penalty',
+          permission: 'PENALTY_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-penaltyType',
+      type: 'group',
+      children: [
+        {
+          id: 'penaltyType',
+          type: 'item',
+          title: 'Tipos de Penalizaciones',
+          icon: icons.GavelOutlinedIcon,
+          url: '/penaltyType',
+          permission: 'PENALTY_TYPE_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-bicycle',
+      type: 'group',
+      children: [
+        {
+          id: 'bicis',
+          type: 'item',
+          title: 'Bicicletas',
+          icon: icons.DirectionsBikeOutlinedIcon,
+          url: '/bicis',
+          permission: 'BICIS_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-station',
+      type: 'group',
+      children: [
+        {
+          id: 'station',
+          type: 'item',
+          title: 'Estaciones',
+          icon: icons.RoomOutlinedIcon,
+          url: '/station',
+          permission: 'STATION_VIEW_N',
+        },
+      ],
+    },
+    {
+      id: 'group-stationUser',
+      type: 'group',
+      children: [
+        {
+          id: 'stationUser',
+          type: 'item',
+          title: 'Usuarios por Estación',
+          icon: icons.PersonAddAltOutlinedIcon,
+          url: '/stationUser',
+          permission: 'STATION_VIEW_N',
         },
       ],
     },

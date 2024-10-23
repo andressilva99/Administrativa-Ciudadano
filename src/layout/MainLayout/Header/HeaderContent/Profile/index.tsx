@@ -1,9 +1,12 @@
-import { useRef, useState, ReactNode, SyntheticEvent } from 'react';
+import { ReactNode, SyntheticEvent, useRef, useState } from 'react';
+
+import { selectUserFirstName, selectUserLastName } from '../../../../../store/reducers/slices/userSlice';
+import { useSelector } from 'react-redux';
 
 //  material-ui
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
+  Button,
   ButtonBase,
   CardContent,
   ClickAwayListener,
@@ -11,22 +14,22 @@ import {
   Paper,
   Popper,
   Stack,
-  Tab,
-  Tabs,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import ChangePasswordModal from '../../../../../components/auth/ChangePassword';
 
 //  project import
 import Avatar from '../../../../../components/@extended/Avatar';
-import MainCard from '../../../../../components/MainCard';
-import Transitions from '../../../../../components/@extended/Transitions';
 import IconButton from '../../../../../components/@extended/IconButton';
+import Transitions from '../../../../../components/@extended/Transitions';
+import MainCard from '../../../../../components/MainCard';
 
 //  assets
+import { LogoutOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router';
 import avatar1 from '../../../../../assets/images/users/avatar-1.png';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { maxWidth } from '@mui/system';
 
 //  types
 interface TabPanelProps {
@@ -62,9 +65,26 @@ function a11yProps(index: number) {
 
 const Profile = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const firstName = useSelector(selectUserFirstName);
+  const lastName = useSelector(selectUserLastName);
+
+  const [openChangePasswordModal, setOpenChangePasswordModal] = useState<boolean>(false);
 
   const handleLogout = () => {
+    window.localStorage.removeItem('access_token');
+    setTimeout(() => {
+      navigate('/auth/login');
+    }, 100);
     console.log('Cierre de sesión');
+  };
+
+  const handleOpenChangePasswordModal = () => {
+    setOpenChangePasswordModal(true);
+  };
+  const handleCloseChangePasswordModal = () => {
+    setOpenChangePasswordModal(false);
   };
 
   const anchorRef = useRef<any>(null);
@@ -111,7 +131,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="xs" />
-          <Typography variant="subtitle1">Lucas Barbero</Typography>
+          <Typography variant="subtitle1">{firstName} {lastName}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -158,12 +178,14 @@ const Profile = () => {
                               sx={{ width: 32, height: 32 }}
                             />
                             <Stack>
-                              <Typography variant="h6">Lucas Barbero</Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
-                              </Typography>
+                              <Typography variant="h6">{firstName} {lastName}</Typography>
                             </Stack>
                           </Stack>
+                        </Grid>
+                        <Grid item>
+                          <Tooltip title='Cambiar Contraseña'>
+                            <Button onClick={handleOpenChangePasswordModal}>Cambiar Contraseña</Button>
+                          </Tooltip>
                         </Grid>
                         <Grid item>
                           <Tooltip title="Logout">
@@ -185,6 +207,10 @@ const Profile = () => {
           </Transitions>
         )}
       </Popper>
+      <ChangePasswordModal
+        open={openChangePasswordModal}
+        onClose={handleCloseChangePasswordModal}
+      />
     </Box>
   );
 };

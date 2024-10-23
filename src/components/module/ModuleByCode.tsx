@@ -1,37 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
-import { AuthService } from '../../core/application/AuthService';
+import { Typography, CircularProgress, TableBody,
+  TableRow,
+  TableCell,
+  TableContainer, TableHead, Table } from '@mui/material';
+import { ByCodeModule, ModuleDetailProps } from '../../core/entities/module/IModule';
+import { ModuleRepository } from '../../infrastructure/repository/ModuleRepository'; // Asegúrate de importar la clase implementada del repositorio
+import { ApiService } from '../../infrastructure/http/ApiService';
+import Swal from 'sweetalert2'; 
 
-interface Module {
-  id: number;
-  code: string;
-  moduleType: string;
-  name: string;
-  enabledNp: boolean;
-  enabledLp: boolean;
-  minNpLevel: number;
-  minLpLevel: number;
-  configuraciones: {
-    empty: boolean;
-  };
-}
-
-interface ModuleDetailProps {
-  code: string;
-}
+const apiService = new ApiService();
+const moduleRepository = new ModuleRepository(apiService);
 
 const fetchModulesByCode = async (code: string) => {
-  const authService = new AuthService();
   try {
-    const response = await authService.findModulesByCode(code);
+    const response = await moduleRepository.findModulesByCode(code);
     return response;
   } catch (error) {
     throw new Error('Error fetching modules');
   }
 };
 
-const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
-  const [module, setModule] = useState<Module | null>(null);
+const ModuleByCode: React.FC<ModuleDetailProps> = ({ code, onCancell }) => {
+  const [module, setModule] = useState<ByCodeModule | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,9 +33,13 @@ const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
       } catch (error) {
         console.error('Error fetching module:', error);
         if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('Unknown error occurred');
+          Swal.fire({
+            title: 'Módulo no encontrado',
+            text: 'No se encontró el módulo con el CÓDIGO proporcionado.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+          })
+          onCancell();
         }
       } finally {
         setLoading(false);
@@ -60,32 +54,50 @@ const ModuleByCode: React.FC<ModuleDetailProps> = ({ code }) => {
   if (!module) return <Typography>No module found</Typography>;
 
   return (
-    <List>
-      <ListItem>
-        <ListItemText primary="ID:" secondary={module.id} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="NOMBRE:" secondary={module.name} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*CÓDIGO:" secondary={module.code} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*TIPO DE MÓDULO:" secondary={module.moduleType} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*NP HABILITADO:" secondary={module.enabledNp ? 'Yes' : 'No'} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*LP HABILITADO:" secondary={module.enabledLp ? 'Yes' : 'No'} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*MIN NIVEL NP:" secondary={module.minNpLevel} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="*MIN NIVEL LP:" secondary={module.minLpLevel} />
-      </ListItem>      
-    </List>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>*Campo</TableCell>
+            <TableCell>Valor</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>*ID:</TableCell>
+            <TableCell>{module.id}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*NOMBRE:</TableCell>
+            <TableCell>{module.name}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*CÓDIGO:</TableCell>
+            <TableCell>{module.code}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*TIPO DE MÓDULO:</TableCell>
+            <TableCell>{module.moduleType}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*NP HABILITADO:</TableCell>
+            <TableCell>{module.enabledNp ? 'Yes' : 'No'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*LP HABILITADO:</TableCell>
+            <TableCell>{module.enabledLp ? 'Yes' : 'No'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*MIN NIVEL NP:</TableCell>
+            <TableCell>{module.minNpLevel}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>*MIN NIVEL LP:</TableCell>
+            <TableCell>{module.minLpLevel}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
